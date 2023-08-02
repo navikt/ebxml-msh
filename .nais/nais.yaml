@@ -1,0 +1,35 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: "ebxml-msh"
+  namespace: "team-emottak"
+  labels:
+    "team": "team-emottak"
+  annotations:
+    "start.nais.io/created-by": "me"
+    "start.nais.io/creationTimestamp": "2023-07-25T08:10:35.681176828"
+spec:
+  image: {{image}}
+  liveness:
+    path: "/jentrata/admin/home"
+    initialDelay: 20
+    timeout: 60
+  readiness:
+    path: "/jentrata/admin/home"
+    initialDelay: 20
+    timeout: 60
+  replicas:
+    min: 2
+    max: 2
+    cpuThresholdPercentage: 50
+  resources:
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+  ingresses: 
+  {{#each ingresses as |url|}}
+    - {{url}}
+  {{/each}}

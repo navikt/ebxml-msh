@@ -1,5 +1,4 @@
 FROM jentrata/jentrata-msh:3
-MAINTAINER Arran Ubels a.ubels@base2services.com
 
 ENV JENTRATA_VERSION 3.x-SNAPSHOT
 
