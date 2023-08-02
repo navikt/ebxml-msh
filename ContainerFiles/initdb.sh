@@ -6,9 +6,9 @@ EOSQL
 
 psql --username postgres <<-EOSQL
     CREATE DATABASE ebms ;
-    CREATE DATABASE as2 ;
 EOSQL
 
 cat  /work/sql/ebms.sql | psql --username postgres ebms
-cat  /work/sql/as2.sql | psql --username postgres as2
+#cat  /work/sql/as2.sql | psql --username postgres as2
+#TODO trenger ikke as2?
 

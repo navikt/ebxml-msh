@@ -293,47 +293,48 @@
 				<fileMode>755</fileMode>
 			</binaries>
 		</moduleSet>
-		
-		<!-- hk.hku.cecid.edi.as2 plugin -->
-		<moduleSet>
-			<useAllReactorProjects>true</useAllReactorProjects>
-			<includes>
-				<include>org.jentrata.msh.plugins:jentrata-corvus-as2</include>
-			</includes>
-			<binaries>
-				<outputDirectory>plugins/hk.hku.cecid.edi.as2</outputDirectory>
-				<unpack>false</unpack>
-				<includeDependencies>false</includeDependencies>
-				<outputFileNameMapping>corvus-as2-core.jar</outputFileNameMapping>
-				<directoryMode>755</directoryMode>
-				<fileMode>755</fileMode>
-			</binaries>
-		</moduleSet>
 
-		<!-- hk.hku.cecid.as2.admin plugin -->
-		<moduleSet>
-			<useAllReactorProjects>true</useAllReactorProjects>
-			<includes>
-				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-admin</include>
-			</includes>
-			<binaries>
-				<outputDirectory>plugins/hk.hku.cecid.edi.as2.admin</outputDirectory>
-				<unpack>false</unpack>
-				<includeDependencies>true</includeDependencies>
-				<dependencySets>
-					<dependencySet>
-                        <outputDirectory>plugins/hk.hku.cecid.edi.as2.admin/lib</outputDirectory>
-						<includes>
-							<include>commons-fileupload:commons-fileupload</include>
-                            <include>commons-io:commons-io</include>
-						</includes>
-					</dependencySet>
-				</dependencySets>
-				<outputFileNameMapping>corvus-as2-admin.jar</outputFileNameMapping>
-				<directoryMode>755</directoryMode>
-				<fileMode>755</fileMode>
-			</binaries>
-		</moduleSet>
+<!--		TODO fjerne AS2? -->
+<!--		&lt;!&ndash; hk.hku.cecid.edi.as2 plugin &ndash;&gt;-->
+<!--		<moduleSet>-->
+<!--			<useAllReactorProjects>true</useAllReactorProjects>-->
+<!--			<includes>-->
+<!--				<include>org.jentrata.msh.plugins:jentrata-corvus-as2</include>-->
+<!--			</includes>-->
+<!--			<binaries>-->
+<!--				<outputDirectory>plugins/hk.hku.cecid.edi.as2</outputDirectory>-->
+<!--				<unpack>false</unpack>-->
+<!--				<includeDependencies>false</includeDependencies>-->
+<!--				<outputFileNameMapping>corvus-as2-core.jar</outputFileNameMapping>-->
+<!--				<directoryMode>755</directoryMode>-->
+<!--				<fileMode>755</fileMode>-->
+<!--			</binaries>-->
+<!--		</moduleSet>-->
+
+<!--		&lt;!&ndash; hk.hku.cecid.as2.admin plugin &ndash;&gt;-->
+<!--		<moduleSet>-->
+<!--			<useAllReactorProjects>true</useAllReactorProjects>-->
+<!--			<includes>-->
+<!--				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-admin</include>-->
+<!--			</includes>-->
+<!--			<binaries>-->
+<!--				<outputDirectory>plugins/hk.hku.cecid.edi.as2.admin</outputDirectory>-->
+<!--				<unpack>false</unpack>-->
+<!--				<includeDependencies>true</includeDependencies>-->
+<!--				<dependencySets>-->
+<!--					<dependencySet>-->
+<!--                        <outputDirectory>plugins/hk.hku.cecid.edi.as2.admin/lib</outputDirectory>-->
+<!--						<includes>-->
+<!--							<include>commons-fileupload:commons-fileupload</include>-->
+<!--                            <include>commons-io:commons-io</include>-->
+<!--						</includes>-->
+<!--					</dependencySet>-->
+<!--				</dependencySets>-->
+<!--				<outputFileNameMapping>corvus-as2-admin.jar</outputFileNameMapping>-->
+<!--				<directoryMode>755</directoryMode>-->
+<!--				<fileMode>755</fileMode>-->
+<!--			</binaries>-->
+<!--		</moduleSet>-->
 		
 		<!-- Disabled AS2 Plus plugins hk.hku.cecid.edi.as2plus plugin 
 		<moduleSet>
@@ -386,8 +387,10 @@
 				<!--include>org.jentrata.msh.plugins:jentrata-validation</include-->
 				<include>org.jentrata.msh.plugins:jentrata-corvus-ebms</include>
 				<include>org.jentrata.msh.plugins:jentrata-corvus-ebms-admin</include>
+				<!--  Disabled AS2 plugins
 				<include>org.jentrata.msh.plugins:jentrata-corvus-as2</include>
 				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-admin</include>
+				-->
 				<!--  Disabled AS2 Plus plugins
 				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-plus</include>
 				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-plus-admin</include>

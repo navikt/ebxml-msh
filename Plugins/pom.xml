@@ -24,19 +24,31 @@
     </modules>
     
     <profiles>
+
+		<profile>
+			<id>emottak-plugins</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>CorvusEbMS</module>
+				<module>CorvusEbMS.Admin</module>
+				<module>CorvusJMS</module>
+			</modules>
+		</profile>
     
-    	<profile>
-    		<id>all-plugins</id>
-    		<activation>
-    			<activeByDefault>true</activeByDefault>
-    		</activation>
-    		<modules>
-    			<module>CorvusEbMS</module>
-    			<module>CorvusEbMS.Admin</module>
-    			<module>CorvusAS2</module>
-    			<module>CorvusAS2.Admin</module>   			    			
-    		</modules>
-    	</profile>
+<!--    	<profile>-->
+<!--    		<id>all-plugins</id>-->
+<!--    		<activation>-->
+<!--    			<activeByDefault>true</activeByDefault>-->
+<!--    		</activation>-->
+<!--    		<modules>-->
+<!--    			<module>CorvusEbMS</module>-->
+<!--    			<module>CorvusEbMS.Admin</module>-->
+<!--    			<module>CorvusAS2</module>-->
+<!--    			<module>CorvusAS2.Admin</module>   			    			-->
+<!--    		</modules>-->
+<!--    	</profile>-->
     
     	<profile>
     		<id>ebms-plugins</id>
