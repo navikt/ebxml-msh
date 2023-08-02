@@ -9,14 +9,14 @@ metadata:
     nais.io/read-only-file-system: "false"
 spec:
   image: {{image}}
-  liveness:
-    path: "/jentrata/admin/home"
-    initialDelay: 20
-    timeout: 60
-  readiness:
-    path: "/jentrata/admin/home"
-    initialDelay: 20
-    timeout: 60
+#  liveness:
+#    path: "/jentrata/admin/home"
+#    initialDelay: 20
+#    timeout: 60
+#  readiness:
+#    path: "/jentrata/admin/home"
+#    initialDelay: 20
+#    timeout: 60
   replicas:
     min: 2
     max: 2
