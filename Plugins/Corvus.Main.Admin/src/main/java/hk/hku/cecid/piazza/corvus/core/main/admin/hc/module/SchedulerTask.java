@@ -44,7 +44,7 @@ public class SchedulerTask implements ActiveTask {
 	 * Status messages
 	 */
 	private static final String IN_PROGESS = "processing";
-//
+
 	private static final String COMPLETE = "success";
 
 	private static final String FAILED = "failed";
@@ -67,8 +67,9 @@ public class SchedulerTask implements ActiveTask {
 
 	public void execute() throws Exception {
 		/**
-		 * Transactions
+		 * Transaction
 		 */
+
 		Transaction ebms = null;
 		try {
 			// load the properties
@@ -210,7 +211,6 @@ public class SchedulerTask implements ActiveTask {
 	private void AdminLogging(String s) {
 		AdminMainProcessor.core.log.info("Housecleaning: " + s);
 	}
-
 
 	/**
 	 * Checks to see whether the current time has exceeded the parameter 'time'.
