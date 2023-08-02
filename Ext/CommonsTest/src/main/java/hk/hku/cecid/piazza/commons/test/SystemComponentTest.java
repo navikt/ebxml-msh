@@ -3,7 +3,7 @@
  */
 package hk.hku.cecid.piazza.commons.test;
 
-import hk.hku.cecid.edi.as2.pkg.AS2Message;
+//import hk.hku.cecid.edi.as2.pkg.AS2Message;
 import hk.hku.cecid.piazza.commons.activation.InputStreamDataSource;
 import hk.hku.cecid.piazza.commons.dao.DAO;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
@@ -68,15 +68,15 @@ public class SystemComponentTest<T> {
             return null;
         }
 
-        public AS2Message storeOutgoingMessage(String mid, String string, DVO partnershipDVO,
-                InputStreamDataSource inputStreamDataSource) {
-            return storeOutgoingMessage(mid,string,partnershipDVO, inputStreamDataSource,null);
-        }
-        
-        public AS2Message storeOutgoingMessage(String mid, String string, DVO partnershipDVO,
-                InputStreamDataSource inputStreamDataSource, Object object) {
-            return null;
-        }
+//        public AS2Message storeOutgoingMessage(String mid, String string, DVO partnershipDVO,
+//                InputStreamDataSource inputStreamDataSource) {
+//            return storeOutgoingMessage(mid,string,partnershipDVO, inputStreamDataSource,null);
+//        }
+//
+//        public AS2Message storeOutgoingMessage(String mid, String string, DVO partnershipDVO,
+//                InputStreamDataSource inputStreamDataSource, Object object) {
+//            return null;
+//        }
 
         public SystemComponent getSystemModule() {
             return null;

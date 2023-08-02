@@ -59,18 +59,6 @@
     		<version>${project.version}</version>
     	</dependency>
     	
-    	<dependency>
-    		<groupId>org.jentrata.msh.plugins</groupId>
-    		<artifactId>jentrata-corvus-as2</artifactId>
-    		<version>${project.version}</version>
-    	</dependency>
-    	
-    	<dependency>
-    		<groupId>org.jentrata.msh.plugins</groupId>
-    		<artifactId>jentrata-corvus-as2-admin</artifactId>
-    		<version>${project.version}</version>
-    	</dependency>
-    	
     	<!-- Disabled AS2 Plus plugins 
     	<dependency>
     		<groupId>org.jentrata.msh.plugins</groupId>
