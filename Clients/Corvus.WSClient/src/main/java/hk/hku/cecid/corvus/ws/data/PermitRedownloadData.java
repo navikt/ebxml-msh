@@ -4,7 +4,6 @@ import java.security.InvalidParameterException;
 
 public class PermitRedownloadData extends KVPairData {
 
-	public static final String PROTOCOL_AS2 = "AS2";
 	public static final String PROTOCOL_EBMS = "EBMS";
 	
 	public static final String [] PARAM_KEY_SET = 
@@ -17,9 +16,6 @@ public class PermitRedownloadData extends KVPairData {
 		"permitDlEndpoint"      
 	};
 	
-	public static final String AS2_CONFIG_PREFIX = "/as2-request/config";
-	public static final String AS2_PARAM_PREFIX  = "/as2-request/param";
-	
 	public static final String EBMS_CONFIG_PREFIX = "/ebms-request/config";
 	public static final String EBMS_PARAM_PREFIX  = "/ebms-request/param";
 	
@@ -27,7 +23,7 @@ public class PermitRedownloadData extends KVPairData {
 		super(PARAM_KEY_SET.length);
 		
 		if(protocol == null && protocol.trim().equalsIgnoreCase("")||
-				!(protocol.equalsIgnoreCase(PROTOCOL_AS2) ||protocol.equalsIgnoreCase(PROTOCOL_EBMS))){
+				!(protocol.equalsIgnoreCase(PROTOCOL_EBMS))){
 			throw new InvalidParameterException("Message Protocol did not specified.");
 		}
 	}
