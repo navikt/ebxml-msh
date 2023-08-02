@@ -9,6 +9,4 @@ psql --username postgres <<-EOSQL
 EOSQL
 
 cat  /work/sql/ebms.sql | psql --username postgres ebms
-#cat  /work/sql/as2.sql | psql --username postgres as2
-#TODO trenger ikke as2?
 

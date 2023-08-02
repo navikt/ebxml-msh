@@ -64,11 +64,7 @@ public class DataFactory
 	public static DataFactory getInstance(){
 		return DataFactory.instance;
 	}
-	
-	public PermitRedownloadData createAS2PermitRedownloadDataFromXML(PropertyTree t){
-		return this.createPermitRedownloadDataFromXML(t, PermitRedownloadData.PROTOCOL_AS2);
-	}
-	
+
 	public PermitRedownloadData createEBMSPermitRedownloadDataFromXML(PropertyTree t){
 		return this.createPermitRedownloadDataFromXML(t, PermitRedownloadData.PROTOCOL_EBMS);
 	}
@@ -78,12 +74,6 @@ public class DataFactory
 			throw new NullPointerException("The property tree is missing.");
 
 		PermitRedownloadData data = new PermitRedownloadData(protocol);
-		
-		if(protocol.equalsIgnoreCase(PermitRedownloadData.PROTOCOL_AS2)){
-			final String[] prefix = {	PermitRedownloadData.AS2_CONFIG_PREFIX, PermitRedownloadData.AS2_PARAM_PREFIX};
-			final String[][] keySet = { PermitRedownloadData.CONFIG_KEY_SET,PermitRedownloadData.PARAM_KEY_SET };
-			this.loadKVPairDataFromXML(data, t, prefix, keySet);
-		}
 
 		if(protocol.equalsIgnoreCase(PermitRedownloadData.PROTOCOL_EBMS)){
 			final String[] prefix = {	PermitRedownloadData.EBMS_CONFIG_PREFIX, PermitRedownloadData.EBMS_PARAM_PREFIX};
@@ -92,49 +82,7 @@ public class DataFactory
 		}
 		return data;
 	}
-	
-	/**
-	 * Create an instance of <code>AS2MessageData</code> from the XML property tree.  
-	 * 
-	 * @param t The property tree to import the data.
-	 * @return A new instance of <code>AS2MessageData</code> with data imported from the property tree. 
-	 */ 	 
-	public AS2MessageData
-	createAS2MessageDataFromXML(PropertyTree t)
-	{
-		if (t == null)
-			throw new NullPointerException("The property tree is missing.");
-		// Create return object.
-		AS2MessageData ret = new AS2MessageData();
-		// All key prefix.
-		final String[]   prefix = {	AS2MessageData.CONFIG_PREFIX, AS2MessageData.PARAM_PREFIX};
-		// All key set 
-		final String[][] keySet = { AS2MessageData.CONFIG_KEY_SET,AS2MessageData.PARAM_KEY_SET };
-		// Load all key-value pair from XML.
-		this.loadKVPairDataFromXML(ret, t, prefix, keySet);
-		return ret;
-	}
-	
-	/**
-	 * Store an instance of <code>AS2Message<code> to XML.
-	 * 
-	 * @param d  	The <code>AS2MessageData<code> to store.
-	 * @param path  The URL specified the location for storing the data.
-	 * 
-	 * @throws IOException when storing the data fails.
-	 */
-	public void 
-	storeAS2MessageDataToXML(AS2MessageData d, URL path) throws IOException
-	{				
-		PropertyTree marshalTree = new PropertyTree();
-		// All key prefix.
-		final String[]   prefix = {	AS2MessageData.CONFIG_PREFIX, AS2MessageData.PARAM_PREFIX};
-		// All key set 
-		final String[][] keySet = { AS2MessageData.CONFIG_KEY_SET,AS2MessageData.PARAM_KEY_SET };
-		// Store all key-value pair to XML.
-		this.storeKVPairDataToXML(d, marshalTree, path, prefix, keySet, null);		
-	}
-	
+
 	/**
 	 * Create an instance of <code>EBMSMessageData</code> from the XML property tree.  
 	 * 
@@ -162,7 +110,7 @@ public class DataFactory
 	/**
 	 * Store an instance of <code>EBMSMessage<code> to XML.
 	 * 
-	 * @param d  	The <code>AS2MessageData<code> to store.
+	 * @param d  	The <code>EBMSMessageData<code> to store.
 	 * @param path  The URL specified the location for storing the data.
 	 * 
 	 * @throws IOException when storing the data fails.
@@ -177,31 +125,6 @@ public class DataFactory
 		final String[][] keySet = { EBMSMessageData.CONFIG_KEY_SET,EBMSMessageData.PARAM_KEY_SET};		
 		// Store all key-value pair to XML.
 		this.storeKVPairDataToXML(d, marshalTree, path, prefix, keySet, null);		
-	}
-	
-	/**
-	 * Create an instance of <code>AS2ConfigData</code>  From the 
-	 * XML property tree.  
-	 * 
-	 * @param t The property tree to import the data.
-	 * @return
-	 * 			A new instance of <code>AS2ConfigData</code> 
-	 * 			with data imported from the property tree. 
-	 */ 	 
-	public AS2ConfigData
-	createAS2ConfigDataFromXML(PropertyTree t)
-	{
-		if (t == null)
-			throw new NullPointerException("The property tree is missing.");
-		// Create return object.
-		AS2ConfigData ret = new AS2ConfigData();
-		// All key prefix.
-		final String[]   prefix = {	AS2ConfigData.CONFIG_PREFIX, AS2ConfigData.PARAM_PREFIX };
-		// All key set 
-		final String[][] keySet = { AS2ConfigData.CONFIG_KEY_SET, AS2ConfigData.PARAM_KEY_SET};
-		// Load all key-value pair from XML.
-		this.loadKVPairDataFromXML(ret, t, prefix, keySet);
-		return ret;
 	}
 	
 	/**
@@ -229,58 +152,7 @@ public class DataFactory
 		return ret;
 	}
 	
-	/**
-	 * Create an instance of <code>AS2PartnershipData</code>  From the 
-	 * XML property tree.  
-	 * 
-	 * @param t The property tree to import the data.
-	 * @return
-	 * 			A new instance of <code>AS2PartnershipData</code> 
-	 * 			with data imported from the property tree. 
-	 */ 	 
-	public AS2PartnershipData 
-	createAS2PartnershipFromXML(PropertyTree t)
-	{
-		if (t == null)
-			throw new NullPointerException("The property tree is missing.");
-		// Create return object.
-		AS2PartnershipData ret = new AS2PartnershipData();
-		// All key prefix.
-		final String[]   prefix =  { AS2PartnershipData.PARAM_PREFIX};
-		// All key set 
-		final String[][] keySet =  { AS2PartnershipData.PARAM_KEY_SET };
-		// All key value type set
-		final Class [][] typeSet = { AS2PartnershipData.PARAM_CLASS_SET };	
-		// Load all key-value pair from XML.
-		this.loadKVPairDataFromXML(ret, t, prefix, keySet, typeSet);
-		return ret;
-	}
-	
-	/**
-	 * Store the instance of <code>AS2PartnershipData</code> to the XML
-	 * specified at <code>path<code>.
-	 * 
-	 * @param d	The <code>AS2PartnershipData</code> you want to store.
-	 * @param path  The URL specified the location for storing the data.
-	 * 
-	 * @throws IOException when storing the data fails.
-	 */ 	 
-	public void 
-	storeAS2PartnershipFromXML(AS2PartnershipData d, URL path)
-		throws IOException 
-	{
-		PropertyTree marshalTree = new PropertyTree();
-		// All key prefix.
-		final String[]   prefix =  { AS2PartnershipData.PARAM_PREFIX  };
-		// All key set 
-		final String[][] keySet =  { AS2PartnershipData.PARAM_KEY_SET };
-		// All key value type set
-		final Class [][] typeSet = { AS2PartnershipData.PARAM_CLASS_SET };	
-		
-		// Store all key-value pair to XML.
-		this.storeKVPairDataToXML(d, marshalTree, path, prefix, keySet, typeSet);		
-	}
-	
+
 	/**
 	 * 
 	 * Create an instance of <code>EBMSPartnershipData</code>  From the 
@@ -333,32 +205,7 @@ public class DataFactory
 		// Store all key-value pair to XML.
 		this.storeKVPairDataToXML(d, marshalTree, path, prefix, keySet, typeSet);		
 	}
-	
-	/**
-	 * Create an instance of <code>AS2StatusQueryData</code>  From the 
-	 * XML property tree.  
-	 * 
-	 * @param t The property tree to import the data.
-	 * @return
-	 * 			A new instance of <code>AS2StatusQueryData</code> 
-	 * 			with data imported from the property tree. 
-	 */ 	 
-	public AS2StatusQueryData
-	createAS2StatusQueryDataFromXML(PropertyTree t)
-	{
-		if (t == null)
-			throw new NullPointerException("The property tree is missing.");
-		// Create return object.
-		AS2StatusQueryData ret = new AS2StatusQueryData();
-		// All key prefix
-		final String[] 	 prefix = { AS2StatusQueryData.PARAM_PREFIX, AS2StatusQueryData.CONFIG_PREFIX };
-		// All key set
-		final String[][] keySet = { AS2StatusQueryData.PARAM_KEY_SET, AS2StatusQueryData.CONFIG_KEY_SET };
-		// Load all key-value pair from XML.
-		this.loadKVPairDataFromXML(ret, t, prefix, keySet);
-		return ret;
-	}
-	
+
 	/**
 	 * Create an instance of <code>EBMSStatusQueryData</code>  From the 
 	 * XML property tree.  
@@ -379,29 +226,6 @@ public class DataFactory
 		final String[] 	 prefix = { EBMSStatusQueryData.PARAM_PREFIX, EBMSStatusQueryData.CONFIG_PREFIX };
 		// All key set
 		final String[][] keySet = { EBMSStatusQueryData.PARAM_KEY_SET, EBMSStatusQueryData.CONFIG_KEY_SET };
-		// Load all key-value pair from XML.
-		this.loadKVPairDataFromXML(ret, t, prefix, keySet);
-		return ret;
-	}
-	
-	/**
-	 * Create an instance of <code>AS2AdminData</code> from the XML property tree.  
-	 * 
-	 * @param t The property tree to import the data.
-	 * @return
-	 * 			A new instance of <code>AS2AdminData</code> with data imported from the property tree. 
-	 */ 	 
-	public AS2AdminData
-	createAS2AdminDataFromXML(PropertyTree t)
-	{
-		if (t == null)
-			throw new NullPointerException("The property tree is missing.");
-		// Create return object.
-		AS2AdminData ret = new AS2AdminData();
-		// All key prefix
-		final String[] 	 prefix = { AS2AdminData.PARAM_PREFIX, AS2AdminData.CONFIG_PREFIX };
-		// All key set
-		final String[][] keySet = { AS2AdminData.PARAM_KEY_SET, AS2AdminData.CONFIG_KEY_SET };
 		// Load all key-value pair from XML.
 		this.loadKVPairDataFromXML(ret, t, prefix, keySet);
 		return ret;
@@ -480,37 +304,6 @@ public class DataFactory
 
 		final String[][] keySet = { EBMSMessageHistoryRequestData.PARAM_KEY_SET,
 									EBMSMessageHistoryRequestData.PARAM_EBMS_KEY_SET};
-			
-		this.loadKVPairDataFromXML(data, t, prefix, keySet);
-		return data;
-	}
-	
-	/**
-	 * Create an instance of <code>AS2MessageHistoryRequestData</code> from the 
-	 * XML property tree.  
-	 * 
-	 * @param t The property tree to import the data.
-	 * @return
-	 * 			A new instance of <code>AS2MessageHistoryRequestData</code> with data imported from the property tree. 
-	 */ 	 
-	public AS2MessageHistoryRequestData
-	createAs2MessageHistoryQueryDataFromXML(PropertyTree t){
-		if(t == null)
-			throw new NullPointerException("The property tree is missing.");
-		
-		AS2MessageHistoryRequestData data = new AS2MessageHistoryRequestData();
-		final String[] 	 config_prefix = { AS2MessageHistoryRequestData.CONFIG_PREFIX};
-		
-		final String[][] config_keySet = { AS2MessageHistoryRequestData.CONFIG_KEY_SET};
-
-		this.loadKVPairDataFromXML(data, t, config_prefix, config_keySet);
-		
-		
-		final String[] 	 prefix = {AS2MessageHistoryRequestData.PARAM_PREFIX, 
-				AS2MessageHistoryRequestData.PARAM_PREFIX};
-
-		final String[][] keySet = { AS2MessageHistoryRequestData.PARAM_KEY_SET,
-									AS2MessageHistoryRequestData.PARAM_AS2_KEY_SET};
 			
 		this.loadKVPairDataFromXML(data, t, prefix, keySet);
 		return data;

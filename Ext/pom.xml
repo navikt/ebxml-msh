@@ -30,12 +30,6 @@
 				<artifactId>jentrata-commons</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			
-			<dependency>
-				<groupId>org.jentrata.msh.plugins</groupId>
-				<artifactId>jentrata-corvus-as2</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 
 			<dependency>
 				<groupId>org.jentrata.msh.core</groupId>

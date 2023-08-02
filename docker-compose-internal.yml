@@ -6,7 +6,6 @@ services:
       DB_USER_NAME: jentrata
       DB_USER_PASS: jentrata
     volumes:
-    - ./Dist/src/main/scripts/sql/as2.sql:/work/sql/as2.sql
     - ./Dist/src/main/scripts/sql/ebms.sql:/work/sql/ebms.sql
     - ./ContainerFiles/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh
   jentrata-msh:

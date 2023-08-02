@@ -21,6 +21,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.jms.MessageConsumer;
 import jakarta.xml.soap.AttachmentPart;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;

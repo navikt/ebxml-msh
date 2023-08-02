@@ -30,11 +30,6 @@
     		<artifactId>jentrata-corvus-core</artifactId>
     	</dependency>
     	
-    	<dependency>
-    		<groupId>org.jentrata.msh.plugins</groupId>
-    		<artifactId>jentrata-corvus-as2</artifactId>
-    	</dependency>
-    	
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>

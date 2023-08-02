@@ -6,7 +6,6 @@ import java.util.Date;
 import jakarta.xml.soap.SOAPElement;
 import jakarta.xml.soap.SOAPException;
 
-import hk.hku.cecid.corvus.ws.data.AS2MessageData;
 import hk.hku.cecid.corvus.ws.data.PermitRedownloadData;
 import hk.hku.cecid.piazza.commons.data.Data;
 import hk.hku.cecid.piazza.commons.soap.SOAPSender;

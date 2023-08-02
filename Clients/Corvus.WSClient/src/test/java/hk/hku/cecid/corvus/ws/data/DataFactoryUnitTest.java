@@ -40,27 +40,7 @@ public class DataFactoryUnitTest extends TestCase
 	
 	// Class loader for loading fixture data
 	private static ClassLoader FIXTURE_LOADER = FixtureStore.createFixtureLoader(false, DataFactoryUnitTest.class);
-	
-	// Fixture name.
-	
-	public static final String AS2_ADMIN_DATA_SAMPLE0 	= "as2-admin-request.xml";
-	
-	public static final String AS2_MESSAGE_DATA_SAMPLE0	= "as2-request-load.xml";
-	
-	public static final String AS2_MESSAGE_DATA_STORE0  = "as2-request-store.xml";
-	
-	/**
-	 * This is the fixture name for testing the reading capabilities for AS2Partnership in DataFactory. 
-	 */
-	public static final String AS2_PARTNERSHIP_DATA_LOAD0 	= "as2-partnership-load.xml";
-	
-	/**
-	 * This is the fixture name for testing the storing capabilities for DataFactory. 
-	 * This fixture does not contains any data initially. 
-	 */
-	public static final String AS2_PARTNERSHIP_DATA_STORE0 	= "as2-partnership-store.xml";
-	
-	
+
 	public static final String EBMS_ADMIN_DATA_SAMPLE0	 = "ebms-admin-request.xml";
 	
 	public static final String EBMS_MESSAGE_DATA_SAMPLE0 = "ebms-request-load.xml";
@@ -96,39 +76,7 @@ public class DataFactoryUnitTest extends TestCase
 	}
 	
 
-	public void testCreateAS2MessageData() throws Exception
-	{
-		
-	}
-	
-	/** Test whether the DataFactory able to store AS2 Message Data to the fixture **/
-	public void testStoreAS2MessageData() throws Exception
-	{
-		DataFactory df = DataFactory.getInstance();
-		AS2MessageData d = new AS2MessageData();
-		
-		d.setSendEndpoint("http://localhost:8080/corvus/httpd/as2/sender");
-		d.setRecvEndpoint("http://localhost:8080/corvus/httpd/as2/receiver");
-		d.setRecvlistEndpoint("http://localhost:8080/corvus/httpd/as2/receiver_list");
-		d.setType("xml");
-		d.setMessageIdForReceive("");
-		
-		// Use default parameter for storing.		
-		URL storeURL = FIXTURE_LOADER.getResource(AS2_MESSAGE_DATA_STORE0);
-		
-		// Test method.
-		df.storeAS2MessageDataToXML(d, storeURL);
-		
-		// Assertion 
-		PropertyTree assertionTree = new PropertyTree(storeURL);
-		
-		// All key prefix.
-		final String[]   xPathPrefix = { AS2MessageData.CONFIG_PREFIX, AS2MessageData.PARAM_PREFIX};
-		// All key set 
-		final String[][] keySet 	 = { AS2MessageData.CONFIG_KEY_SET,AS2MessageData.PARAM_KEY_SET };
-		
-		this.assertData(d, assertionTree, xPathPrefix, keySet);
-	}
+
 	
 	/** Test whether the DataFactory able to store EBMS Message Data to the fixture **/
 	public void testStoreEBMSMessageData() throws Exception
@@ -164,81 +112,7 @@ public class DataFactoryUnitTest extends TestCase
 		
 		this.assertData(d, assertionTree, xPathPrefix, keySet);
 	}
-	
-	/** Test whether the DataFactory able to create EBMS Partnership Data from the fixture **/
-	public void testCreateAS2PartnershipData() throws Exception
-	{
-		DataFactory df = DataFactory.getInstance();
-		PropertyTree t = this.getFixtureAsTree(AS2_PARTNERSHIP_DATA_LOAD0);
-		
-		AS2PartnershipData d = df.createAS2PartnershipFromXML(t);
-		
-		// All key prefix.
-		final String[]   xPathPrefix = { AS2PartnershipData.PARAM_PREFIX};
-		// All key set 
-		final String[][] keySet 	 = { AS2PartnershipData.PARAM_KEY_SET };
-		
-		this.assertData(d, t, xPathPrefix, keySet);
-		
-		// Assert data field which data-type is not String.
-		String encryptCert = new String(d.getEncryptCert(), "UTF-8");
-		assertEquals(encryptCert, "I am testing load cert");
-		String verifyCert  = new String(d.getVerifyCert(), "UTF-8");
-		assertEquals(verifyCert, "I am verifying load cert");
-	}
-	
-	/** Test whether the DataFactory able to store AS2 Partnership Data to the fixture **/
-	public void testStoreAS2PartnershipData() throws Exception
-	{
-		DataFactory df = DataFactory.getInstance();
-		AS2PartnershipData d = new AS2PartnershipData();
-		
-		d.setPartnershipId("as2");
-		d.setIsDisabled(false);
-		d.setIsSyncReply(false);
-		d.setSubject("AS2 web service client default subject");
-		d.setRecipientAddress("http://127.0.0.1:8080/corvus/httpd/as2/inbound");
-		d.setIsHostnameVerified(false);
-		d.setReceiptAddress("http://127.0.0.1:8080/corvus/httpd/as2/inbound");
-		d.setIsReceiptRequired(false);
-		d.setIsOutboundSignRequired(false);		
-		d.setIsOutboundEncryptRequired(false);
-		d.setIsOutboundCompressRequired(false);
-		d.setIsReceiptSignRequired(false);
-		d.setIsInboundSignRequired(false);
-		d.setIsInboundEncryptRequired(false);
-		d.setRetries(3);
-		d.setRetryInterval(30000);
-		d.setSignAlgorithm("sha1");
-		d.setEncryptAlgorithm("rc2");
-		d.setMicAlgorithm("sha1");
-		d.setAs2From("as2From");
-		d.setAs2To("as2To");
-		d.setVerifyCert(new byte[]{});
-		d.setEncryptCert(new byte[]{});
-		
-		// Use default parameter for storing.		
-		URL storeURL = FIXTURE_LOADER.getResource(AS2_PARTNERSHIP_DATA_STORE0);
-		
-		/*
-		 * We want to test if it is able to convert data-type other than String. 
-		 */  
-		d.setEncryptCert("I am testing cert".getBytes());
-		d.setVerifyCert	("I am verifying cert".getBytes());
-		
-		// Test method.
-		df.storeAS2PartnershipFromXML(d, storeURL);
-		
-		// Assertion 
-		PropertyTree assertionTree = new PropertyTree(storeURL);
-		
-		// All key prefix.
-		final String[]   xPathPrefix = { AS2PartnershipData.PARAM_PREFIX};
-		// All key set 
-		final String[][] keySet 	 = { AS2PartnershipData.PARAM_KEY_SET };
-		
-		this.assertData(d, assertionTree, xPathPrefix, keySet);
-	}
+
 	
 	/** Test whether the DataFactory able to create EBMS Partnership Data from the fixture **/
 	public void testCreateEBMSPartnershipData() throws Exception
@@ -312,20 +186,7 @@ public class DataFactoryUnitTest extends TestCase
 		
 		this.assertData(d, assertionTree, xPathPrefix, keySet);
 	}
-	
-	/** Test whether the DataFactory able to load AS2 Administrator Data from the fixture **/
-	public void testCreateAS2AdminData() throws Exception 
-	{	
-		DataFactory df = DataFactory.getInstance();
-		AS2AdminData aData = df.createAS2AdminDataFromXML(this.getFixtureAsTree(AS2_ADMIN_DATA_SAMPLE0));
-		
-		// Fixture dependent assertion
-		assertEquals("as2Testname"		, aData.getUsername());
-		assertEquals("as2Testpassword"	, new String(aData.getPassword()));
-		assertEquals("http://as2Test:8080/corvus/admin/as2/partnership"	, aData.getManagePartnershipEndpoint());
-		assertEquals("http://as2Test:8080/corvus/admin/as2/repository"	, aData.getEnvelopQueryEndpoint());
-	}
-	
+
 	/** Test whether the DataFactory able to load EBMS Administrator Data from the fixture **/
 	public void testCreateEBMSAdminData() throws Exception
 	{

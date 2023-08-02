@@ -63,33 +63,6 @@
     		</modules>
     	</profile>
     	
-    	<profile>
-    		<id>as2-plugins</id>
-    		<activation>
-    			<property>
-    				<name>plugins.as2</name>
-    			</property>
-    		</activation>
-    		<modules>
-    			<module>CorvusAS2</module>
-    			<module>CorvusAS2.Admin</module>    		
-    		</modules>
-    	</profile>
-    	
-    	<profile>
-    		<id>as2Plus-plugins</id>
-    		<activation>
-    			<property>
-    				<name>plugins.as2Plus</name>
-    				<value>as2Plus</value>
-    			</property>
-    		</activation>
-    		<modules>
-    			<module>CorvusAS2Plus</module>
-    			<module>CorvusAS2Plus.Admin</module>    		
-    		</modules>
-    	</profile>
-
 		<profile>
 			<id>jms-plugins</id>
 			<activation>
@@ -155,18 +128,6 @@
 			<dependency>
 				<groupId>org.jentrata.msh.plugins</groupId>
 				<artifactId>jentrata-corvus-main-admin</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.jentrata.msh.plugins</groupId>
-				<artifactId>jentrata-corvus-as2</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.jentrata.msh.plugins</groupId>
-				<artifactId>jentrata-corvus-as2-plus</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			

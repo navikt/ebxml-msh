@@ -5,12 +5,6 @@ import hk.hku.cecid.ebms.spa.dao.InboxDAO;
 import hk.hku.cecid.ebms.spa.dao.InboxDVO;
 import hk.hku.cecid.ebms.spa.dao.OutboxDAO;
 import hk.hku.cecid.ebms.spa.dao.OutboxDVO;
-import hk.hku.cecid.edi.as2.AS2Processor;
-import hk.hku.cecid.edi.as2.dao.MessageDAO;
-import hk.hku.cecid.edi.as2.dao.MessageDVO;
-import hk.hku.cecid.edi.as2.dao.MessageDataSourceDAO;
-import hk.hku.cecid.edi.as2.dao.RepositoryDAO;
-import hk.hku.cecid.edi.as2.dao.RepositoryDVO;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.dao.Transaction;
 import hk.hku.cecid.piazza.commons.mail.SmtpMail;
@@ -73,9 +67,8 @@ public class SchedulerTask implements ActiveTask {
 
 	public void execute() throws Exception {
 		/**
-		 * Transactions
+		 * Transaction
 		 */
-		Transaction as2 = null;
 
 		Transaction ebms = null;
 		try {
@@ -111,12 +104,10 @@ public class SchedulerTask implements ActiveTask {
 				if (checkNotExceeded(props.getNextRun())) {
 					// halt the context listeners
 					if (HttpDispatcherContext.getDefaultContext().halt()) {
-						// clean the as2 database
-						as2 = cleanAS2(props.getCutoff());
 						// clean the ebms database
 						ebms = cleanEBMS(props.getCutoff());
 						// commit the transactions
-						commitTx(new Transaction[] { as2, ebms });
+						commitTx(new Transaction[] { ebms });
 						AdminLogging("Transactions commited.");
 						// resume the context listeners
 						if (HttpDispatcherContext.getDefaultContext().resume()) {
@@ -157,7 +148,7 @@ public class SchedulerTask implements ActiveTask {
 		// catch any exceptions related to malformed property entries
 		catch (AdminPropertiesException e) {
 			// roll back the transaction
-			rollbackTx(new Transaction[] { as2, ebms });
+			rollbackTx(new Transaction[] { ebms });
 			// resume the context listeners if they were halted
 			if (HttpDispatcherContext.getDefaultContext().isHalted()) {
 				HttpDispatcherContext.getDefaultContext().resume();
@@ -176,7 +167,7 @@ public class SchedulerTask implements ActiveTask {
 		// catch any other exception
 		catch (Exception e) {
 			// roll back transaction if the transaction has not been commited
-			rollbackTx(new Transaction[] { as2, ebms });
+			rollbackTx(new Transaction[] { ebms });
 			// resume context listeners if they are halted
 			if (HttpDispatcherContext.getDefaultContext().isHalted()) {
 				HttpDispatcherContext.getDefaultContext().resume();
@@ -205,7 +196,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Convenience method for logging errors on housecleaning.
-	 * 
+	 *
 	 * @param s
 	 */
 	private void AdminError(String s) {
@@ -214,7 +205,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Convenience method for logging general housecleaning info.
-	 * 
+	 *
 	 * @param s
 	 */
 	private void AdminLogging(String s) {
@@ -222,26 +213,8 @@ public class SchedulerTask implements ActiveTask {
 	}
 
 	/**
-	 * Convenience method for logging AS2 errors.
-	 * 
-	 * @param s
-	 */
-	private void AS2Error(String s) {
-		AdminMainProcessor.core.log.error("AS2 Cleaning: " + s);
-	}
-
-	/**
-	 * Convenience method for logging AS2.
-	 * 
-	 * @param s
-	 */
-	private void AS2Logging(String s) {
-		AdminMainProcessor.core.log.info("AS2 Cleaning: " + s);
-	}
-
-	/**
 	 * Checks to see whether the current time has exceeded the parameter 'time'.
-	 * 
+	 *
 	 * @param time
 	 * @return
 	 * @throws Exception
@@ -262,7 +235,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Check whether housecleaning should perform or not.
-	 * 
+	 *
 	 * @param time
 	 * @return
 	 * @throws ParseException
@@ -280,52 +253,8 @@ public class SchedulerTask implements ActiveTask {
 	}
 
 	/**
-	 * Attempt to clean out the AS2 database
-	 * 
-	 * @param months
-	 * @throws Exception
-	 * @throws DAOException
-	 * @throws DAOException
-	 */
-	protected Transaction cleanAS2(int months) throws Exception {
-		try {
-			MessageDAO dao = (MessageDAO) AS2Processor.core.dao
-					.createDAO(MessageDAO.class);
-			Transaction tr = ((MessageDataSourceDAO) dao).getFactory()
-					.createTransaction();
-			RepositoryDAO repDao = (RepositoryDAO) AS2Processor.core.dao
-					.createDAO(RepositoryDAO.class);
-			dao.setTransaction(tr);
-			repDao.setTransaction(tr);
-			tr.begin();
-
-			List list = dao.findMessagesBeforeTime(months);
-			AS2Logging(Integer.toString(list.size())
-					+ " messages will be removed.");
-			AS2Logging("Initializing...");
-
-			Iterator itr = list.iterator();
-			MessageDVO dvo;
-			RepositoryDVO repDvo;
-
-			while (itr.hasNext()) {
-				dvo = (MessageDVO) itr.next();
-				repDvo = (RepositoryDVO) repDao.createDVO();
-				repDvo.setMessageId(dvo.getMessageId());
-				repDvo.setMessageBox(dvo.getMessageBox());
-				repDao.remove(repDvo);
-				dao.remove(dvo);
-			}
-			return tr;
-		} catch (DAOException e) {
-			AS2Error("Error encountered while cleaning.");
-			throw new Exception("Error encountered while cleaning AS2.", e);
-		}
-	}
-
-	/**
 	 * Attempt to clean the EBMS messages.
-	 * 
+	 *
 	 * @param months
 	 * @return
 	 * @throws Exception
@@ -411,7 +340,7 @@ public class SchedulerTask implements ActiveTask {
 	 * Commit the transactions. If null do nothing. Note: Tx should never be
 	 * null as commitTx should only be called when all txs needing commit are
 	 * valid.
-	 * 
+	 *
 	 * @param txs
 	 * @throws Exception
 	 */
@@ -432,7 +361,7 @@ public class SchedulerTask implements ActiveTask {
 	 * Convenience method to create a message associated with the session ses.
 	 * If success is true, String reasonFailed is ignored. If success is false
 	 * and reasonFailed is null, it will be set to "Unknown".
-	 * 
+	 *
 	 * @param ses
 	 * @param time
 	 * @param attempt
@@ -486,7 +415,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Convenience method for logging errors for EbMS cleaning.
-	 * 
+	 *
 	 * @param msg
 	 */
 	private void EBMSError(String msg) {
@@ -495,7 +424,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Convenience method for logging general messages for EbMS cleaning.
-	 * 
+	 *
 	 * @param msg
 	 */
 	private void EBMSLogging(String msg) {
@@ -504,7 +433,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Return the date formatter.
-	 * 
+	 *
 	 * @return
 	 */
 	private SimpleDateFormat getDateFormat() {
@@ -513,7 +442,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Return the time formatter.
-	 * 
+	 *
 	 * @return
 	 */
 	private SimpleDateFormat getTimeFormat() {
@@ -522,7 +451,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Load the admin properties.
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -533,7 +462,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Rollback the transactions. If null, do nothing.
-	 * 
+	 *
 	 * @param txs
 	 * @throws Exception
 	 */
@@ -552,7 +481,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Convenience method to send the notification mail.
-	 * 
+	 *
 	 * @param p
 	 * @param success
 	 * @throws Exception
@@ -595,9 +524,9 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Set and write default properties to the properties file.
-	 * 
+	 *
 	 * @throws Exception
-	 * 
+	 *
 	 * @throws AdminPropertiesException
 	 */
 	private void setDefaultProperties(AdminProperties p) throws Exception {
@@ -639,7 +568,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Set and write properties to indicate completion or failure.
-	 * 
+	 *
 	 * @throws AdminPropertiesException
 	 */
 	private void setEndStatus(boolean success, AdminProperties p) {
@@ -654,11 +583,11 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Set and write properties to indicate initialization of housecleaning.
-	 * 
+	 *
 	 * @throws Exception
-	 * 
+	 *
 	 * @throws Exception
-	 * 
+	 *
 	 */
 	private void setStartStatus() throws Exception {
 		props.setStatus(IN_PROGESS);
@@ -675,7 +604,7 @@ public class SchedulerTask implements ActiveTask {
 
 	/**
 	 * Convenience method for printing the stack trace to the log file.
-	 * 
+	 *
 	 * @param e
 	 */
 	private void stackTraceToLog(Throwable e) {
@@ -756,7 +685,7 @@ public class SchedulerTask implements ActiveTask {
 			return false;
 		}
 	}
-	
+
 	public static Date getNextRunDateFromNow(int day_of_week, int hour, int min, int sec) {
 
 			// get an instance of the calendar
