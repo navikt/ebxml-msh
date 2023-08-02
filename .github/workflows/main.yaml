@@ -2,7 +2,7 @@ name: "Build and deploy ebxml-msh"
 on:
   push:
     branches:
-    - "main"
+    - "master"
 env:
   "IMAGE": "ghcr.io/${{ github.repository }}:${{ github.sha }}"
 jobs:
