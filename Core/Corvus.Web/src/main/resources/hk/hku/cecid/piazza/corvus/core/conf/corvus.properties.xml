@@ -27,6 +27,7 @@
 			<sun.net.client.defaultConnectTimeout>30000</sun.net.client.defaultConnectTimeout>
 			<sun.net.client.defaultReadTimeout>300000</sun.net.client.defaultReadTimeout>
 			<file.encoding>UTF-8</file.encoding>
+			<jentrata.ebms.truststore.password>${NAV_TRUSTSTORE_PASSWORD}</jentrata.ebms.truststore.password>
 		</properties>
 	</environment>
 	
