@@ -4,10 +4,9 @@ metadata:
   name: "ebxml-msh"
   namespace: "team-emottak"
   labels:
-    "team": "team-emottak"
+    team: "team-emottak"
   annotations:
-    "start.nais.io/created-by": "me"
-    "start.nais.io/creationTimestamp": "2023-07-25T08:10:35.681176828"
+    nais.io/read-only-file-system: "false"
 spec:
   image: {{image}}
   liveness:
