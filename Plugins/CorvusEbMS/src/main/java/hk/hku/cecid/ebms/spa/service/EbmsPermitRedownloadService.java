@@ -1,7 +1,7 @@
 package hk.hku.cecid.ebms.spa.service;
 
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPException;
 
 import org.w3c.dom.Element;
 

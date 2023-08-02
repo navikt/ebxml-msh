@@ -27,9 +27,9 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.zip.InflaterInputStream;
 
-import javax.xml.soap.AttachmentPart;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.AttachmentPart;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPMessage;
 
 import org.w3c.dom.Element;
 

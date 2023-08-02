@@ -12,11 +12,16 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerException;
 
-import com.sun.org.apache.xml.internal.utils.PrefixResolverDefault;
-import com.sun.org.apache.xpath.internal.XPath;
-import com.sun.org.apache.xpath.internal.XPathContext;
-import com.sun.org.apache.xpath.internal.XPathVisitor;
-import com.sun.org.apache.xpath.internal.objects.XObject;
+//import com.sun.org.apache.xml.internal.utils.PrefixResolverDefault;
+//import com.sun.org.apache.xpath.internal.XPath;
+//import com.sun.org.apache.xpath.internal.XPathContext;
+//import com.sun.org.apache.xpath.internal.XPathVisitor;
+//import com.sun.org.apache.xpath.internal.objects.XObject;
+import org.apache.xml.utils.PrefixResolverDefault;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
 /**
@@ -118,7 +123,7 @@ public class XPathExecutor {
 
         XPath xpath = createXPath(expression);
 
-        XObject result = xpath.execute(xpathSupport, 
+        XObject result = xpath.execute(xpathSupport,
                              xpathSupport.getDTMHandleFromNode(context), 
                              prefixResolver);
         

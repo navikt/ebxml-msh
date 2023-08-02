@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.xml.soap.AttachmentPart;
+import jakarta.xml.soap.AttachmentPart;
 
 import org.jentrata.validation.ValidationException;
 import org.jentrata.validation.Validator;

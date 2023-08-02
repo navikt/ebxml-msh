@@ -3,8 +3,8 @@ package hk.hku.cecid.corvus.ws;
 import java.net.MalformedURLException;
 import java.util.Date;
 
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPException;
 
 import hk.hku.cecid.corvus.ws.data.AS2MessageData;
 import hk.hku.cecid.corvus.ws.data.PermitRedownloadData;

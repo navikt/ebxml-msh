@@ -87,13 +87,11 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
 
-import javax.activation.DataSource;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPPart;
-import javax.xml.transform.TransformerFactory;
+import jakarta.activation.DataSource;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPEnvelope;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPPart;
 
 import org.apache.log4j.Logger;
 import org.dom4j.io.DocumentResult;
@@ -103,6 +101,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerFactory;
+
 /**
  * An implementation of ebXML <code>Signature</code>, making use 
  * of Phoenix's PKI library.

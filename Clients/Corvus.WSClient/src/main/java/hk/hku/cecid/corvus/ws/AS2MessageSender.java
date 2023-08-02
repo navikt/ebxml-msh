@@ -14,7 +14,7 @@ import java.util.Date;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
-import javax.xml.soap.AttachmentPart;
+import jakarta.xml.soap.AttachmentPart;
 
 import hk.hku.cecid.corvus.ws.data.DataFactory;
 import hk.hku.cecid.corvus.ws.data.AS2MessageData;

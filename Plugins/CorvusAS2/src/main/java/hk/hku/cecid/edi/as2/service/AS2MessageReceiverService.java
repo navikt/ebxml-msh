@@ -32,9 +32,9 @@ import java.util.zip.DeflaterOutputStream;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.xml.soap.AttachmentPart;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.AttachmentPart;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPMessage;
 
 import org.w3c.dom.Element;
 

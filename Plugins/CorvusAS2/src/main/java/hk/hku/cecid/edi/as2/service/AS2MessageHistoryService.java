@@ -3,7 +3,7 @@ package hk.hku.cecid.edi.as2.service;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPElement;
 
 import org.w3c.dom.Element;
 

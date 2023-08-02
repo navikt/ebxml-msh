@@ -22,7 +22,7 @@ import hk.hku.cecid.piazza.commons.soap.WebServicesResponse;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPElement;
 
 import org.w3c.dom.Element;
 

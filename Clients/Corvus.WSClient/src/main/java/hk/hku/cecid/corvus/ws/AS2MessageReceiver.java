@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.xml.soap.AttachmentPart;
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.AttachmentPart;
+import jakarta.xml.soap.SOAPException;
 
 import hk.hku.cecid.corvus.ws.data.AS2MessageData;
 import hk.hku.cecid.corvus.ws.data.DataFactory;

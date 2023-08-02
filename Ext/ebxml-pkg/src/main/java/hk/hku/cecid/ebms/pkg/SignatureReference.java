@@ -72,9 +72,9 @@ import hk.hku.cecid.ebms.pkg.validation.SOAPValidationException;
 
 import java.util.Iterator;
 
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPEnvelope;
+import jakarta.xml.soap.SOAPException;
 /**
  * <ds:Reference> element in <ds:Signature>.
  *

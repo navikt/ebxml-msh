@@ -68,9 +68,9 @@
 
 package hk.hku.cecid.ebms.pkg;
 
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPEnvelope;
+import jakarta.xml.soap.SOAPException;
 
 /**
  * An ebXML <code>AckRequested</code> in the SOAP Header of a

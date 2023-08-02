@@ -23,8 +23,8 @@ import javax.mail.Header;
 import javax.mail.internet.InternetHeaders;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.soap.MimeHeader;
-import javax.xml.soap.MimeHeaders;
+import jakarta.xml.soap.MimeHeader;
+import jakarta.xml.soap.MimeHeaders;
 
 
 /**

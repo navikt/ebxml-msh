@@ -74,10 +74,10 @@ import hk.hku.cecid.ebms.pkg.validation.SOAPValidationException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.activation.DataSource;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPException;
+import jakarta.activation.DataSource;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPEnvelope;
+import jakarta.xml.soap.SOAPException;
 /**
  * <P>An ebXML <code>Signature</code> is a <code>HeaderElement</code>
  * in <code>HeaderContainer</code> [ebMSS 4.1.1 and 4.1.3].</P>

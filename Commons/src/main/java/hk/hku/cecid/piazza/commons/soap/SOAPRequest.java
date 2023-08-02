@@ -9,8 +9,8 @@
 
 package hk.hku.cecid.piazza.commons.soap;
 
-import javax.xml.soap.MimeHeaders;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.MimeHeaders;
+import jakarta.xml.soap.SOAPMessage;
 
 /**
  * The SOAPRequest class represents a SOAP request.

@@ -9,7 +9,7 @@
 
 package hk.hku.cecid.piazza.commons.net;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+//import com.sun.org.apache.xml.internal.security.utils.Base64;
 import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.io.IOHandler;
 import hk.hku.cecid.piazza.commons.module.Component;
@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
@@ -189,7 +190,8 @@ public class HttpConnector {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
            if(username != null && password != null) {
                 String encodedPassword = username + ":" + password;
-                String encoded = Base64.encode(encodedPassword.getBytes());
+                //String encoded = Base64.encode(encodedPassword.getBytes()); // OLD
+                String encoded = Base64.getEncoder().encodeToString(encodedPassword.getBytes());
                 connection.setRequestProperty("Authorization", "Basic "+encoded);
             }
             connection.setUseCaches(false);

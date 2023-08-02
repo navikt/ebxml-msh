@@ -70,7 +70,7 @@ package hk.hku.cecid.ebms.pkg;
 
 import java.util.Iterator;
 
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPException;
 /**
  * An <code>ExtensionElement</code> in the <code>HeaderContainer</code>
  *
