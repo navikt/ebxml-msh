@@ -44,11 +44,11 @@ import java.util.Iterator;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.soap.AttachmentPart;
-import javax.xml.soap.Name;
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.AttachmentPart;
+import jakarta.xml.soap.Name;
+import jakarta.xml.soap.SOAPEnvelope;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
 
 /**
  * @author Donahue Sze

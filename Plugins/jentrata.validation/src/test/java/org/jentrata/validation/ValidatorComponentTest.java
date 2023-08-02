@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.Properties;
 
-import javax.xml.soap.AttachmentPart;
+import jakarta.xml.soap.AttachmentPart;
 
 import hk.hku.cecid.piazza.commons.module.Module;
 import hk.hku.cecid.piazza.commons.test.PluginTest;

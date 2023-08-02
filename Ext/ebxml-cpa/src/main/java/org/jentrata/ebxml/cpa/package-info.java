@@ -5,5 +5,5 @@
 // Generated on: 2013.08.09 at 10:45:26 AM EST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.oasis-open.org/committees/ebxml-cppa/schema/cpp-cpa-2_0.xsd", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.oasis-open.org/committees/ebxml-cppa/schema/cpp-cpa-2_0.xsd", elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.jentrata.ebxml.cpa;

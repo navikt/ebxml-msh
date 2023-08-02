@@ -16,8 +16,8 @@ import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.xml.soap.AttachmentPart;
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.AttachmentPart;
+import jakarta.xml.soap.SOAPException;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 

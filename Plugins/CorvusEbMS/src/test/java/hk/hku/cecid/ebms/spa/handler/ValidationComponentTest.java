@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import javax.xml.soap.AttachmentPart;
+import jakarta.xml.soap.AttachmentPart;
 
 import org.junit.After;
 import org.junit.AfterClass;

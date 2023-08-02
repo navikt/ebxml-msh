@@ -21,7 +21,7 @@ import hk.hku.cecid.piazza.commons.util.Generator;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPException;
 
 /**
  * <code>SignalMessageGenerator</code> is an utility api for the user to

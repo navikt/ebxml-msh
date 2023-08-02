@@ -74,8 +74,8 @@ import hk.hku.cecid.ebms.pkg.Utility;
 
 import java.util.Date;
 
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
 /** 
  * Exception class that can generate ebXML error messages from the information 
  * it has been given.

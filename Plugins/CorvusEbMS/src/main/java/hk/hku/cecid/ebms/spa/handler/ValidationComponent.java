@@ -6,8 +6,8 @@ import hk.hku.cecid.piazza.commons.module.Component;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.soap.AttachmentPart;
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.AttachmentPart;
+import jakarta.xml.soap.SOAPException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;

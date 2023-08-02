@@ -18,10 +18,10 @@ import java.io.StringReader;
 
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.MimeHeaders;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.MessageFactory;
+import jakarta.xml.soap.MimeHeaders;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
 
 import hk.hku.cecid.piazza.commons.net.ConnectionException;
 //import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;

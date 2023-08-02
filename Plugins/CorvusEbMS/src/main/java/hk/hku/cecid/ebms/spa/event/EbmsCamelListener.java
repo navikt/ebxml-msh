@@ -16,8 +16,8 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.impl.DefaultExchange;
 import org.apache.camel.spi.Synchronization;
 
-import javax.xml.soap.AttachmentPart;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.AttachmentPart;
+import jakarta.xml.soap.SOAPMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;

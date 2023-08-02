@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPException;
 
 import hk.hku.cecid.corvus.ws.data.DataFactory;
 import hk.hku.cecid.corvus.ws.data.EBMSMessageData;

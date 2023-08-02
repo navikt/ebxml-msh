@@ -15,8 +15,9 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.Iterator;
 
+import jakarta.xml.soap.SOAPException;
+
 import javax.net.ssl.X509TrustManager;
-import javax.xml.soap.SOAPException;
 
 /**
  * @author Donahue Sze

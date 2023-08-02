@@ -219,7 +219,8 @@ public class EjbConnection {
             Object objRef = initialContext.lookup(jndiName);
             // only narrow if necessary
             if (narrowTo.isInstance(java.rmi.Remote.class)) {
-                return javax.rmi.PortableRemoteObject.narrow(objRef, narrowTo);
+                //return javax.rmi.PortableRemoteObject.narrow(objRef, narrowTo); // Why? kan sikkert bare returne obj?
+                return (java.rmi.Remote) objRef;
             }
             else {
                 return objRef;
