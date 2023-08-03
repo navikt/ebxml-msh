@@ -28,6 +28,15 @@ spec:
     requests:
       cpu: "200m"
       memory: "256Mi"
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_15
+        databases:
+          - name: ebms
+            envVarPrefix: DB_EBMS
+        flags:
+          - name: max_connections
+            value: "50"
   ingresses: 
   {{#each ingresses as |url|}}
     - {{url}}

@@ -22,3 +22,6 @@ services:
       DB_USER_NAME: jentrata
       DB_USER_PASS: jentrata
       DB_HOST_NAME: db
+      DB_HOST_PORT: 5432
+      DB_NAME: ebms
+      NAV_TRUSTSTORE_PASSWORD: changeit

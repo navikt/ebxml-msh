@@ -13,7 +13,7 @@ cat > ${TOMCAT_HOME}/conf/tomcat-users.xml <<-ENDL
 </tomcat-users>
 ENDL
 
-export JENTRATA_EBMS_DB_URL="jdbc:postgresql://$DB_HOST_NAME:5432/ebms"
+export JENTRATA_EBMS_DB_URL="jdbc:postgresql://$DB_HOST_NAME:$DB_HOST_PORT/$DB_NAME"
 export JENTRATA_EBMS_DB_USER="$DB_USER_NAME"
 export JENTRATA_EBMS_DB_PASS="$DB_USER_PASS"
 
