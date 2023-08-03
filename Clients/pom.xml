@@ -35,11 +35,11 @@
 			</dependency>
 			
 			<dependency>
-				<groupId>jtidy</groupId>
-				<artifactId>jtidy</artifactId>
-				<version>4aug2000r7-dev</version>
+				<groupId>org.jentrata.msh.ext</groupId>
+				<artifactId>jentrata-commons-ext</artifactId>
+				<version>${project.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>jaxen</groupId>
 				<artifactId>jaxen</artifactId>

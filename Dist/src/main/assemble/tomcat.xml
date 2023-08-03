@@ -111,11 +111,10 @@
 				<include>org.jentrata.msh.ext:jentrata-commons-ext</include>
 				<include>commons-codec:commons-codec</include>
 				<include>commons-fileupload:commons-fileupload</include>
-				<include>commons-httpclient:commons-httpclient</include>
+				<include>org.apache.httpcomponents.client5:httpclient5</include>
 				<include>commons-logging:commons-logging</include>
 				<include>jaxen:jaxen</include>
-				<include>dom4j:dom4j</include>
-				<include>jtidy:jtidy</include>
+				<include>org.dom4j:dom4j</include>
 				<include>org.slf4j:*</include>
 				<include>javax.mail:mail</include>
 				<include>log4j:log4j</include>
