@@ -16,9 +16,10 @@ import java.net.MalformedURLException;
 import java.util.Map;
 import java.util.Iterator;
 
+import com.sun.mail.util.BASE64EncoderStream;
 import junit.framework.TestCase;
 
-import sun.misc.BASE64Encoder;
+//import sun.misc.BASE64Encoder;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -172,7 +173,11 @@ public class HttpSenderUnitTest extends TestCase
 		this.assertSend();
 		
 		String auth = (String) this.monitor.getHeaders().get("Authorization");
-		String base64auth = "Basic " + new BASE64Encoder().encode((user + ":" + password).getBytes());
+		String base64auth = "Basic " +
+				new String(
+						BASE64EncoderStream.encode((user + ":" + password).getBytes())
+				);
+				//new BASE64Encoder().encode((user + ":" + password).getBytes()); // OLD
 		assertNotNull("Missing the Basic Authorization.", auth);	
 		assertEquals ("The Basic Authorization mis-match.", base64auth, auth);
 	}

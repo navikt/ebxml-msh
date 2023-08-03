@@ -35,12 +35,6 @@
 			</dependency>
 			
 			<dependency>
-				<groupId>org.jentrata.msh.ext</groupId>
-				<artifactId>jentrata-commons-ext</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			
-			<dependency>
 				<groupId>jtidy</groupId>
 				<artifactId>jtidy</artifactId>
 				<version>4aug2000r7-dev</version>

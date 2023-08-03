@@ -14,7 +14,15 @@
     <description>Jentrata Clients Corvus WSClient</description>
     
     <dependencies>
-    
+
+<!--		<dependency>-->
+<!--			<groupId>org.jentrata.msh.ext</groupId>-->
+<!--			<artifactId>jentrata-commons-ext</artifactId>-->
+<!--			<scope>system</scope>-->
+<!--			<systemPath>/Users/chris/IdeaProjects/ebxml-msh/Ext/CommonsExt/lib/piazza-commons-ext.jar</systemPath>-->
+<!--&lt;!&ndash;			<version>${project.version}</version>&ndash;&gt;-->
+<!--		</dependency>-->
+<!--    -->
     	<dependency>
     		<groupId>org.jentrata.msh</groupId>
     		<artifactId>jentrata-commons</artifactId>
@@ -23,11 +31,6 @@
     	<dependency>
     		<groupId>org.jentrata.msh.ext</groupId>
     		<artifactId>jentrata-commons-test</artifactId>
-    	</dependency>  
-
-    	<dependency>
-    		<groupId>org.jentrata.msh.ext</groupId>
-    		<artifactId>jentrata-commons-ext</artifactId>
     	</dependency>
     	
 		<dependency>
