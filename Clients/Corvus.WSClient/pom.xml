@@ -32,11 +32,6 @@
     		<groupId>org.jentrata.msh.ext</groupId>
     		<artifactId>jentrata-commons-test</artifactId>
     	</dependency>
-    	
-		<dependency>
-			<groupId>jtidy</groupId>
-			<artifactId>jtidy</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -44,8 +39,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
+			<version>5.2.1</version>
 		</dependency>
 		
 		<dependency>
