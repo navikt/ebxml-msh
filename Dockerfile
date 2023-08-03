@@ -28,8 +28,8 @@ RUN yum install -y wget tar gzip && \
     mkdir -p /opt/jolokia && \
     wget http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.6.0/jolokia-jvm-1.6.0-agent.jar -O /opt/jolokia/jolokia-jvm.jar
 
-#RUN mkdir -p /etc/ssl/certs/java/ && \
-#  ln -s /usr/lib/jvm/java-1.8.0-amazon-corretto/jre/lib/security/cacerts /etc/ssl/certs/java/cacerts
+RUN mkdir -p /etc/ssl/certs/java/ && \
+  ln -s /usr/lib/jvm/java-1.8.0-amazon-corretto/jre/lib/security/cacerts /etc/ssl/certs/java/cacerts
 
 EXPOSE 8778 8080
 
