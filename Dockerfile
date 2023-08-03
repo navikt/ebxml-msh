@@ -7,11 +7,6 @@ ENV TOMCAT_HOME $CATALINA_HOME
 
 ENV TOMCAT_USER_NAME jentrata
 ENV TOMCAT_USER_PASS jentrata
-ENV DB_USER_NAME $DB_EBMS_USERNAME
-ENV DB_USER_PASS $DB_EBMS_PASSWORD
-ENV DB_HOST_NAME $DB_EBMS_HOST
-ENV DB_HOST_PORT $DB_EBMS_PORT
-ENV DB_NAME $DB_EBMS_DATABASE
 
 # From https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
 COPY docker/wait-for-it.sh /opt/wait-for-it.sh
