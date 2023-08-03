@@ -12,6 +12,8 @@ package hk.hku.cecid.corvus.ws.data;
 import java.util.Calendar;
 import java.math.BigInteger;
 
+import com.sun.mail.util.BASE64DecoderStream;
+import com.sun.mail.util.BASE64EncoderStream;
 import hk.hku.cecid.piazza.commons.util.DateUtil;
 
 /**
@@ -127,14 +129,18 @@ public class MessageStatusRequestData extends KVPairData {
 	 * Get the password for authentication.
 	 */
 	public String getPassword(){
-		try{
+		//try{
 			return new String(
-				new sun.misc.BASE64Decoder()
-					.decodeBuffer((String) props.get(CONFIG_KEY_SET[2])));
-		}catch(java.io.IOException ioe){
-			ioe.printStackTrace(System.err);
-		}
-		return null;
+					BASE64DecoderStream.decode(
+							((String) props.get(CONFIG_KEY_SET[2])).getBytes()
+					)
+			);
+				//new sun.misc.BASE64Decoder()
+				//	.decodeBuffer((String) props.get(CONFIG_KEY_SET[2])));
+		//catch(java.io.IOException ioe){
+		//	ioe.printStackTrace(System.err);
+		//}
+		//return null;
 	}
 	
 	/**
@@ -142,7 +148,10 @@ public class MessageStatusRequestData extends KVPairData {
 	 */
 	public void setPassword(String password){
 		if (password != null){
-			String b64encode = new sun.misc.BASE64Encoder().encode(password.getBytes());
+			//String b64encode = new sun.misc.BASE64Encoder().encode(password.getBytes()); // OLD
+			String b64encode = new String(
+					BASE64EncoderStream.encode(password.getBytes())
+			);
 			props.put(CONFIG_KEY_SET[2], b64encode);
 		}
 	}
