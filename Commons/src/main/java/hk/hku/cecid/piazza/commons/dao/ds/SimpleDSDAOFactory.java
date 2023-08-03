@@ -17,12 +17,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.cpdsadapter.DriverAdapterCPDS;
-import org.apache.commons.dbcp.datasources.SharedPoolDataSource;
+import org.apache.commons.dbcp2.cpdsadapter.DriverAdapterCPDS;
+import org.apache.commons.dbcp2.datasources.SharedPoolDataSource;
 
 /**
  * SimpleDSDAOFactory is a subclass of DataSourceDAOFactory and provides an
@@ -57,7 +60,7 @@ public class SimpleDSDAOFactory extends DataSourceDAOFactory {
 			boolean isPooling = true;
 			int maxIdle = 0;
 			int maxActive = 10;
-			int maxWait = 50;
+			Duration maxWait;
 			
 			boolean testOnBorrow = false;
 			boolean testOnReturn = false;
@@ -72,7 +75,7 @@ public class SimpleDSDAOFactory extends DataSourceDAOFactory {
 	            
 	            maxIdle = StringUtilities.parseInt(getParameter("maxIdle", null), 0);
 		        maxActive = StringUtilities.parseInt(getParameter("maxActive", null), 0);
-		        maxWait = StringUtilities.parseInt(getParameter("maxWait", null), -1);
+		        maxWait = Duration.ofSeconds(StringUtilities.parseInt(getParameter("maxWait", null), -1));
 				
 		        validationQuery = StringUtilities.trim(getParameter("validationQuery", null));
 		        if (validationQuery != null) {
@@ -104,13 +107,12 @@ public class SimpleDSDAOFactory extends DataSourceDAOFactory {
     
                 SharedPoolDataSource sds = new SharedPoolDataSource();
                 sds.setConnectionPoolDataSource(cpds);
-				sds.setMaxIdle(maxIdle);
-                sds.setMaxActive(maxActive);
-                sds.setMaxWait(maxWait);
-                
-            	sds.setTestOnBorrow(testOnBorrow);
-            	sds.setTestOnReturn(testOnReturn);
-            	sds.setTestWhileIdle(testWhileIdle);
+                sds.setDefaultMaxIdle(maxIdle);
+                sds.setMaxTotal(maxActive);
+                sds.setDefaultMaxWait(maxWait);
+                sds.setDefaultTestOnBorrow(testOnBorrow);
+            	sds.setDefaultTestOnReturn(testOnReturn);
+            	sds.setDefaultTestWhileIdle(testWhileIdle);
                 sds.setValidationQuery(validationQuery);
                 	 				
                 datasource = sds;
@@ -222,27 +224,15 @@ public class SimpleDSDAOFactory extends DataSourceDAOFactory {
             return DriverManager.getConnection(url, username, password);
         }
 
-        /**
-         * This is required since JDK 1.6. The wrapper is <b>NOT</b> implemented.
-         * SQLException will be thrown when calling.
-        * 
-        * @see java.sql.Wrapper#isWrapperFor(Class<?> iface)
-        * @since JDK 1.6    
-        */
-        public boolean isWrapperFor(Class<?> iface) throws SQLException {
-            throw new SQLException("JDBC wrapper for: " + iface + " is not implemented.");
+        @Override
+        public <T> T unwrap(Class<T> iface) throws SQLException {
+            return null;
         }
 
-        /**
-         * This is required since JDK 1.6. The wrapper is <b>NOT</b> implemented.
-         * SQLException will be thrown when calling.
-        * 
-        * @see java.sql.Wrapper#unwrap(Class<T> iface)
-        * @since JDK 1.6    
-        */
-        public <T> T unwrap(Class<T> iface) throws SQLException {
-            throw new SQLException("JDBC wrapper for: " + iface + " is not implemented.");
-        }    
+        @Override
+        public boolean isWrapperFor(Class<?> iface) throws SQLException {
+            return false;
+        }
     }
     
     
