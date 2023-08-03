@@ -9,9 +9,10 @@ ENV TOMCAT_USER_NAME jentrata
 ENV TOMCAT_USER_PASS jentrata
 
 # From https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-COPY docker/wait-for-it.sh /opt/wait-for-it.sh
-COPY docker/run.sh /opt/run.sh
-COPY docker/ROOT/index.html $TOMCAT_HOME/webapps/ROOT/index.html
+COPY ContainerFiles/wait-for-it.sh /opt/wait-for-it.sh
+COPY ContainerFiles/run.sh /opt/run.sh
+COPY ContainerFiles/ROOT/index.html $TOMCAT_HOME/webapps/ROOT/index.html
+
 COPY ./Dist/target/jentrata-msh-$JENTRATA_VERSION-tomcat.tar.gz /opt
 
 RUN yum install -y wget tar gzip && \
