@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import hk.hku.cecid.ebms.admin.listener.MessageHistoryPageletAdaptorTest;;
-
 public class MessageHistoryPageletAdaptorTest extends TestCase {
 
 		private MessageHistoryPageletAdaptor adaptor = new MessageHistoryPageletAdaptor();

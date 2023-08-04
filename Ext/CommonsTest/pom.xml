@@ -41,6 +41,12 @@
     		<groupId>jaxen</groupId>
     		<artifactId>jaxen</artifactId>
     	</dependency>
-    
-    </dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>compile</scope>
+		</dependency>
+
+	</dependencies>
 </project>
