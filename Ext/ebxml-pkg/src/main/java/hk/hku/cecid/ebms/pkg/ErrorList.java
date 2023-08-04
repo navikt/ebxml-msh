@@ -73,10 +73,10 @@ import hk.hku.cecid.ebms.pkg.validation.EbxmlValidationException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.xml.soap.Name;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.Name;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPEnvelope;
+import jakarta.xml.soap.SOAPException;
 /**
  * An ebXML <code>ErrorList</code> in the SOAP Header of a
  * <code>HeaderContainer</code>

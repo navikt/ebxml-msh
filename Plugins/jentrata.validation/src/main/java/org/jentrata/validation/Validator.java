@@ -2,7 +2,7 @@ package org.jentrata.validation;
 
 import java.util.Properties;
 
-import javax.xml.soap.AttachmentPart;
+import jakarta.xml.soap.AttachmentPart;
 
 public interface Validator {
     

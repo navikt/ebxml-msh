@@ -70,8 +70,8 @@ package hk.hku.cecid.ebms.pkg.pki;
 
 import java.security.Security;
 
-import javax.activation.CommandMap;
-import javax.activation.MailcapCommandMap;
+import jakarta.activation.CommandMap;
+import jakarta.activation.MailcapCommandMap;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 /**

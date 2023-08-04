@@ -16,10 +16,10 @@ import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.xml.soap.AttachmentPart;
-import javax.xml.soap.SOAPException;
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.FileDataSource;
+import jakarta.xml.soap.AttachmentPart;
+import jakarta.xml.soap.SOAPException;
 
 import hk.hku.cecid.corvus.ws.data.Payload;
 

@@ -76,9 +76,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeUtility;
+
 /**
  * This is an implementation of <code>javax.activation.DataSource</code>
  * that encapsulates attachment data in a SOAP message.

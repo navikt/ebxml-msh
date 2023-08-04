@@ -73,11 +73,11 @@ import hk.hku.cecid.ebms.pkg.validation.SOAPValidationException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.xml.soap.Name;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.Text;
+import jakarta.xml.soap.Name;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPEnvelope;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.Text;
 /**
  * An ebXML <code>Acknowledgment</code> in the SOAP Header of a
  * <code>HeaderContainer</code> [ebMSS 6.3.2].

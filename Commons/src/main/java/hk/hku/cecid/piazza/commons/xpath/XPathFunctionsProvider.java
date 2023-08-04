@@ -8,13 +8,16 @@
  */
 
 package hk.hku.cecid.piazza.commons.xpath;
+import org.apache.xpath.ExtensionsProvider;
+import org.apache.xpath.functions.FuncExtFunction;
+
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 
-import com.sun.org.apache.xpath.internal.ExtensionsProvider;
-import com.sun.org.apache.xpath.internal.functions.FuncExtFunction;
+//import com.sun.org.apache.xpath.internal.ExtensionsProvider;
+//import com.sun.org.apache.xpath.internal.functions.FuncExtFunction;
 
 /**
  * XPathFunctionsProvider implements the Apache XPath Extensions Provider. It is 

@@ -1,7 +1,7 @@
 package hk.hku.cecid.ebms.spa.service;
 
 import org.w3c.dom.Element;
-import javax.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPElement;
 
 import hk.hku.cecid.piazza.commons.soap.SOAPRequestException;
 import hk.hku.cecid.piazza.commons.soap.WebServicesAdaptor;

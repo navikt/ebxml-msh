@@ -1,6 +1,6 @@
 package hk.hku.cecid.corvus.ws;
 
-import javax.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPElement;
 
 import hk.hku.cecid.corvus.ws.data.DataFactory;
 import hk.hku.cecid.corvus.ws.data.PermitRedownloadData;

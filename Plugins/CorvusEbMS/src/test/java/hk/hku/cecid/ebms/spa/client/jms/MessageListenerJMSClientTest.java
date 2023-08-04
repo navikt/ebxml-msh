@@ -20,9 +20,9 @@ import javax.jms.MessageConsumer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.xml.soap.AttachmentPart;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.AttachmentPart;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.junit.After;
@@ -59,13 +59,13 @@ public class MessageListenerJMSClientTest {
 	public void setUp() throws JMSException {
 		
 		instance = spy(new MessageListenerJMSClient());
-		
-		
+
 		doReturn("vm://mdh?broker.persistent=false").when(instance).getConnectionUrl();
 		doReturn("testQueue").when(instance).getQueueName();
         doReturn(null).when(instance).getUsername();
         doReturn(null).when(instance).getPassword();
 		instance.init();
+
 
 		cf = new ActiveMQConnectionFactory("vm://mdh?broker.persistent=false");
 		connection = cf.createConnection();

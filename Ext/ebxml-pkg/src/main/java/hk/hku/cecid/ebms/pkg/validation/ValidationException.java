@@ -67,8 +67,8 @@
  */
 package hk.hku.cecid.ebms.pkg.validation;
 
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
 
 /** 
  * Base class for message validation exceptions. All classes extending this

@@ -70,9 +70,9 @@ package hk.hku.cecid.ebms.pkg;
 
 import java.util.Iterator;
 
-import javax.xml.soap.Name;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPException;
+import jakarta.xml.soap.Name;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPException;
 /**
  * Encapsulation of a <code>javax.xml.soap.SOAPElement</code>
  *

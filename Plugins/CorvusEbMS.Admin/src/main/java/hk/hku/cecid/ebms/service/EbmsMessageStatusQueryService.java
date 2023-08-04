@@ -19,7 +19,7 @@ import hk.hku.cecid.piazza.commons.soap.WebServicesAdaptor;
 import hk.hku.cecid.piazza.commons.soap.WebServicesRequest;
 import hk.hku.cecid.piazza.commons.soap.WebServicesResponse;
 
-import javax.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPElement;
 
 import org.w3c.dom.Element;
 

@@ -71,8 +71,8 @@ package hk.hku.cecid.ebms.pkg;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
 /**
  * <P>An encapsulation of the payload container in an <code>EbxmlMessage</code>
  * [ebMSS 2.1.4].</P>

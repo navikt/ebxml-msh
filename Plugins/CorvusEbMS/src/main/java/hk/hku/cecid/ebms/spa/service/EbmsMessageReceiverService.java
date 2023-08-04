@@ -26,9 +26,9 @@ import hk.hku.cecid.piazza.commons.soap.WebServicesResponse;
 
 import java.util.Iterator;
 
-import javax.xml.soap.AttachmentPart;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.AttachmentPart;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPMessage;
 
 import org.w3c.dom.Element;
 

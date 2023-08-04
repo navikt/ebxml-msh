@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.xml.soap.Name;
+import jakarta.xml.soap.Name;
 
 /**
  * SOAPFaultException represents a SOAP fault in a SOAP request.

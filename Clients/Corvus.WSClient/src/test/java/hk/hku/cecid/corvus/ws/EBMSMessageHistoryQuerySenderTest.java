@@ -19,10 +19,10 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Iterator;
 
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.MimeHeaders;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.soap.MessageFactory;
+import jakarta.xml.soap.MimeHeaders;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPMessage;
 
 import org.apache.commons.fileupload.RequestContext;
 import org.junit.After;

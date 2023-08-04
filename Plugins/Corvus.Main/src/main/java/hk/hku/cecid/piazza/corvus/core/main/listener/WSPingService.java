@@ -14,8 +14,8 @@ import hk.hku.cecid.piazza.commons.soap.SOAPFaultException;
 import hk.hku.cecid.piazza.commons.soap.SOAPRequestException;
 import hk.hku.cecid.piazza.commons.soap.WebServicesAdaptor;
 
-import javax.xml.soap.Name;
-import javax.xml.soap.SOAPElement;
+import jakarta.xml.soap.Name;
+import jakarta.xml.soap.SOAPElement;
 
 /**
  * WSPingService is a simple web service which provides a ping-pong function.
