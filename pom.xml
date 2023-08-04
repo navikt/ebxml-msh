@@ -10,11 +10,12 @@
 
 	<name>Jentrata MSH: Parent</name>
 	<description>Jentrata B2B Message Service Handler</description>
-	<url>jentrata.org</url>
+
+	<url>https://jentrata.org</url>
 
 	<organization>
 		<name>Jentrata</name>
-		<url>jentrata.org</url>
+		<url>https://jentrata.org</url>
 	</organization>
 	<inceptionYear>2011</inceptionYear>
 
@@ -58,6 +59,7 @@
 			<version>${slfj4.version}</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

@@ -2,9 +2,11 @@ package hk.hku.cecid.ebms.spa.handler.jms;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.isNull;
+//import static org.mockito.Matchers.any;
+//import static org.mockito.Matchers.anyString;
+//import static org.mockito.Matchers.isNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -26,6 +28,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -48,8 +51,8 @@ public class EbmsMessageHandlerTest {
     public void testEbmsMessageHandlerValidMessage() throws Exception {
         Message msg = buildMessage("TestMessage");
         
-        doAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) throws Throwable {
                 Object arg = invocation.getArguments()[0];
                 assertThat(arg, instanceOf(EbmsRequest.class));
                 EbmsRequest request = (EbmsRequest) invocation.getArguments()[0];
@@ -66,17 +69,17 @@ public class EbmsMessageHandlerTest {
                 assertThat(first(ebxml.getToPartyIds()),equalTo("test_b"));
                 assertThat(ebxml.getTimeToLive(),notNullValue());
                 assertThat(ebxml.getMessageId(), equalTo("TEST-123456789"));
-                
+
                 //Check the payload.
                 assertThat(ebxml.getPayloadCount(),equalTo(1));
                 assertThat(ebxml.getPayloadContainer("Payload-0").getContentType(),equalTo("text/xml; charset=UTF-8"));
                 return null;
             }
-        }).when(msh).processOutboundMessage((EbmsRequest) any(), (EbmsResponse) isNull());
+        }).when(msh).processOutboundMessage(ArgumentMatchers.any(), (EbmsResponse) isNull());
         
         mh.onMessage(msg);
         
-        verify(msh).processOutboundMessage((EbmsRequest) any(), (EbmsResponse) isNull());
+        verify(msh).processOutboundMessage(ArgumentMatchers.any(), (EbmsResponse) isNull());
     }
     
     public Message buildMessage(String data) {

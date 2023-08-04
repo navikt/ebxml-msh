@@ -3,8 +3,8 @@
  */
 package org.jentrata.spa.jms;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+//import static org.mockito.Matchers.eq;
+//import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 import hk.hku.cecid.piazza.commons.message.Message;
 import hk.hku.cecid.piazza.commons.message.MessageHandler;
@@ -59,7 +59,7 @@ public class JMSExtensionPointHandlerTest {
         Properties config = new Properties();
         config.setProperty("queue", "jms:queue:testQueue");
         
-        doThrow(new Exception()).when(mockJMS).registerHandler(anyString(),(MessageHandler) anyObject(),isA(Properties.class));
+        doThrow(new Exception()).when(mockJMS).registerHandler(anyString(),any(MessageHandler.class),isA(Properties.class));
         
         assertRegisterExtensionPoint(config);
     }
