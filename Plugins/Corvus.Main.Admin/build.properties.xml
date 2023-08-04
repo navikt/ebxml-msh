@@ -14,7 +14,7 @@
 		<base location="../../"/>
 		<class>
 			<lib location="../lib" />
-			<ext location="../../" files="Corvus/dist/lib/*.jar,Corvus/ext/*.jar,Corvus.Main/dist/lib/*.jar,Corvus.Admin/dist/lib/*.jar,CorvusAS2/dist/lib/*.jar,CorvusAS2Plus/dist/lib/*.jar,CorvusEbMS/dist/lib/*.jar"/>
+			<ext location="../../" files="Corvus/dist/lib/*.jar,Corvus/ext/*.jar,Corvus.Main/dist/lib/*.jar,Corvus.Admin/dist/lib/*.jar,CorvusEbMS/dist/lib/*.jar"/>
 			<import location="" />
 			<path></path>
 		</class>

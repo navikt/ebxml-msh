@@ -31,13 +31,16 @@ services:
       JENTRATA_DEBUG: "true"
       TOMCAT_USER_NAME: corvus
       TOMCAT_USER_PASS: corvus
-      DB_USER_NAME: corvus
-      DB_USER_PASS: corvus
-      DB_HOST_NAME: db
+      DB_EBMS_USERNAME: corvus
+      DB_EBMS_PASSWORD: corvus
+      DB_EBMS_HOST: db
+      DB_EBMS_PORT: 5432
+      DB_EBMS_DATABASE: ebms
       ACTIVEMQ_MODE: external
       ACTIVEMQ_URL: tcp://activemq:61616
       ACTIVEMQ_USER: admin
       ACTIVEMQ_PASS: admin
+      NAV_TRUSTSTORE_PASSWORD: changeit
   activemq:
     image: "webcenter/activemq"
     ports:

@@ -2,7 +2,6 @@ name: Jentrata CI
 
 on:
   pull_request:
-  push:
 
 jobs:
   build:

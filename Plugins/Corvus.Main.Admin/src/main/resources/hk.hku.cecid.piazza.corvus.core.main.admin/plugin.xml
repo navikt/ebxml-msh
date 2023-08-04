@@ -19,7 +19,6 @@
 
 	<requires>
 		<import plugin="hk.hku.cecid.piazza.corvus.admin" />
-		<import plugin="hk.hku.cecid.edi.as2"/>
 		<import plugin="hk.hku.cecid.ebms"/>
 	</requires>
 	

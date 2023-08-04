@@ -8,16 +8,6 @@
        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-12.12t] &lt;%-5p&gt; &lt;%m&gt;%n"/>
      </layout>
   </appender>
-
-  <appender name="corvus" class="org.apache.log4j.RollingFileAppender">
-     <param name="File" value="${corvus.home}/logs/corvus.log"/>
-     <param name="Encoding" value="UTF-8"/>
-     <param name="MaxFileSize" value="100KB"/>
-     <param name="MaxBackupIndex" value="1"/>
-     <layout class="org.apache.log4j.PatternLayout">
-       <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-12.12t] &lt;%-5p&gt; &lt;%m&gt;%n"/>
-     </layout>
-  </appender>
   
   <category name="hk.hku.cecid.piazza">
     <priority value ="debug" />

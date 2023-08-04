@@ -19,6 +19,9 @@ services:
     environment:
       TOMCAT_USER_NAME: corvus
       TOMCAT_USER_PASS: corvus
-      DB_USER_NAME: jentrata
-      DB_USER_PASS: jentrata
-      DB_HOST_NAME: db
+      DB_EBMS_USERNAME: corvus
+      DB_EBMS_PASSWORD: corvus
+      DB_EBMS_HOST: db
+      DB_EBMS_PORT: 5432
+      DB_EBMS_DATABASE: ebms
+      NAV_TRUSTSTORE_PASSWORD: changeit
