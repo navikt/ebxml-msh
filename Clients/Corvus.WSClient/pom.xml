@@ -32,11 +32,6 @@
     		<groupId>org.jentrata.msh.ext</groupId>
     		<artifactId>jentrata-commons-test</artifactId>
     	</dependency>
-    	
-		<dependency>
-			<groupId>jtidy</groupId>
-			<artifactId>jtidy</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -46,6 +41,7 @@
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
 		</dependency>
 		
 		<dependency>
@@ -56,6 +52,12 @@
 		<dependency>
 		    <groupId>jaxen</groupId>
 		    <artifactId>jaxen</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jtidy</groupId>
+			<artifactId>jtidy</artifactId>
+			<version>4aug2000r7-dev</version>
 		</dependency>
     
     </dependencies>

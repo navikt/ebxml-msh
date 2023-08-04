@@ -104,18 +104,17 @@
 	
 	<dependencySets>
 		<dependencySet>
-			<useStrictFiltering>true</useStrictFiltering>
+			<useStrictFiltering>false</useStrictFiltering>
 			<outputDirectory>sample/lib</outputDirectory>
 			<includes>
 				<include>org.jentrata.msh:jentrata-commons</include>
 				<include>org.jentrata.msh.ext:jentrata-commons-ext</include>
 				<include>commons-codec:commons-codec</include>
 				<include>commons-fileupload:commons-fileupload</include>
-				<include>commons-httpclient:commons-httpclient</include>
+				<include>org.apache.httpcomponents.client5:httpclient5</include>
 				<include>commons-logging:commons-logging</include>
 				<include>jaxen:jaxen</include>
-				<include>dom4j:dom4j</include>
-				<include>jtidy:jtidy</include>
+				<include>org.dom4j:dom4j</include>
 				<include>org.slf4j:*</include>
 				<include>javax.mail:mail</include>
 				<include>log4j:log4j</include>
@@ -227,23 +226,6 @@
             </binaries>
         </moduleSet>
 		
-		<!--  
-		<moduleSet>
-			<useAllReactorProjects>true</useAllReactorProjects>
-			<includes>
-				<include>org.jentrata.msh.plugins:jentrata-validation</include>
-			</includes>
-			<binaries>
-				<outputDirectory>plugins/org.jentrata.validation</outputDirectory>
-				<unpack>false</unpack>
-				<includeDependencies>false</includeDependencies>
-				<outputFileNameMapping>${module.artifactId}.jar</outputFileNameMapping>
-				<directoryMode>755</directoryMode>
-				<fileMode>755</fileMode>
-			</binaries>
-		</moduleSet>
-		-->
-		
 		<!-- hk.hku.cecid.ebms plugin -->
 		<moduleSet>
 			<useAllReactorProjects>true</useAllReactorProjects>
@@ -294,88 +276,6 @@
 			</binaries>
 		</moduleSet>
 
-<!--		TODO fjerne AS2? -->
-<!--		&lt;!&ndash; hk.hku.cecid.edi.as2 plugin &ndash;&gt;-->
-<!--		<moduleSet>-->
-<!--			<useAllReactorProjects>true</useAllReactorProjects>-->
-<!--			<includes>-->
-<!--				<include>org.jentrata.msh.plugins:jentrata-corvus-as2</include>-->
-<!--			</includes>-->
-<!--			<binaries>-->
-<!--				<outputDirectory>plugins/hk.hku.cecid.edi.as2</outputDirectory>-->
-<!--				<unpack>false</unpack>-->
-<!--				<includeDependencies>false</includeDependencies>-->
-<!--				<outputFileNameMapping>corvus-as2-core.jar</outputFileNameMapping>-->
-<!--				<directoryMode>755</directoryMode>-->
-<!--				<fileMode>755</fileMode>-->
-<!--			</binaries>-->
-<!--		</moduleSet>-->
-
-<!--		&lt;!&ndash; hk.hku.cecid.as2.admin plugin &ndash;&gt;-->
-<!--		<moduleSet>-->
-<!--			<useAllReactorProjects>true</useAllReactorProjects>-->
-<!--			<includes>-->
-<!--				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-admin</include>-->
-<!--			</includes>-->
-<!--			<binaries>-->
-<!--				<outputDirectory>plugins/hk.hku.cecid.edi.as2.admin</outputDirectory>-->
-<!--				<unpack>false</unpack>-->
-<!--				<includeDependencies>true</includeDependencies>-->
-<!--				<dependencySets>-->
-<!--					<dependencySet>-->
-<!--                        <outputDirectory>plugins/hk.hku.cecid.edi.as2.admin/lib</outputDirectory>-->
-<!--						<includes>-->
-<!--							<include>commons-fileupload:commons-fileupload</include>-->
-<!--                            <include>commons-io:commons-io</include>-->
-<!--						</includes>-->
-<!--					</dependencySet>-->
-<!--				</dependencySets>-->
-<!--				<outputFileNameMapping>corvus-as2-admin.jar</outputFileNameMapping>-->
-<!--				<directoryMode>755</directoryMode>-->
-<!--				<fileMode>755</fileMode>-->
-<!--			</binaries>-->
-<!--		</moduleSet>-->
-		
-		<!-- Disabled AS2 Plus plugins hk.hku.cecid.edi.as2plus plugin 
-		<moduleSet>
-			<useAllReactorProjects>true</useAllReactorProjects>
-			<includes>
-				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-plus</include>
-			</includes>
-			<binaries>
-				<outputDirectory>plugins/hk.hku.cecid.edi.as2plus</outputDirectory>
-				<unpack>false</unpack>
-				<includeDependencies>false</includeDependencies>
-				<outputFileNameMapping>corvus-as2plus-core.jar</outputFileNameMapping>
-				<directoryMode>755</directoryMode>
-				<fileMode>755</fileMode>
-			</binaries>
-		</moduleSet>
-		-->
-		
-		<!-- Disabled AS2 Plus plugins hk.hku.cecid.edi.as2plus.admin plugin 
-		<moduleSet>
-			<useAllReactorProjects>true</useAllReactorProjects>
-			<includes>
-				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-plus-admin</include>
-			</includes>
-			<binaries>
-				<outputDirectory>plugins/hk.hku.cecid.edi.as2plus.admin</outputDirectory>
-				<unpack>false</unpack>
-				<includeDependencies>true</includeDependencies>
-				<dependencySets>
-					<dependencySet>
-						<includes>
-							<include>commons-fileupload:commons-fileupload</include>
-						</includes>
-					</dependencySet>
-				</dependencySets>
-				<outputFileNameMapping>corvus-as2plus-admin.jar</outputFileNameMapping>
-				<directoryMode>755</directoryMode>
-				<fileMode>755</fileMode>
-			</binaries>
-		</moduleSet>
-		-->
 		<moduleSet>
 			<useAllReactorProjects>true</useAllReactorProjects>
 			<includes>
@@ -384,17 +284,8 @@
 				<include>org.jentrata.msh.plugins:jentrata-corvus-admin</include>
 				<include>org.jentrata.msh.plugins:jentrata-corvus-jms</include>
 				<include>org.jentrata.msh.plugins:jentrata-integration</include>
-				<!--include>org.jentrata.msh.plugins:jentrata-validation</include-->
 				<include>org.jentrata.msh.plugins:jentrata-corvus-ebms</include>
 				<include>org.jentrata.msh.plugins:jentrata-corvus-ebms-admin</include>
-				<!--  Disabled AS2 plugins
-				<include>org.jentrata.msh.plugins:jentrata-corvus-as2</include>
-				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-admin</include>
-				-->
-				<!--  Disabled AS2 Plus plugins
-				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-plus</include>
-				<include>org.jentrata.msh.plugins:jentrata-corvus-as2-plus-admin</include>
-				-->
 			</includes>
 			<binaries>
 				<outputDirectory>/</outputDirectory>
@@ -410,41 +301,6 @@
 				<fileMode>755</fileMode>
 			</binaries>
 		</moduleSet>
-		
-		<!-- build samples webservice client 
-		<moduleSet>
-			<useAllReactorProjects>true</useAllReactorProjects>
-			<includes>
-				<include>org.jentrata.msh.clients:jentrata-corvus-wsclient</include>
-			</includes>
-			<binaries>
-				<outputDirectory>sample/lib</outputDirectory>
-				<unpack>false</unpack>
-				<includeDependencies>true</includeDependencies>
-				<dependencySets>
-					<dependencySet>
-						<includes>
-							<include>org.jentrata.msh:jentrata-commons</include>
-							<include>org.jentrata.msh.ext:jentrata-commons-ext</include>
-							<include>commons-codec:commons-codec</include>
-							<include>commons-fileupload:commons-fileupload</include>
-							<include>commons-httpclient:commons-httpclient</include>
-							<include>commons-logging:commons-logging</include>
-							<include>jaxen:*</include>
-							<include>dom4j:dom4j</include>
-							<include>jtidy:jtidy</include>
-							<include>org.slf4j:*</include>
-							<include>javax.mail:mail</include>
-							<include>log4j:log4j</include>
-						</includes>
-					</dependencySet>
-				</dependencySets>
-				<outputFileNameMapping>corvus-ws-util.jar</outputFileNameMapping>
-				<directoryMode>755</directoryMode>
-				<fileMode>755</fileMode>
-			</binaries>	
-		</moduleSet>
-		-->
 		
 	</moduleSets>
 	
