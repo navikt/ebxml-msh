@@ -1,6 +1,6 @@
-FROM tomcat:9-jdk8-corretto
+FROM tomcat:9-jdk17-corretto
 
-ENV JDK_VERSION=8
+ENV JDK_VERSION=17
 ENV JENTRATA_VERSION 3.x-SNAPSHOT
 ENV JENTRATA_HOME /opt/jentrata
 ENV TOMCAT_HOME $CATALINA_HOME
@@ -27,7 +27,7 @@ RUN yum install -y wget tar gzip && \
     wget http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.6.0/jolokia-jvm-1.6.0-agent.jar -O /opt/jolokia/jolokia-jvm.jar
 
 RUN mkdir -p /etc/ssl/certs/java/ && \
-  ln -s /usr/lib/jvm/java-1.8.0-amazon-corretto/jre/lib/security/cacerts /etc/ssl/certs/java/cacerts
+  ln -s /usr/lib/jvm/java-17-amazon-corretto/lib/security/cacerts /etc/ssl/certs/java/cacerts
 
 EXPOSE 8778 8080
 
