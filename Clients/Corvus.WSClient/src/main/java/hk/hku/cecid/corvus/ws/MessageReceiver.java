@@ -20,7 +20,8 @@ import jakarta.xml.soap.SOAPException;
 import hk.hku.cecid.corvus.ws.data.Payload;
 import hk.hku.cecid.piazza.commons.data.Data;
 import hk.hku.cecid.piazza.commons.soap.SOAPSender;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
+import lombok.extern.slf4j.Slf4j;
+;
 
 /**
  * The <code>MessageReceiver</code> is the abstract class which is used to send 
@@ -30,6 +31,7 @@ import hk.hku.cecid.piazza.commons.util.FileLogger;
  * @version	1
  * @since	H2O June 2008 
  */
+@Slf4j
 public class MessageReceiver extends SOAPSender {
 
 	/**
@@ -98,8 +100,8 @@ public class MessageReceiver extends SOAPSender {
 	 * @param m			The message properties including how many message need to 
 	 * 					be sent and some performance parameter.
 	 */
-	public MessageReceiver(FileLogger l, Data m){
-		super(l,m);
+	public MessageReceiver(Data m){
+		super(m);
 	}
 	
 	/** 
@@ -125,17 +127,16 @@ public class MessageReceiver extends SOAPSender {
 	public void onError(Throwable t){
 		String msg = t.getMessage();
 		
-		if (this.log != null){
+		if (log != null){
 			if (t instanceof SOAPException){
-				this.log.log("Could not send the SOAP message: " + msg);				
+				log.error("Could not send the SOAP message: " + msg, t);
 			} else if (t instanceof MalformedURLException){
-				this.log.log("Could not find the URL: " + this.getServiceEndPoint());
+				log.error("Could not find the URL: " + this.getServiceEndPoint(), t);
 			} else if (t instanceof UnsupportedOperationException){
-				this.log.log("Unsupported SOAP class and web services: " + msg);
+				log.error("Unsupported SOAP class and web services: " + msg, t);
 			} else if (t instanceof NullPointerException){
-				this.log.log("Null Pointer Exception");
+				log.error("Null Pointer Exception", t);
 			}
-			this.log.logStackTrace(t);		
 		} else {
 			t.printStackTrace();
 		}
@@ -165,12 +166,12 @@ public class MessageReceiver extends SOAPSender {
 					ap.setContentType(payloads[i].getContentType());
 					
 					this.request.addAttachmentPart(ap);
-					if (this.log != null){
-						this.log.info("Adding Payload " + i + " " + payloads[i].getFilePath());
+					if (log != null){
+						log.info("Adding Payload " + i + " " + payloads[i].getFilePath());
 					}
 				} else{
-					if (this.log != null){
-						this.log.error("Unable to create attachment part in SOAP request at :" + i);
+					if (log != null){
+						log.error("Unable to create attachment part in SOAP request at :" + i);
 					}
 				}
 			}

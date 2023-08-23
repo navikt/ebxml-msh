@@ -9,52 +9,32 @@
 
 package hk.hku.cecid.ebms.spa.handler;
 
-import hk.hku.cecid.ebms.pkg.Description;
-import hk.hku.cecid.ebms.pkg.EbxmlMessage;
-import hk.hku.cecid.ebms.pkg.ErrorList;
-import hk.hku.cecid.ebms.pkg.MessageHeader;
-import hk.hku.cecid.ebms.pkg.Signature;
-import hk.hku.cecid.ebms.pkg.SignatureException;
-import hk.hku.cecid.ebms.pkg.SignatureHandler;
+import hk.hku.cecid.ebms.pkg.*;
 import hk.hku.cecid.ebms.pkg.validation.EbxmlMessageValidator;
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.EbmsUtility;
-import hk.hku.cecid.ebms.spa.dao.MessageDAO;
-import hk.hku.cecid.ebms.spa.dao.MessageDVO;
-import hk.hku.cecid.ebms.spa.dao.MessageServerDAO;
-import hk.hku.cecid.ebms.spa.dao.PartnershipDAO;
-import hk.hku.cecid.ebms.spa.dao.PartnershipDVO;
-import hk.hku.cecid.ebms.spa.dao.RepositoryDVO;
-import hk.hku.cecid.ebms.spa.dao.OutboxDAO;
-import hk.hku.cecid.ebms.spa.dao.OutboxDVO;
+import hk.hku.cecid.ebms.spa.dao.*;
 import hk.hku.cecid.ebms.spa.listener.EbmsRequest;
 import hk.hku.cecid.ebms.spa.listener.EbmsResponse;
 import hk.hku.cecid.ebms.spa.task.AgreementHandler;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
-import hk.hku.cecid.piazza.commons.soap.SOAPRequest;
 import hk.hku.cecid.piazza.commons.net.HostInfo;
+import hk.hku.cecid.piazza.commons.soap.SOAPRequest;
+import jakarta.xml.soap.*;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.TimeZone;
-
-import javax.servlet.http.HttpServletRequest;
-import jakarta.xml.soap.AttachmentPart;
-import jakarta.xml.soap.Name;
-import jakarta.xml.soap.SOAPEnvelope;
-import jakarta.xml.soap.SOAPException;
-import jakarta.xml.soap.SOAPMessage;
+import java.util.*;
 
 /**
  * @author Donahue Sze
  * 
  *         Preferences - Java - Code Style - Code Templates
  */
+@Slf4j
 public class InboundMessageProcessor {
 
 	static InboundMessageProcessor inboundMessageProcessor;
@@ -86,7 +66,7 @@ public class InboundMessageProcessor {
 			EbxmlMessageValidator validator = new EbxmlMessageValidator();
 			validator.validate(ebxmlRequestMessage);
 		} catch (Exception e) {
-			EbmsProcessor.core.log.error(
+			log.error(
 					"Incoming message is not a valid ebxml message", e);
 			ebxmlResponseMessage = processInvalidMessage(ebxmlRequestMessage,
 					false);
@@ -106,7 +86,7 @@ public class InboundMessageProcessor {
 		if (partnershipId == null) {
 			// unauthorized user
 			// generate error msg (sync reply)
-			EbmsProcessor.core.log
+			log
 					.error("Unauthorized message, no partnership is found");
 			ebxmlResponseMessage = processUnauthorizedMessage(
 					ebxmlRequestMessage, false);
@@ -114,7 +94,7 @@ public class InboundMessageProcessor {
 			return;
 		}
 
-		EbmsProcessor.core.log.info("Incoming ebxml message received: "
+		log.info("Incoming ebxml message received: "
 				+ ebxmlRequestMessage.getMessageId());
 
 		// get content type
@@ -145,7 +125,7 @@ public class InboundMessageProcessor {
 
 		// Check Agreement
 		if (MessageServiceHandler.getInstance().isInboundAgreementCheck()) {
-			EbmsProcessor.core.log
+			log
 					.info("Inbound agreement checking for interop");
 			if (messageType
 					.equalsIgnoreCase(MessageClassifier.MESSAGE_TYPE_ORDER)) {
@@ -158,7 +138,7 @@ public class InboundMessageProcessor {
 					storeIncomingMessage(ebxmlRequestMessage,
 							MessageClassifier.MESSAGE_TYPE_PROCESSED_ERROR,
 							contentType);
-					EbmsProcessor.core.log.error(
+					log.error(
 							"Incoming message is violate the agreement", e);
 					ebxmlResponseMessage = processAgreementViolationMessage(
 							ebxmlRequestMessage, isSync);
@@ -173,7 +153,7 @@ public class InboundMessageProcessor {
 
 		// process dup elimination
 		if (hasReceived) {
-			EbmsProcessor.core.log.info("The message has received before: "
+			log.info("The message has received before: "
 					+ ebxmlRequestMessage.getMessageId());
 			if (messageClassifier.isAckRequested()) {
 				// resend the acknowledgement
@@ -183,12 +163,12 @@ public class InboundMessageProcessor {
 			} else {
 				if (messageClassifier.isDupElimination()) {
 					// generate error message
-					EbmsProcessor.core.log
+					log
 							.info("Duplicate message received, and ignored: "
 									+ ebxmlRequestMessage.getMessageId());
 				} else {
 					// simply ignore it
-					EbmsProcessor.core.log
+					log
 							.info("Duplicate message received, and ignored: "
 									+ ebxmlRequestMessage.getMessageId());
 				}
@@ -220,7 +200,7 @@ public class InboundMessageProcessor {
 
 		// receive error msg
 		if (messageType.equalsIgnoreCase(MessageClassifier.MESSAGE_TYPE_ERROR)) {
-			EbmsProcessor.core.log.info("It is an error message: "
+			log.info("It is an error message: "
 					+ ebxmlRequestMessage.getMessageId());
 			ebxmlResponseMessage = processErrorMessage(ebxmlRequestMessage,
 					isSync, messageType, contentType);
@@ -231,7 +211,7 @@ public class InboundMessageProcessor {
 		// receive acknowledgement
 		if (messageType
 				.equalsIgnoreCase(MessageClassifier.MESSAGE_TYPE_ACKNOWLEDGEMENT)) {
-			EbmsProcessor.core.log.info("It is an acknowledgement message: "
+			log.info("It is an acknowledgement message: "
 					+ ebxmlRequestMessage.getMessageId());
 			ebxmlResponseMessage = processAcknowledgement(ebxmlRequestMessage,
 					isSync, messageType, contentType);
@@ -241,7 +221,7 @@ public class InboundMessageProcessor {
 
 		// receive ping message
 		if (messageType.equalsIgnoreCase(MessageClassifier.MESSAGE_TYPE_PING)) {
-			EbmsProcessor.core.log.info("It is a ping message: "
+			log.info("It is a ping message: "
 					+ ebxmlRequestMessage.getMessageId());
 			ebxmlResponseMessage = processPingMessage(ebxmlRequestMessage,
 					isSync, messageType, contentType);
@@ -251,7 +231,7 @@ public class InboundMessageProcessor {
 
 		// receive pong message
 		if (messageType.equalsIgnoreCase(MessageClassifier.MESSAGE_TYPE_PONG)) {
-			EbmsProcessor.core.log.info("It is a pong message: "
+			log.info("It is a pong message: "
 					+ ebxmlRequestMessage.getMessageId());
 			ebxmlResponseMessage = processPongMessage(ebxmlRequestMessage,
 					isSync, messageType, contentType);
@@ -262,7 +242,7 @@ public class InboundMessageProcessor {
 		// receive status request message
 		if (messageType
 				.equalsIgnoreCase(MessageClassifier.MESSAGE_TYPE_STATUS_REQUEST)) {
-			EbmsProcessor.core.log.info("It is a status request message: "
+			log.info("It is a status request message: "
 					+ ebxmlRequestMessage.getMessageId());
 			ebxmlResponseMessage = processStatusRequestMessage(
 					ebxmlRequestMessage, isSync, messageType, contentType);
@@ -273,7 +253,7 @@ public class InboundMessageProcessor {
 		// receive status response message
 		if (messageType
 				.equalsIgnoreCase(MessageClassifier.MESSAGE_TYPE_STATUS_RESPONSE)) {
-			EbmsProcessor.core.log.info("It is a status response message: "
+			log.info("It is a status response message: "
 					+ ebxmlRequestMessage.getMessageId());
 			ebxmlResponseMessage = processStatusResponseMessage(
 					ebxmlRequestMessage, isSync, messageType, contentType);
@@ -283,7 +263,7 @@ public class InboundMessageProcessor {
 
 		// receive order message
 		if (messageType.equalsIgnoreCase(MessageClassifier.MESSAGE_TYPE_ORDER)) {
-			EbmsProcessor.core.log.info("It is an order message: "
+			log.info("It is an order message: "
 					+ ebxmlRequestMessage.getMessageId());
 			ebxmlResponseMessage = processOrderMessage(ebxmlRequestMessage,
 					isSync, messageClassifier, messageType, contentType);
@@ -317,7 +297,7 @@ public class InboundMessageProcessor {
 				sendAsyncMessage(responseMessage);
 			}
 		} catch (SOAPException e) {
-			EbmsProcessor.core.log
+			log
 					.error("Cannot generate error message in processing agreement violation message");
 			throw new MessageServiceHandlerException(
 					"Cannot generate error message in processing agreement violation message",
@@ -347,7 +327,7 @@ public class InboundMessageProcessor {
 			storeOutgoingMessage(ebxmlResponseMessage);
 
 		} catch (SOAPException e) {
-			EbmsProcessor.core.log
+			log
 					.error("Cannot generate error message in processing invalid message");
 			throw new MessageServiceHandlerException(
 					"Cannot generate error message in processing invalid message",
@@ -377,7 +357,7 @@ public class InboundMessageProcessor {
 			storeOutgoingMessage(ebxmlResponseMessage);
 
 		} catch (SOAPException e) {
-			EbmsProcessor.core.log
+			log
 					.error("Cannot generate error message in processing unauthorized message");
 			throw new MessageServiceHandlerException(
 					"Cannot generate error message in processing unauthorized message",
@@ -410,7 +390,7 @@ public class InboundMessageProcessor {
 				sendAsyncMessage(responseMessage);
 			}
 		} catch (SOAPException e) {
-			EbmsProcessor.core.log
+			log
 					.error("Cannot generate error message in processing unverified message");
 			throw new MessageServiceHandlerException(
 					"Cannot generate error message in processing unverified message",
@@ -440,7 +420,7 @@ public class InboundMessageProcessor {
 			if (messageDAO.findRefToMessage(messageDVO)) {
 				if (isSync) {
 					// find the ack in repository and send directly
-					EbmsProcessor.core.log
+					log
 							.info("Previous acknowledgement found ("
 									+ messageDVO.getMessageId()
 									+ ") and reply synchronously for message: "
@@ -450,7 +430,7 @@ public class InboundMessageProcessor {
 								.getEbxmlMessage(messageDVO.getMessageId(),
 										MessageClassifier.MESSAGE_BOX_OUTBOX);
 					} catch (Exception e) {
-						EbmsProcessor.core.log
+						log
 								.error("Cannot reconstruct the ebxml message from repository: "
 										+ messageDVO.getMessageId());
 						throw new MessageServiceHandlerException(
@@ -459,7 +439,7 @@ public class InboundMessageProcessor {
 					}
 				} else {
 					// set status to pending, it will resend again
-					EbmsProcessor.core.log
+					log
 							.info("Previous acknowledgement found ("
 									+ messageDVO.getMessageId()
 									+ ") and reply asynchronously for message: "
@@ -480,7 +460,7 @@ public class InboundMessageProcessor {
 			} else {
 				// acknowledgement missing (internal error) or
 				// the acknowledgement is generating
-				EbmsProcessor.core.log
+				log
 						.error("Acknowldegement missed. Internal server error or the acknowledgement is generating for message: "
 								+ ebxmlRequestMessage.getMessageId());
 				throw new MessageServiceHandlerException(
@@ -488,7 +468,7 @@ public class InboundMessageProcessor {
 								+ ebxmlRequestMessage.getMessageId());
 			}
 		} catch (DAOException e) {
-			EbmsProcessor.core.log.error(
+			log.error(
 					"Error in processing duplicate acknowledgement requested message for message: "
 							+ ebxmlRequestMessage.getMessageId(), e);
 			throw new MessageServiceHandlerException(
@@ -506,10 +486,10 @@ public class InboundMessageProcessor {
 			try {
 				validateAttachment(it.next());
 			} catch (InvalidAttachmentException e) {
-				EbmsProcessor.core.log.warn(e);
+				log.warn("InvalidAttachmentException", e);
 				return false;
 			} catch (SOAPException e) {
-				EbmsProcessor.core.log.error(e);
+				log.error("SOAPException", e);
 			}
 		}
 		return true;
@@ -543,7 +523,7 @@ public class InboundMessageProcessor {
 
 				return ebxmlCal.getTime().before(sysTzCal.getTime());
 			} catch (Exception e) {
-				EbmsProcessor.core.log.info(
+				log.info(
 						"Cannot convert time to live for message: "
 								+ ebxmlRequestMessage.getMessageId()
 								+ " with format: " + ttlString, e);
@@ -582,7 +562,7 @@ public class InboundMessageProcessor {
                         "Invalid attachment");
              }
 		} catch (Exception e) {
-			EbmsProcessor.core.log
+			log
 					.error("Cannot generate error msg in processing invalid attachment message: "
 							+ ebxmlRequestMessage.getMessageId() + " " + e.getMessage());
 			throw new MessageServiceHandlerException(
@@ -623,7 +603,7 @@ public class InboundMessageProcessor {
                         "TimeToLive value expired");
              }
 		} catch (Exception e) {
-			EbmsProcessor.core.log
+			log
 					.error("Cannot generate error msg in processing expired message: "
 							+ ebxmlRequestMessage.getMessageId() + " " + e.getMessage());
 			throw new MessageServiceHandlerException(
@@ -650,7 +630,7 @@ public class InboundMessageProcessor {
 			storeIncomingMessage(ebxmlRequestMessage, messageType, contentType);
 
 		} else {
-			EbmsProcessor.core.log.error("Cannot find the ref to message: "
+			log.error("Cannot find the ref to message: "
 					+ ebxmlRequestMessage.getMessageId());
 
 			// store process error message
@@ -666,7 +646,7 @@ public class InboundMessageProcessor {
 						ErrorList.SEVERITY_ERROR, "Unknown Ref To Message Id",
 						null);
 			} catch (SOAPException e) {
-				EbmsProcessor.core.log
+				log
 						.error("Cannot generate error msg in processing unknown status response message: "
 								+ ebxmlRequestMessage.getMessageId());
 				throw new MessageServiceHandlerException(
@@ -736,7 +716,7 @@ public class InboundMessageProcessor {
 			}
 
 		} catch (Exception e) {
-			EbmsProcessor.core.log
+			log
 					.error("Cannot generate status response message: "
 							+ ebxmlRequestMessage.getMessageId());
 			throw new MessageServiceHandlerException(
@@ -763,7 +743,7 @@ public class InboundMessageProcessor {
 			updatePingRefMessage(ebxmlRequestMessage);
 
 		} else {
-			EbmsProcessor.core.log.error("Cannot find the ref to message: : "
+			log.error("Cannot find the ref to message: : "
 					+ ebxmlRequestMessage.getMessageId());
 
 			// store process error message
@@ -779,7 +759,7 @@ public class InboundMessageProcessor {
 						ErrorList.SEVERITY_ERROR, "Unknown Ref To Message Id",
 						null);
 			} catch (SOAPException e) {
-				EbmsProcessor.core.log
+				log
 						.error("Cannot generate error msg in processing invalid pong message: "
 								+ ebxmlRequestMessage.getMessageId());
 				throw new MessageServiceHandlerException(
@@ -816,7 +796,7 @@ public class InboundMessageProcessor {
 							MessageClassifier.INTERNAL_STATUS_DELIVERY_FAILURE)) {
 						// If it is failed already..don't mark it as deliveried
 						// it is because it is timeout failure
-						EbmsProcessor.core.log.info("Reliable message ("
+						log.info("Reliable message ("
 								+ refToMsgDVO.getMessageId()
 								+ ") - pong received with message id: "
 								+ ebxmlRequestMessage.getMessageId());
@@ -827,14 +807,14 @@ public class InboundMessageProcessor {
 						refToMsgDVO.setTimeoutTimestamp(null);
 						msgDAO.updateMessage(refToMsgDVO);
 					} else {
-						EbmsProcessor.core.log.info("Reliable message ("
+						log.info("Reliable message ("
 								+ refToMsgDVO.getMessageId()
 								+ ") - has been timed-out already");
 					}
 				}
 			}
 		} catch (DAOException ex) {
-			EbmsProcessor.core.log
+			log
 					.error("Cannot update ping msg in processing invalid pong message: "
 							+ ebxmlRequestMessage.getMessageId() + " " + ex);
 			throw new MessageServiceHandlerException(
@@ -883,7 +863,7 @@ public class InboundMessageProcessor {
 				sendAsyncMessage(responseMessage);
 			}
 		} catch (SOAPException e) {
-			EbmsProcessor.core.log.error("Cannot generate pong message: "
+			log.error("Cannot generate pong message: "
 					+ ebxmlRequestMessage.getMessageId());
 			throw new MessageServiceHandlerException(
 					"Cannot generate pong message: "
@@ -946,7 +926,7 @@ public class InboundMessageProcessor {
 							MessageClassifier.INTERNAL_STATUS_DELIVERY_FAILURE)) {
 						// If it is failed already..don't mark it as deliveried
 						// it is because it is timeout failure
-						EbmsProcessor.core.log
+						log
 								.info("Reliable message ("
 										+ refToMsgDVO.getMessageId()
 										+ ") - acknowledgement received with message id: "
@@ -959,13 +939,13 @@ public class InboundMessageProcessor {
 						refToMsgDVO.setTimeoutTimestamp(null);
 						msgDAO.updateMessage(refToMsgDVO);
 					} else {
-						EbmsProcessor.core.log.info("Reliable message ("
+						log.info("Reliable message ("
 								+ refToMsgDVO.getMessageId()
 								+ ") - has been timed-out already");
 					}
 				} else if (ebxmlRequestMessage.getErrorList() != null) {
 
-					EbmsProcessor.core.log.info("Reliable message ("
+					log.info("Reliable message ("
 							+ refToMsgDVO.getMessageId()
 							+ ") - error message received with message id: "
 							+ ackID);
@@ -997,7 +977,7 @@ public class InboundMessageProcessor {
 				// error message
 				// and send back to recipient.
 			} else {
-				EbmsProcessor.core.log.error("Cannot find the ref to message: "
+				log.error("Cannot find the ref to message: "
 						+ ackID);
 				// Store processed error message
 				storeIncomingMessage(ebxmlRequestMessage,
@@ -1015,7 +995,7 @@ public class InboundMessageProcessor {
 				} catch (SOAPException se) {
 					String detail = "Cannont generate error message in processing acknolwedgment message: "
 							+ ackID;
-					EbmsProcessor.core.log.error(detail);
+					log.error(detail);
 					throw new MessageServiceHandlerException(detail, se);
 				}
 				// Send back the error message whether using same connection
@@ -1030,7 +1010,7 @@ public class InboundMessageProcessor {
 		} catch (DAOException daoe) {
 			String detail = "Error in checking the reference to message: "
 					+ ackID;
-			EbmsProcessor.core.log.error(detail, daoe);
+			log.error(detail, daoe);
 			throw new MessageServiceHandlerException(detail, daoe);
 		}
 		return ebxmlResponseMessage;
@@ -1051,7 +1031,7 @@ public class InboundMessageProcessor {
 			storeIncomingMessage(ebxmlRequestMessage, messageType, contentType);
 
 		} else {
-			EbmsProcessor.core.log.error("Cannot find the ref to message: : "
+			log.error("Cannot find the ref to message: : "
 					+ ebxmlRequestMessage.getMessageId());
 			// store process error message
 			storeIncomingMessage(ebxmlRequestMessage,
@@ -1083,7 +1063,7 @@ public class InboundMessageProcessor {
 				EbxmlMessage responseMessage = SignalMessageGenerator
 						.generateAcknowledgment(ebxmlRequestMessage);
 				if (ebxmlRequestMessage.getAckRequested().getSigned()) {
-					EbmsProcessor.core.log.info("Sign the acknowledgement ("
+					log.info("Sign the acknowledgement ("
 							+ responseMessage.getMessageId()
 							+ ") for message: "
 							+ ebxmlRequestMessage.getMessageId());
@@ -1096,7 +1076,7 @@ public class InboundMessageProcessor {
 					sendAsyncMessage(responseMessage);
 				}
 			} catch (Exception e) {
-				EbmsProcessor.core.log
+				log
 						.error("Cannot generate acknowledgement for message: "
 								+ ebxmlRequestMessage.getMessageId());
 				throw new MessageServiceHandlerException(
@@ -1136,7 +1116,7 @@ public class InboundMessageProcessor {
 						// if pending msg exist -> error
 						String errMessage = "Pending message exist, cannot reset the sequence number for message: "
 								+ ebxmlRequestMessage.getMessageId();
-						EbmsProcessor.core.log.error(errMessage);
+						log.error(errMessage);
 						sendAsyncErrorMessage(ebxmlRequestMessage, errMessage);
 					} else {
 						storeIncomingOrderedMessage(ebxmlRequestMessage,
@@ -1148,7 +1128,7 @@ public class InboundMessageProcessor {
 									.generateAcknowledgment(ebxmlRequestMessage);
 							if (ebxmlRequestMessage.getAckRequested()
 									.getSigned()) {
-								EbmsProcessor.core.log
+								log
 										.info("Sign the acknowledgement ("
 												+ responseMessage
 														.getMessageId()
@@ -1159,7 +1139,7 @@ public class InboundMessageProcessor {
 							}
 							sendAsyncMessage(responseMessage);
 						} catch (Exception e) {
-							EbmsProcessor.core.log
+							log
 									.error("Cannot generate acknowledgement for message: "
 											+ ebxmlRequestMessage
 													.getMessageId());
@@ -1175,7 +1155,7 @@ public class InboundMessageProcessor {
 							.getSequenceNumber() == 0) {
 						// This version of corvus ebms plugin does not support
 						// (seq no: 0, continue)
-						EbmsProcessor.core.log
+						log
 								.error("This version of corvus ebms plugin does not support (seq no: 0, continue) for message: "
 										+ ebxmlRequestMessage.getMessageId());
 						throw new MessageServiceHandlerException(
@@ -1191,7 +1171,7 @@ public class InboundMessageProcessor {
 
 						String errMessage = "Message order is duplicate for message: "
 								+ ebxmlRequestMessage.getMessageId();
-						EbmsProcessor.core.log.error(errMessage);
+						log.error(errMessage);
 						sendAsyncErrorMessage(ebxmlRequestMessage, errMessage);
 					} else {
 						storeIncomingOrderedMessage(ebxmlRequestMessage,
@@ -1202,7 +1182,7 @@ public class InboundMessageProcessor {
 									.generateAcknowledgment(ebxmlRequestMessage);
 							if (ebxmlRequestMessage.getAckRequested()
 									.getSigned()) {
-								EbmsProcessor.core.log
+								log
 										.info("Sign the acknowledgement ("
 												+ responseMessage
 														.getMessageId()
@@ -1213,7 +1193,7 @@ public class InboundMessageProcessor {
 							}
 							sendAsyncMessage(responseMessage);
 						} catch (Exception e) {
-							EbmsProcessor.core.log
+							log
 									.error("Cannot generate acknowledgement for message: "
 											+ ebxmlRequestMessage
 													.getMessageId());
@@ -1234,7 +1214,7 @@ public class InboundMessageProcessor {
 				// error - message order is reliable messaging
 				String errMessage = "Message order is reliable messaging for message: "
 						+ ebxmlRequestMessage.getMessageId();
-				EbmsProcessor.core.log.error(errMessage);
+				log.error(errMessage);
 				sendAsyncErrorMessage(ebxmlRequestMessage, errMessage);
 			}
 		} else {
@@ -1251,11 +1231,11 @@ public class InboundMessageProcessor {
 						.generateErrorMessage(ebxmlRequestMessage,
 								ErrorList.CODE_INCONSISTENT,
 								ErrorList.SEVERITY_ERROR, errMessage, null);
-				EbmsProcessor.core.log.error(errMessage);
+				log.error(errMessage);
 				ebxmlResponseMessage = responseMessage;
 				storeOutgoingMessage(ebxmlResponseMessage);
 			} catch (SOAPException e) {
-				EbmsProcessor.core.log
+				log
 						.error("Cannot generate error message in processing invalid ordered message: "
 								+ ebxmlRequestMessage.getMessageId());
 				throw new MessageServiceHandlerException(
@@ -1292,14 +1272,14 @@ public class InboundMessageProcessor {
 					.findMaxSequenceGroupByMessageBoxAndCpa(messageDVO);
 			if (messageClassifier.isSeqeunceStatusReset()) {
 				if (isFirstResetMessage(ebxmlRequestMessage)) {
-					EbmsProcessor.core.log
+					log
 							.debug("It is the first reset message: "
 									+ ebxmlRequestMessage.getMessageId());
 					currentMaxSequenceGroup = 0;
 				} else {
 					currentMaxSequenceGroup++;
 				}
-				EbmsProcessor.core.log
+				log
 						.debug("Ordered RESET message with new sequence group "
 								+ currentMaxSequenceGroup + " for message: "
 								+ ebxmlRequestMessage.getMessageId());
@@ -1307,7 +1287,7 @@ public class InboundMessageProcessor {
 				if (currentMaxSequenceGroup == -1) {
 					currentMaxSequenceGroup++;
 				}
-				EbmsProcessor.core.log
+				log
 						.debug("Ordered message with sequence group "
 								+ currentMaxSequenceGroup + " for message: "
 								+ ebxmlRequestMessage.getMessageId());
@@ -1320,10 +1300,10 @@ public class InboundMessageProcessor {
 					.createDAO(MessageServerDAO.class);
 			messageServerDAO.storeMessage(messageDVO, repositoryDVO);
 
-			EbmsProcessor.core.log.info("Store incoming ordered message: "
+			log.info("Store incoming ordered message: "
 					+ ebxmlRequestMessage.getMessageId());
 		} catch (DAOException e) {
-			EbmsProcessor.core.log.error(
+			log.error(
 					"Error in storing the incoming ordered message", e);
 			throw new MessageServiceHandlerException(
 					"Error in storing the incoming ordered message", e);
@@ -1355,7 +1335,7 @@ public class InboundMessageProcessor {
 			SignatureHandler signatureHandler = MessageServiceHandler
 					.createSignatureHandler(responseMessage);
 			if (MessageServiceHandler.getInstance().isSignHeaderOnly()) {
-				EbmsProcessor.core.log.error("sign header only for interop");
+				log.error("sign header only for interop");
 				signatureHandler.sign(dsAlgorithm, mdAlgorithm, true);
 			} else {
 				signatureHandler.sign(dsAlgorithm, mdAlgorithm, false);
@@ -1378,7 +1358,7 @@ public class InboundMessageProcessor {
 							ErrorList.SEVERITY_ERROR, errMessage, null);
 			sendAsyncMessage(responseMessage);
 		} catch (SOAPException e) {
-			EbmsProcessor.core.log.error("Cannot generate error message");
+			log.error("Cannot generate error message");
 			throw new MessageServiceHandlerException(
 					"Cannot generate error message", e);
 		}
@@ -1423,7 +1403,7 @@ public class InboundMessageProcessor {
 				return false;
 			}
 		} catch (DAOException e) {
-			EbmsProcessor.core.log.error(
+			log.error(
 					"Error in checking is first reset message: "
 							+ ebxmlRequestMessage.getMessageId(), e);
 			throw new MessageServiceHandlerException(
@@ -1461,7 +1441,7 @@ public class InboundMessageProcessor {
 			return messageDAO
 					.findOrderedMessageByMessageBoxAndCpaAndSequenceGroupAndSequenceNo(messageDVO);
 		} catch (DAOException e) {
-			EbmsProcessor.core.log.error("Error in checking sequence number: "
+			log.error("Error in checking sequence number: "
 					+ ebxmlRequestMessage.getMessageId(), e);
 			throw new MessageServiceHandlerException(
 					"Error in checking sequence number: "
@@ -1501,7 +1481,7 @@ public class InboundMessageProcessor {
 				return true;
 			}
 		} catch (DAOException e) {
-			EbmsProcessor.core.log.error("Error in checking pending message: "
+			log.error("Error in checking pending message: "
 					+ ebxmlRequestMessage.getMessageId(), e);
 			throw new MessageServiceHandlerException(
 					"Error in checking pending message: "
@@ -1547,7 +1527,7 @@ public class InboundMessageProcessor {
 					}
 				}
 			} catch (DAOException e) {
-				EbmsProcessor.core.log.error(
+				log.error(
 						"Error in finding the partnership of reference message id: "
 								+ ebxmlRequestMessage.getMessageHeader()
 										.getRefToMessageId(), e);
@@ -1571,7 +1551,7 @@ public class InboundMessageProcessor {
 				return partnershipDVO.getPartnershipId();
 			}
 		} catch (DAOException e) {
-			EbmsProcessor.core.log.error(
+			log.error(
 					"Error in finding the partnership of message id: "
 							+ ebxmlRequestMessage.getMessageId(), e);
 			throw new MessageServiceHandlerException(
@@ -1601,7 +1581,7 @@ public class InboundMessageProcessor {
 	 * messageDVO.setMessageBox(MessageClassifier.MESSAGE_BOX_OUTBOX); if
 	 * (messageDAO.findMessage(messageDVO)) { return
 	 * messageDVO.getPrincipalId(); } } catch (DAOException e) {
-	 * EbmsProcessor.core.log.error( "Error in finding the principal id: " +
+	 * log.error( "Error in finding the principal id: " +
 	 * ebxmlRequestMessage.getMessageId(), e); throw new
 	 * MessageServiceHandlerException( "Error in finding the principal id: " +
 	 * ebxmlRequestMessage.getMessageId(), e); } } // search in receiver channel
@@ -1613,7 +1593,7 @@ public class InboundMessageProcessor {
 	 * partnershipDVO.setAction(ebxmlRequestMessage.getAction()); if
 	 * (partnershipDAO.findPartnershipByCPA(partnershipDVO)) { return
 	 * partnershipDVO.getPrincipalId(); } } catch (DAOException e) {
-	 * EbmsProcessor.core.log.error("Error in finding the principal id: " +
+	 * log.error("Error in finding the principal id: " +
 	 * ebxmlRequestMessage.getMessageId(), e); throw new
 	 * MessageServiceHandlerException( "Error in finding the principal id: " +
 	 * ebxmlRequestMessage.getMessageId(), e); } return null; }
@@ -1672,12 +1652,12 @@ public class InboundMessageProcessor {
 				bais.close();
 				bais = null;
 			} else {
-				EbmsProcessor.core.log.error("Please upload the certificate");
+				log.error("Please upload the certificate");
 				throw new RuntimeException("Please upload the certificate");
 			}
 			return senderCert;
 		} catch (Exception e) {
-			EbmsProcessor.core.log.error("Error in finding the certificate", e);
+			log.error("Error in finding the certificate", e);
 			throw new MessageServiceHandlerException(
 					"Error in finding the certificate", e);
 		}
@@ -1698,7 +1678,7 @@ public class InboundMessageProcessor {
 			messageDVO.setMessageBox(MessageClassifier.MESSAGE_BOX_INBOX);
 			return messageDAO.findMessage(messageDVO);
 		} catch (DAOException e) {
-			EbmsProcessor.core.log.error(
+			log.error(
 					"Error in checking duplicate message: "
 							+ ebxmlRequestMessage.getMessageId(), e);
 			throw new MessageServiceHandlerException(
@@ -1728,19 +1708,19 @@ public class InboundMessageProcessor {
 						.createSignatureHandler(ebxmlRequestMessage,
 								findSenderCert(ebxmlRequestMessage));
 				if (!signatureHandler.verifyByPublicKey()) {
-					EbmsProcessor.core.log
+					log
 							.error("Signature verification fail: "
 									+ ebxmlRequestMessage.getMessageId());
 					return false;
 				} else {
-					EbmsProcessor.core.log
+					log
 							.info("Signature verification success: "
 									+ ebxmlRequestMessage.getMessageId());
 					return true;
 				}
 			}
 		} catch (Throwable e) {
-			EbmsProcessor.core.log.error("Error in verifying signature", e);
+			log.error("Error in verifying signature", e);
 			return false;
 		}
 	}
@@ -1788,7 +1768,7 @@ public class InboundMessageProcessor {
 				messageDAO.updateMessage(messageDVO);
 			}
 		} catch (DAOException e) {
-			EbmsProcessor.core.log.error(
+			log.error(
 					"Error in checking the reference to message: "
 							+ ebxmlRequestMessage.getMessageId(), e);
 			throw new MessageServiceHandlerException(
@@ -1800,7 +1780,7 @@ public class InboundMessageProcessor {
 
 	private void sendAsyncMessage(EbxmlMessage ebxmlResponseMessage)
 			throws MessageServiceHandlerException {
-		EbmsProcessor.core.log.info("Sending async reply message: "
+		log.info("Sending async reply message: "
 				+ ebxmlResponseMessage.getMessageId());
 		EbmsRequest ebmsRequest = new EbmsRequest();
 
@@ -1826,7 +1806,7 @@ public class InboundMessageProcessor {
 			RepositoryDVO repositoryDVO = message.getRepositoryDVO();
 			messageServerDAO.storeMessage(messageDVO, repositoryDVO);
 		} catch (DAOException e) {
-			EbmsProcessor.core.log.error(
+			log.error(
 					"Error in storing the incoming message: "
 							+ ebxmlRequestMessage.getMessageId(), e);
 			throw new MessageServiceHandlerException(
@@ -1834,7 +1814,7 @@ public class InboundMessageProcessor {
 							+ ebxmlRequestMessage.getMessageId(), e);
 		}
 
-		EbmsProcessor.core.log.info("Store the incoming message: "
+		log.info("Store the incoming message: "
 				+ ebxmlRequestMessage.getMessageId());
 	}
 
@@ -1856,14 +1836,14 @@ public class InboundMessageProcessor {
 			messageServerDAO.storeMessage(messageDVO,
 					message.getRepositoryDVO());
 		} catch (DAOException e) {
-			EbmsProcessor.core.log.error(
+			log.error(
 					"Error in storing the outgoing message", e);
 			throw new MessageServiceHandlerException(
 					"Error in storing the outgoing message", e);
 		}
 
 		// it is for sync reply msg to store a copy
-		EbmsProcessor.core.log.info("Store outgoing message: "
+		log.info("Store outgoing message: "
 				+ ebxmlResponseMessage.getMessageId());
 	}
 

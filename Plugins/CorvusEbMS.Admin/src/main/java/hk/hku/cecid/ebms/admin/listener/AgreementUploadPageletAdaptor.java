@@ -14,6 +14,9 @@ import hk.hku.cecid.piazza.commons.security.SMimeMessage;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.commons.util.UtilitiesException;
 import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -22,8 +25,6 @@ import org.dom4j.DocumentException;
 import org.jentrata.ebxml.cpa.*;
 
 import javax.servlet.http.HttpServletRequest;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,6 +40,7 @@ import java.util.List;
  * @author Donahue Sze
  * 
  */
+@Slf4j
 public class AgreementUploadPageletAdaptor extends AdminPageletAdaptor {
 
     private String selectedPartyName = null;
@@ -105,7 +107,7 @@ public class AgreementUploadPageletAdaptor extends AdminPageletAdaptor {
 
                 }
             } catch (Exception e) {
-                EbmsProcessor.core.log.error("Exception throw when upload the file", e);
+                log.error("Exception throw when upload the file", e);
                 request.setAttribute(ATTR_MESSAGE,"Exception throw when upload the file");
             }
         }
@@ -135,7 +137,7 @@ public class AgreementUploadPageletAdaptor extends AdminPageletAdaptor {
             render(partnerships,dom);
 
         } catch (Exception e) {
-            EbmsProcessor.core.log.error("Error in processing upploaded xml", e);
+            log.error("Error in processing upploaded xml", e);
             return e.getMessage();
         }
         return null;
@@ -189,11 +191,11 @@ public class AgreementUploadPageletAdaptor extends AdminPageletAdaptor {
         // insert partnerships not found in DB.
         for (PartnershipDVO dvo: partnerships) {
             if (!partnershipDAO.retrieve(dvo)) {
-                EbmsProcessor.core.log.info("Adding Partnership " + dvo.getPartnershipId());
+                log.info("Adding Partnership " + dvo.getPartnershipId());
                 partnershipDAO.create(dvo);
                 rv.add(dvo);
             } else {
-                EbmsProcessor.core.log.info("Partnership " + dvo.getPartnershipId() + " already exists");
+                log.info("Partnership " + dvo.getPartnershipId() + " already exists");
             }
         }
         // only return partnerships that were newly created. These will be displayed to the end-user.

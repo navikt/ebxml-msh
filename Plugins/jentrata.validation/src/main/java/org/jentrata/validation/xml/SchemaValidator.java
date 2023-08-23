@@ -57,13 +57,13 @@ public class SchemaValidator implements org.jentrata.validation.Validator {
             source = new StreamSource(payload.getRawContent());
             validator.validate(source);
         } catch (SOAPException e) {
-            ValidationProcessor.core.log.error("unable to schema validate payload " + e);
-            ValidationProcessor.core.log.debug("",e);
+            log.error("unable to schema validate payload " + e);
+            log.debug("",e);
         } catch (SAXException e) {
             throw new ValidationException(e.getMessage(),e);
         } catch (IOException e) {
-            ValidationProcessor.core.log.error("unable to schema validate payload " + e);
-            ValidationProcessor.core.log.debug("",e);
+            log.error("unable to schema validate payload " + e);
+            log.debug("",e);
         }
     }
 

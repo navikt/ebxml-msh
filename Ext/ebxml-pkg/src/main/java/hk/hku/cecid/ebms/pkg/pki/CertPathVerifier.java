@@ -83,7 +83,7 @@ import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 /**
  * This class wraps the certificate path verification routine into a 
  * separate static method. This is useful when JDK1.3 is used, the cert
@@ -93,12 +93,8 @@ import org.apache.log4j.Logger;
  * @author kcyee
  * @version $Revision: 1.1 $
  */
+@Slf4j
 public class CertPathVerifier {
-
-    /**
-     * Logger
-     */
-    protected static Logger logger = Logger.getLogger(CertPathVerifier.class);
 
     /**
      * Verifies the specified certificate chain against the trusted anchors.
@@ -127,7 +123,7 @@ public class CertPathVerifier {
 
             KeyStore trustAnchorsKS = trusted.getKeyStore();
             if (trustAnchorsKS == null) {
-                logger.debug("trustAnchorsKS is null");
+                log.debug("trustAnchorsKS is null");
                 return false;
             }
 
@@ -149,31 +145,31 @@ public class CertPathVerifier {
         catch (NoSuchAlgorithmException e) {
             String err = ErrorMessages.getMessage(
                 ErrorMessages.ERR_PKI_VERIFY_SIGNATURE_FAILED, e);
-            logger.debug(err);
+            log.debug(err);
             return false;
         }
         catch (IOException e) {
             String err = ErrorMessages.getMessage(
                 ErrorMessages.ERR_PKI_VERIFY_SIGNATURE_FAILED, e);
-            logger.debug(err);
+            log.debug(err);
             return false;
         }
         catch (KeyStoreException e) {
             String err = ErrorMessages.getMessage(
                 ErrorMessages.ERR_PKI_VERIFY_SIGNATURE_FAILED, e);
-            logger.debug(err);
+            log.debug(err);
             return false;
         }
         catch (CertPathBuilderException e) {
             String err = ErrorMessages.getMessage(
                 ErrorMessages.ERR_PKI_VERIFY_SIGNATURE_FAILED, e);
-            logger.debug(err);
+            log.debug(err);
             return false;
         }
         catch (InvalidAlgorithmParameterException e) {
             String err = ErrorMessages.getMessage(
                 ErrorMessages.ERR_PKI_VERIFY_SIGNATURE_FAILED, e);
-            logger.debug(err);
+            log.debug(err);
             return false;
         }
 

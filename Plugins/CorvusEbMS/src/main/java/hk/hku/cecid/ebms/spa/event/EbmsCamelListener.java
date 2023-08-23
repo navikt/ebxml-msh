@@ -8,6 +8,7 @@ import hk.hku.cecid.ebms.spa.dao.MessageDVO;
 import hk.hku.cecid.ebms.spa.dao.MessageServerDAO;
 import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
 import hk.hku.cecid.ebms.spa.task.EbmsEventListener;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
@@ -26,6 +27,7 @@ import java.util.*;
 /**
  * Created by aaronwalker on 8/07/2016.
  */
+@Slf4j
 public class EbmsCamelListener extends EbmsEventListener implements Closeable {
 
     protected static final String MSG_PROPERTY_MSG_ID = "ebxml_message_id";
@@ -101,7 +103,7 @@ public class EbmsCamelListener extends EbmsEventListener implements Closeable {
                 eventHandler.asyncCallback(endpoint + options, exchange, new Synchronization() {
                     @Override
                     public void onComplete(Exchange exchange) {
-                        EbmsProcessor.core.log.info(endpoint + ":successfully sent:" + exchange.getIn().getHeader(MSG_PROPERTY_MSG_ID));
+                        log.info(endpoint + ":successfully sent:" + exchange.getIn().getHeader(MSG_PROPERTY_MSG_ID));
                         if("direct-vm:ebmsReceived".equals(exchange.getIn().getHeader("ebmsEvent"))) {
                             updateDeliveryStatus(exchange.getIn().getHeader(MSG_PROPERTY_MSG_ID,String.class),
                                     MessageClassifier.INTERNAL_STATUS_DELIVERED,
@@ -111,7 +113,7 @@ public class EbmsCamelListener extends EbmsEventListener implements Closeable {
 
                     @Override
                     public void onFailure(Exchange exchange) {
-                        EbmsProcessor.core.log.warn(endpoint + ":failed to send:" + exchange.getIn().getHeader(MSG_PROPERTY_MSG_ID));
+                        log.warn(endpoint + ":failed to send:" + exchange.getIn().getHeader(MSG_PROPERTY_MSG_ID));
                         if("direct-vm:ebmsReceived".equals(exchange.getIn().getHeader("ebmsEvent"))) {
                             updateDeliveryStatus(exchange.getIn().getHeader(MSG_PROPERTY_MSG_ID,String.class),
                                     MessageClassifier.INTERNAL_STATUS_DELIVERY_FAILURE,
@@ -140,7 +142,7 @@ public class EbmsCamelListener extends EbmsEventListener implements Closeable {
                 }
             }
         } catch (Exception e) {
-            EbmsProcessor.core.log.error("",e);
+            log.error("",e);
         }
 
     }

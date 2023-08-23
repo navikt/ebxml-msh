@@ -9,22 +9,17 @@
 
 package hk.hku.cecid.corvus.http;
 
-import java.io.File;
-import java.net.URL;
+import com.sun.mail.util.BASE64DecoderStream;
+import hk.hku.cecid.corvus.ws.data.KVPairData;
+import hk.hku.cecid.piazza.commons.io.IOHandler;
+import junit.framework.TestCase;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import com.sun.mail.util.BASE64DecoderStream;
-import junit.framework.TestCase;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import hk.hku.cecid.corvus.ws.data.KVPairData;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
-import hk.hku.cecid.piazza.commons.io.IOHandler;
-import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
+;
 
 /**
  * The <code>EnvelopQuerySenderUnitTest</code> is unit test of <code>EnvelopQuerySender</code>. 
@@ -33,18 +28,11 @@ import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
  * @version 1.0.0
  * @since   H2O 28/11/2007
  */
+@Slf4j
 public class EnvelopQuerySenderUnitTest extends TestCase 
 {
 	// TODO: Most of the code is repeated as PartnershipSender, can re-use ?
-	
-	// Instance logger
-	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	// Fixture name.
-	public static final String 	TEST_LOG 		= "test.log";
-	// Fixture loader
-	private static ClassLoader 	FIXTURE_LOADER	= FixtureStore.createFixtureLoader(false, EnvelopQuerySender.class);
-	
+
 	// Parameters 
 	public static final int 	TEST_PORT 		= 1999;	
 	public static final String 	TEST_ENDPOINT 	= "http://localhost:" + TEST_PORT;
@@ -54,7 +42,6 @@ public class EnvelopQuerySenderUnitTest extends TestCase
 	/** The testing target which is an PartnershipSender and the associated data*/
 	protected EnvelopQuerySender 	target;
 	protected KVPairData			kvData;
-	protected FileLogger 			testClassLogger;	
 	
 	/** The helper for capturing the HTTP data */
 	private SimpleHttpMonitor	monitor;
@@ -63,8 +50,7 @@ public class EnvelopQuerySenderUnitTest extends TestCase
 	public void setUp() throws Exception {
 		this.initTestData();
 		this.initTestTarget();
-		logger = LoggerFactory.getLogger(this.getName());
-		logger.info(this.getName() + " Start ");		
+		log.info(this.getName() + " Start ");
 	}
 	
 	/** Initialize the test data **/
@@ -77,15 +63,8 @@ public class EnvelopQuerySenderUnitTest extends TestCase
 	/** Initialize the test target which is a PartnershipSender. */
 	public void initTestTarget() throws Exception 
 	{
-		URL logURL = FIXTURE_LOADER.getResource(TEST_LOG);
-		if (logURL == null)
-			throw new NullPointerException("Missing fixture " + TEST_LOG + " in the fixture path");
-				
-		File log = new File(logURL.getFile());
-		this.testClassLogger = new FileLogger(log);
-		
 		// Create an anonymous partnership sender and implement the abstract method for our testing.
-		this.target = new EnvelopQuerySender(this.testClassLogger, this.kvData);		
+		this.target = new EnvelopQuerySender( this.kvData);		
 		this.target.setServiceEndPoint(TEST_ENDPOINT);
 		this.target.setBasicAuthentication(USER_NAME, PASSWORD);
 		this.target.setMessageCriteriaToDownload("test-message-id", "INBOX");
@@ -96,7 +75,7 @@ public class EnvelopQuerySenderUnitTest extends TestCase
 		boolean failed = false; 
 		try {
 			this.target.setMessageCriteriaToDownload(null, null);
-		}catch(Exception ex){ failed = true; logger.info("Expected Error: " + ex.getMessage()); }
+		}catch(Exception ex){ failed = true; log.info("Expected Error: " + ex.getMessage()); }
 		assertTrue(failed);
 	}
 	
@@ -105,7 +84,7 @@ public class EnvelopQuerySenderUnitTest extends TestCase
 		boolean failed = false; 
 		try {
 			this.target.setMessageCriteriaToDownload("test-message-id", null);
-		}catch(Exception ex){ failed = true; logger.info("Expected Error: " + ex.getMessage()); }
+		}catch(Exception ex){ failed = true; log.info("Expected Error: " + ex.getMessage()); }
 		assertTrue(failed);
 	}
 	
@@ -114,7 +93,7 @@ public class EnvelopQuerySenderUnitTest extends TestCase
 		boolean failed = false; 
 		try {
 			this.target.setMessageCriteriaToDownload("test-message-id", "fake-message-box");
-		}catch(Exception ex){ failed = true; logger.info("Expected Error: " + ex.getMessage()); }
+		}catch(Exception ex){ failed = true; log.info("Expected Error: " + ex.getMessage()); }
 		assertTrue(failed);
 	}
 	
@@ -148,8 +127,8 @@ public class EnvelopQuerySenderUnitTest extends TestCase
 	
 	/** Stop the HTTP monitor preventing JVM port binding **/ 
 	public void tearDown() throws Exception {
-		this.monitor.stop();		
-		logger.info(this.getName() + " End ");
+		this.monitor.stop();
+		log.info(this.getName() + " End ");
 	}
 	
 	/**
@@ -167,10 +146,10 @@ public class EnvelopQuerySenderUnitTest extends TestCase
 		Map.Entry tmp 	= null;
 		Iterator itr	= null;
 		itr = headers.entrySet().iterator();
-		logger.info("Header information");
+		log.info("Header information");
 		while (itr.hasNext()){
 			tmp = (Map.Entry) itr.next();
-			logger.info(tmp.getKey() + " : " + tmp.getValue());
+			log.info(tmp.getKey() + " : " + tmp.getValue());
 		}
 		
 		// #1 Check BASIC authentication value.

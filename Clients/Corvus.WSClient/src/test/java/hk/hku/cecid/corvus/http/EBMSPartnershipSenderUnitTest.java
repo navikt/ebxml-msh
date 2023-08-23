@@ -8,13 +8,7 @@
  */
 
 package hk.hku.cecid.corvus.http;
-
-import java.io.File;
-import java.net.URL;
-
-import hk.hku.cecid.piazza.commons.util.FileLogger;
-import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
-
+;
 import hk.hku.cecid.corvus.ws.data.EBMSAdminData;
 import hk.hku.cecid.corvus.ws.data.EBMSPartnershipData;
 
@@ -28,12 +22,7 @@ import hk.hku.cecid.corvus.ws.data.EBMSPartnershipData;
  * I fall back to Junit3 because this project may use under J2SE 1.4.2. 
  */
 public class EBMSPartnershipSenderUnitTest extends PartnershipSenderUnitTest
-{	
-	// Fixture name.
-	public static final String 	TEST_LOG 		= "test.log";
-	// Fixture loader
-	private static ClassLoader 	FIXTURE_LOADER	= FixtureStore.createFixtureLoader(false, EBMSPartnershipSenderUnitTest.class);
-				
+{
 	/** 
 	 * The testing target which is an EBMSPartnershipSender and the associated data. 
 	 * The testing target variable is available in the super class.
@@ -85,13 +74,7 @@ public class EBMSPartnershipSenderUnitTest extends PartnershipSenderUnitTest
 	/** Initialize the test target which is a HTTP Sender. */
 	public void initTestTarget() throws Exception 
 	{
-		URL logURL = FIXTURE_LOADER.getResource(TEST_LOG);
-		if (logURL == null)
-			throw new NullPointerException("Missing fixture " + TEST_LOG + " in the fixture path");
-		
-		File log = new File(logURL.getFile());
-		this.testClassLogger = new FileLogger(log);		
-		this.target = new EBMSPartnershipSender(this.testClassLogger, adata, pdata);		
+		this.target = new EBMSPartnershipSender( adata, pdata);		
 	}
 }
 

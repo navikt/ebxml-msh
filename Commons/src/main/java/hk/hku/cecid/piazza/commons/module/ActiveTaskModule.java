@@ -10,6 +10,7 @@
 package hk.hku.cecid.piazza.commons.module;
 
 import hk.hku.cecid.piazza.commons.util.StringUtilities;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Iterator;
 import java.util.Properties;
@@ -24,6 +25,7 @@ import java.util.Properties;
  * @author Hugo Y. K. Lam
  *
  */
+@Slf4j
 public class ActiveTaskModule extends ActiveModule {
 
     private ActiveMonitor monitor = new ActiveMonitor();
@@ -106,7 +108,7 @@ public class ActiveTaskModule extends ActiveModule {
      * @see hk.hku.cecid.piazza.commons.module.ActiveModule#onStop()
      */
     public void onStop() {
-        getLogger().debug("Suspending active monitor in module ("+getName()+"). Current active threads: "+monitor.getThreadCount());
+        log.debug("Suspending active monitor in module ("+getName()+"). Current active threads: "+monitor.getThreadCount());
         monitor.suspend();
     }
 
@@ -118,7 +120,7 @@ public class ActiveTaskModule extends ActiveModule {
      * @see hk.hku.cecid.piazza.commons.module.ActiveModule#onStart()
      */
     public void onStart() {
-        getLogger().debug("Resuming active monitor in module ("+getName()+"). Current active threads: "+monitor.getThreadCount());
+        log.debug("Resuming active monitor in module ("+getName()+"). Current active threads: "+monitor.getThreadCount());
         monitor.resume();
     }
     
@@ -148,7 +150,7 @@ public class ActiveTaskModule extends ActiveModule {
 
                 } catch (Throwable e) {
                     monitor.releaseThread(thread);
-                    getLogger().error("Error in executing active task", e);
+                    log.error("Error in executing active task", e);
                 }
             }
             return true;

@@ -519,7 +519,7 @@ public class PropertyTree extends PersistentComponent implements PropertySheet {
             return false;
         }
         catch (Exception e) {
-            /*Sys.main.log.error("Error adding property '" + xpath + "' with value '"
+            /*log.error("Error adding property '" + xpath + "' with value '"
                     + value + "'", e);*/
             return false;
         }

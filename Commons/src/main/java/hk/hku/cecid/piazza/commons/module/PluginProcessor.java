@@ -70,10 +70,6 @@ public abstract class PluginProcessor implements PluginHandler {
 		return com;
 	}
 	
-	public Logger getLogger() {
-		return (Logger) getSystemModule().getComponent("logger");
-	}
-	
 	public DAOFactory getDAOFactory() {
 		return (DAOFactory) getSystemModule().getComponent("daofactory");
 	}

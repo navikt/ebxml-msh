@@ -21,9 +21,10 @@ import hk.hku.cecid.corvus.ws.EBMSMessageHistoryQuerySender;
 import hk.hku.cecid.corvus.ws.data.DataFactory;
 import hk.hku.cecid.corvus.ws.data.EBMSAdminData;
 import hk.hku.cecid.corvus.ws.data.EBMSMessageHistoryRequestData;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
+;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.commons.io.IOHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /** 
  * The <code>EBMSEnvelopQuerySender</code> is a client service sender using HTTP protocol
@@ -62,6 +63,7 @@ import hk.hku.cecid.piazza.commons.io.IOHandler;
  * 
  * @see hk.hku.cecid.corvus.ws.data.EBMSAdminData
  */
+@Slf4j
 public class EBMSEnvelopQuerySender extends EnvelopQuerySender  {
 
 	// Command Prompt Input Reader
@@ -78,16 +80,15 @@ public class EBMSEnvelopQuerySender extends EnvelopQuerySender  {
 					
 	/**
 	 * Explicit Constructor. Create an instance of <code>AS2EnvelopQuerySender</code>.
-	 * 
-	 * @param logger The logger for log the sending process.
+	 *
 	 * @param ad The <code>EBMSAdminData</code> for locating the HTTP end-point the request send to.   
 	 * 
 	 * @throws NullPointerException 
 	 * 			When <code>p</code> is null.
 	 * 			When the manage partnership end-point from <code>ad</code> is null or empty.
 	 */
-	public EBMSEnvelopQuerySender(FileLogger logger, EBMSAdminData ad) {
-		super(logger, ad);
+	public EBMSEnvelopQuerySender(EBMSAdminData ad) {
+		super(ad);
 		String endpoint = ad.getEnvelopQueryEndpoint();
 		if (endpoint == null || endpoint.equals(""))
 			throw new NullPointerException("Missing 'Envelop Partnership endpoint' in EBMS Admin Data.");		
@@ -104,10 +105,10 @@ public class EBMSEnvelopQuerySender extends EnvelopQuerySender  {
 	}	
 	
 	
-	private static List listAvailableMessage(EBMSMessageHistoryRequestData queryData, FileLogger logger){
+	private static List listAvailableMessage(EBMSMessageHistoryRequestData queryData){
 		
 		EBMSMessageHistoryQuerySender historyQuery = 
-						new EBMSMessageHistoryQuerySender(logger, queryData);
+						new EBMSMessageHistoryQuerySender(queryData);
 		historyQuery.run();
 		
 		List msgList = historyQuery.getAvailableMessages();
@@ -159,21 +160,16 @@ public class EBMSEnvelopQuerySender extends EnvelopQuerySender  {
 		try{			
 			java.io.PrintStream out = System.out;
 			
-			if (args.length < 2){
-				out.println("Usage: ebms-envelop [config-xml] [log-path]");
+			if (args.length < 1){
+				out.println("Usage: ebms-envelop [config-xml]");
 				out.println();
-				out.println("Example: ebms-envelop ./config/ebms-envelop/ebms-request.xml ./logs/ebms-envelop.log");
+				out.println("Example: ebms-envelop ./config/ebms-envelop/ebms-request.xml");
 				System.exit(1);
 			}
 			
 			out.println("------------------------------------------------------");
 			out.println("      EBMS Message Envelop Queryer       ");
 			out.println("------------------------------------------------------");
-
-			// Initialize the logger.
-			out.println("Initialize logger .. ");
-			// The logger path is specified at the last argument.
-			FileLogger logger = new FileLogger(new File(args[args.length-1]));			
 
 			
 			// Initialize the query parameter.
@@ -227,7 +223,7 @@ public class EBMSEnvelopQuerySender extends EnvelopQuerySender  {
 			System.out.println("Repositry Endpoint: " + acd.getEnvelopQueryEndpoint());
 			
 			if(historyQueryNeeded){
-				List msgList = listAvailableMessage(queryData, logger);
+				List msgList = listAvailableMessage(queryData);
 				
 				if(msgList == null || msgList.size()==0){
 					out.println();
@@ -253,7 +249,7 @@ public class EBMSEnvelopQuerySender extends EnvelopQuerySender  {
 				out.println("Start download targeted message envelop ...");
 			}
 			
-			EBMSEnvelopQuerySender sender = new EBMSEnvelopQuerySender(logger, acd);
+			EBMSEnvelopQuerySender sender = new EBMSEnvelopQuerySender(acd);
 			
 			out.println("Sending    EBMS HTTP Envelop Query request ... ");			
 			sender.run();			

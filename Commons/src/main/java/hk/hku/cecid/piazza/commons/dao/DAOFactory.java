@@ -13,6 +13,7 @@ import hk.hku.cecid.piazza.commons.module.Component;
 import hk.hku.cecid.piazza.commons.util.Instance;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.commons.util.StringUtilities;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URL;
 import java.util.Properties;
@@ -34,6 +35,7 @@ import java.util.Properties;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public abstract class DAOFactory extends Component {
 
     private PropertyTree daoprops = new PropertyTree();
@@ -64,7 +66,7 @@ public abstract class DAOFactory extends Component {
                             throw new DAOException("Invalid DAO descriptor");
                         }
                         else {
-                            getModule().getLogger().debug(
+                            log.debug(
                                     "DAO descriptor '" + daoDescriptor
                                             + "' loaded successfully");
                         }

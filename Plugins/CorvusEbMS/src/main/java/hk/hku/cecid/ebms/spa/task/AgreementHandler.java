@@ -18,6 +18,7 @@ import hk.hku.cecid.ebms.spa.dao.PartnershipDVO;
 import hk.hku.cecid.ebms.spa.handler.EbxmlMessageDAOConvertor;
 import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,6 +27,7 @@ import java.net.URL;
  * @author Donahue Sze
  * 
  */
+@Slf4j
 public class AgreementHandler {
 
     private URL toPartyURL = null;
@@ -132,7 +134,7 @@ public class AgreementHandler {
                 partnershipDVO.setService(orgMessageDVO.getService());
                 partnershipDVO.setAction(orgMessageDVO.getAction());
             } else {
-                EbmsProcessor.core.log.debug("message type: " + message.getMessageType());
+                log.debug("message type: " + message.getMessageType());
                 if(message.getMessageType().equalsIgnoreCase(MessageClassifier.MESSAGE_TYPE_PING)) {
                     partnershipDVO.setService(message.getService());
                     partnershipDVO.setAction(message.getAction());
@@ -166,7 +168,7 @@ public class AgreementHandler {
                     }
                 }
             } catch (MalformedURLException e2) {
-                EbmsProcessor.core.log.error("Url is wrong", e2);
+                log.error("Url is wrong", e2);
                 throw new MessageValidationException("Url is wrong", e2);
             }
 
@@ -190,7 +192,7 @@ public class AgreementHandler {
             isHostnameVerified = new Boolean(partnershipDVO
                     .getIsHostnameVerified()).booleanValue();
         } else {
-            EbmsProcessor.core.log.error("Partnership not found: (CPA ID: "
+            log.error("Partnership not found: (CPA ID: "
                     + partnershipDVO.getCpaId() + ", Service: "
                     + partnershipDVO.getService() + " , Action: "
                     + partnershipDVO.getAction() + ")");
@@ -226,7 +228,7 @@ public class AgreementHandler {
         if (!toPartyProtocol.equalsIgnoreCase("mailto")
                 && !toPartyProtocol.equalsIgnoreCase("http")
                 && !toPartyProtocol.equalsIgnoreCase("https")) {
-            EbmsProcessor.core.log.error("Protocol: " + toPartyProtocol
+            log.error("Protocol: " + toPartyProtocol
                     + " does not support");
             throw new MessageValidationException("Protocol: " + toPartyProtocol
                     + " does not support");
@@ -239,7 +241,7 @@ public class AgreementHandler {
         if (syncReply != null) {
             if (syncReply.equalsIgnoreCase(SYNC_REPLY_MODE_MSH_SIGNALS_ONLY)) {
                 if (!message.getSyncReply().equalsIgnoreCase("true")) {
-                    EbmsProcessor.core.log
+                    log
                             .error("Agreement Violation - the sync reply mode should be "
                                     + SYNC_REPLY_MODE_MSH_SIGNALS_ONLY);
                     throw new MessageValidationException(
@@ -248,7 +250,7 @@ public class AgreementHandler {
                 }
             } else if (syncReply.equalsIgnoreCase(SYNC_REPLY_MODE_NONE)) {
                 if (!message.getSyncReply().equalsIgnoreCase("false")) {
-                    EbmsProcessor.core.log
+                    log
                             .error("Agreement Violation - the sync reply mode should be "
                                     + SYNC_REPLY_MODE_NONE);
                     throw new MessageValidationException(
@@ -266,7 +268,7 @@ public class AgreementHandler {
         if (ackRequested != null) {
             if (ackRequested.equalsIgnoreCase(ACK_REQUESTED_ALWAYS)) {
                 if (!message.getAckRequested().equalsIgnoreCase("true")) {
-                    EbmsProcessor.core.log
+                    log
                             .error("Agreement Violation - the ack requested is "
                                     + ACK_REQUESTED_ALWAYS + " needed");
                     throw new MessageValidationException(
@@ -275,7 +277,7 @@ public class AgreementHandler {
                 }
             } else if (ackRequested.equalsIgnoreCase(ACK_REQUESTED_NEVER)) {
                 if (!message.getAckRequested().equalsIgnoreCase("false")) {
-                    EbmsProcessor.core.log
+                    log
                             .error("Agreement Violation - the ack requested is "
                                     + ACK_REQUESTED_NEVER + " needed");
                     throw new MessageValidationException(
@@ -293,7 +295,7 @@ public class AgreementHandler {
         if (ackSignRequested != null) {
             if (ackSignRequested.equalsIgnoreCase(ACK_SIGN_REQUESTED_ALWAYS)) {
                 if (!message.getAckSignRequested().equalsIgnoreCase("true")) {
-                    EbmsProcessor.core.log
+                    log
                             .error("Agreement Violation - the ack sign requested is "
                                     + ACK_SIGN_REQUESTED_ALWAYS + " needed");
                     throw new MessageValidationException(
@@ -303,7 +305,7 @@ public class AgreementHandler {
             } else if (ackSignRequested
                     .equalsIgnoreCase(ACK_SIGN_REQUESTED_NEVER)) {
                 if (!message.getAckSignRequested().equalsIgnoreCase("false")) {
-                    EbmsProcessor.core.log
+                    log
                             .error("Agreement Violation - the ack sign requested is "
                                     + ACK_SIGN_REQUESTED_NEVER + " needed");
                     throw new MessageValidationException(
@@ -321,7 +323,7 @@ public class AgreementHandler {
         if (dupElimination != null) {
             if (dupElimination.equalsIgnoreCase(DUP_ELIMINATION_ALWAYS)) {
                 if (!message.getDupElimination().equalsIgnoreCase("true")) {
-                    EbmsProcessor.core.log
+                    log
                             .error("Agreement Violation - the dup elimination is "
                                     + DUP_ELIMINATION_ALWAYS + " needed");
                     throw new MessageValidationException(
@@ -330,7 +332,7 @@ public class AgreementHandler {
                 }
             } else if (dupElimination.equalsIgnoreCase(DUP_ELIMINATION_NEVER)) {
                 if (!message.getDupElimination().equalsIgnoreCase("false")) {
-                    EbmsProcessor.core.log
+                    log
                             .error("Agreement Violation - dup elimination is "
                                     + DUP_ELIMINATION_NEVER + " needed");
                     throw new MessageValidationException(
@@ -343,7 +345,7 @@ public class AgreementHandler {
         // check channel disabled
         if (disabled != null) {
             if (disabled.equalsIgnoreCase("true")) {
-                EbmsProcessor.core.log
+                log
                         .error("the channel is disabled currently");
                 throw new MessageValidationException(
                         "the channel is disabled currently");
@@ -357,7 +359,7 @@ public class AgreementHandler {
         if (messageOrder != null) {
             if (messageOrder.equalsIgnoreCase(MESSAGE_ORDER_GUARANTEED)) {
                 if (!(message.getSequenceNo() >= 0)) {
-                    EbmsProcessor.core.log
+                    log
                             .error("Agreement Violation - the message order should be "
                                     + MESSAGE_ORDER_GUARANTEED);
                     throw new MessageValidationException(
@@ -367,7 +369,7 @@ public class AgreementHandler {
             } else if (messageOrder
                     .equalsIgnoreCase(MESSAGE_ORDER_NOTGUARANTEED)) {
                 if (!(message.getSequenceNo() == -1)) {
-                    EbmsProcessor.core.log
+                    log
                             .error("Agreement Violation - the message order should be "
                                     + MESSAGE_ORDER_NOTGUARANTEED);
                     throw new MessageValidationException(

@@ -14,6 +14,7 @@ import hk.hku.cecid.piazza.commons.util.ConsoleLogger;
 import hk.hku.cecid.piazza.commons.util.Instance;
 import hk.hku.cecid.piazza.commons.util.Logger;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.InputStream;
@@ -35,6 +36,7 @@ import java.util.Properties;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public class Module extends Component {
 
     private ModuleGroup group;
@@ -132,7 +134,7 @@ public class Module extends Component {
      */
     public void init() {
         initComponents();
-        getLogger().info("Module '" + getName() + "' initialized successfully.");
+        log.info("Module '" + getName() + "' initialized successfully.");
     }
 
     /**
@@ -181,7 +183,7 @@ public class Module extends Component {
             Component component = (Component) orderedComponents.next();
             try {
                 component.init();
-                getLogger().debug(
+                log.debug(
                         "Component '" + component.getName() + "' in module '"
                                 + getName() + "' initialized successfully.");
             }
@@ -355,30 +357,6 @@ public class Module extends Component {
      */
     public URL getDescriptor() {
         return descriptor.getURL();
-    }
-
-    /**
-     * Gets the logger of this module.
-     * 
-     * @return the logger of this module.
-     */
-    public Logger getLogger() {
-        ModuleGroup group = getGroup();
-        if (group != null) {
-            SystemModule sysmod = group.getSystemModule();
-            if (sysmod != null) {
-                Logger logger = sysmod.getLogger();
-                if (logger != null) {
-                    return logger;
-                }
-            }
-        }
-        if (Sys.main == null || Sys.main.log == null) {
-            return ConsoleLogger.getInstance();
-        }
-        else {
-            return Sys.main.log;
-        }
     }
 
     /**

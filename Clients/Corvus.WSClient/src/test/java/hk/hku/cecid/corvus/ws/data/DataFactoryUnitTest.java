@@ -17,11 +17,10 @@ import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
 
 import junit.framework.TestCase;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 
@@ -32,11 +31,10 @@ import hk.hku.cecid.piazza.commons.util.PropertyTree;
  * @version 1.0.0
  * @since   JDK5.0, H2O 0908
  */
+@Slf4j
 // TODO: Add negative test-case
 public class DataFactoryUnitTest extends TestCase 
 {
-	// Instance logger
-	final Logger logger = LoggerFactory.getLogger(this.getClass()); 
 	
 	// Class loader for loading fixture data
 	private static ClassLoader FIXTURE_LOADER = FixtureStore.createFixtureLoader(false, DataFactoryUnitTest.class);
@@ -72,7 +70,7 @@ public class DataFactoryUnitTest extends TestCase
 	protected void setUp() throws Exception 
 	{
 		super.setUp();		
-		this.logger.info("------- {} START ------", this.getName());
+		log.info("------- {} START ------", this.getName());
 	}
 	
 
@@ -232,7 +230,7 @@ public class DataFactoryUnitTest extends TestCase
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		this.logger.info("------- {}  END  ------", this.getName());
+		log.info("------- {}  END  ------", this.getName());
 	}
 
 	/**
@@ -277,8 +275,8 @@ public class DataFactoryUnitTest extends TestCase
 				{
 					expectedDataValue = new String((byte[])expectedDataValue, "UTF-8");
 				}
-				assertEquals(keySet[i][j] + " does not match ", dataValue, expectedDataValue);			
-				logger.info("Data {} with value {} asserted successfully.", keySet[i][j], dataValue);
+				assertEquals(keySet[i][j] + " does not match ", dataValue, expectedDataValue);
+				log.info("Data {} with value {} asserted successfully.", keySet[i][j], dataValue);
 			}				
 		}					
 	}

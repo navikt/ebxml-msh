@@ -26,6 +26,7 @@ import jakarta.xml.soap.MimeHeaders;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPFactory;
 import jakarta.xml.soap.SOAPMessage;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SOAPHttpAdaptor is both an HttpRequestListener and SOAPRequestListener. It is
@@ -34,6 +35,7 @@ import jakarta.xml.soap.SOAPMessage;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public abstract class SOAPHttpAdaptor extends HttpRequestAdaptor implements
         SOAPRequestListener {
 
@@ -137,7 +139,7 @@ public abstract class SOAPHttpAdaptor extends HttpRequestAdaptor implements
                  * reporting is enabled.
                  */
                 if (isSOAPFaultEnabled()) {
-                    Sys.main.log.error("SOAP fault exception trace", e);
+                    log.error("SOAP fault exception trace", e);
                     soapResponse.addFault(e);
                 }
                 else {

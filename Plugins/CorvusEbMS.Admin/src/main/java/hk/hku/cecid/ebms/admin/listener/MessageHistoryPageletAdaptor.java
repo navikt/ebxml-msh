@@ -16,18 +16,19 @@ import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.Source;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Donahue Sze
  *  
  */
+@Slf4j
 public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
 
     /*
@@ -43,7 +44,7 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
             // construct updated delivery channels property tree
             dom = getMessageHistory(request);
         } catch (DAOException e) {
-            EbmsProcessor.core.log.debug(
+            log.debug(
                     "Unable to process the message search page request", e);
             throw new RuntimeException(
                     "Unable to process the message search page request", e);

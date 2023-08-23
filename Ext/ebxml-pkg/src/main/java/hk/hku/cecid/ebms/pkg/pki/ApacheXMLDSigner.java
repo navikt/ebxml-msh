@@ -76,7 +76,7 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
@@ -97,12 +97,8 @@ import org.w3c.dom.NodeList;
  * @author kcyee
  * @version $Revision: 1.1 $
  */
+@Slf4j
 public class ApacheXMLDSigner implements XMLDSigner {
-
-    /**
-     * Logger
-     */
-    protected static Logger logger = Logger.getLogger(ApacheXMLDSigner.class);
 
     /**
      * Name of the Signature element [ebMSS 4.1.1, XMLDSIG 4.1]
@@ -270,11 +266,11 @@ public class ApacheXMLDSigner implements XMLDSigner {
         } catch (XMLSecurityException e) {
             String err = "Cannot create XMLSignature object - " 
                 + e.getMessage();
-            logger.error(err);
+            log.error(err);
             throw new SignException(err);
         }
         this.algo = algo;
-        logger.debug("setEnvelope, using algorithm: " + algo);
+        log.debug("setEnvelope, using algorithm: " + algo);
     }
 
     /**
@@ -304,7 +300,7 @@ public class ApacheXMLDSigner implements XMLDSigner {
         dd.stream = is;
         dd.contentType = contentType;
         documents.add(dd);
-        logger.debug(
+        log.debug(
             "addDocument URI: " + uri + ", contentType: " + contentType);
     }
 
@@ -326,7 +322,7 @@ public class ApacheXMLDSigner implements XMLDSigner {
      */
     public void sign(CompositeKeyStore ks, String alias, char[] password)
             throws SignException {
-        logger.debug("start signing");
+        log.debug("start signing");
 
         PrivateKey pk;
         try {
@@ -335,14 +331,14 @@ public class ApacheXMLDSigner implements XMLDSigner {
         catch (Exception e) {
             String err = "Cannot get private key: " + alias + " - "
                 + e.getMessage();
-            logger.warn(err);
+            log.warn(err);
             throw new SignException(err);
         }
-        logger.debug("got private key from keystore");
+        log.debug("got private key from keystore");
         
         if (envelope == null) {
             String err = "Envelope element not set"; 
-            logger.warn(err);
+            log.warn(err);
             throw new SignException(err);
         }
 
@@ -352,7 +348,7 @@ public class ApacheXMLDSigner implements XMLDSigner {
         }
         DocumentResolver resolver = new DocumentResolver(doc_array);
         signature.getSignedInfo().addResourceResolver(resolver);
-        logger.debug("created DocumentResolver");
+        log.debug("created DocumentResolver");
 
         Transforms transforms = new Transforms(envelope);
         try {
@@ -369,10 +365,10 @@ public class ApacheXMLDSigner implements XMLDSigner {
         }
         catch (TransformationException e) {
             String err = "Cannot add transform - " + e.getMessage(); 
-            logger.warn(err);
+            log.warn(err);
             throw new SignException(err);
         }
-        logger.debug("created Transform");
+        log.debug("created Transform");
 
         try {
             if (digestAlgo == null) {
@@ -384,10 +380,10 @@ public class ApacheXMLDSigner implements XMLDSigner {
         }
         catch (XMLSignatureException e) {
             String err = "Cannot add envelope document - " + e.getMessage();
-            logger.warn(err);
+            log.warn(err);
             throw new SignException(err);
         }
-        logger.debug("added main document (envelope)");
+        log.debug("added main document (envelope)");
 
         for (int i=0 ; i<documents.size() ; i++) {
             DocumentDetail dd = (DocumentDetail) documents.get(i);
@@ -397,28 +393,28 @@ public class ApacheXMLDSigner implements XMLDSigner {
             catch (XMLSignatureException e) {
                 String err = "cannot add document: " + dd.uri + " - " 
                     + e.getMessage();
-                logger.warn(err);
+                log.warn(err);
                 throw new SignException(err);
             }
         }
-        logger.debug("added " + documents.size() + " attachment documents");
+        log.debug("added " + documents.size() + " attachment documents");
 
         Certificate[] certificates;
         try {
             certificates = ks.getCertificateChain(alias);
             if (certificates == null) {
                 String err = "Cannot get certificate path: " + alias;
-                logger.warn(err);
+                log.warn(err);
                 throw new SignException(err);
             }
         }
         catch (KeyStoreException e) {
             String err = "Cannot get certificate path: " + alias + " - "
                 + e.getMessage();
-            logger.warn(err);
+            log.warn(err);
             throw new SignException(err);
         }
-        logger.debug("got the certificate chain from keystore");
+        log.debug("got the certificate chain from keystore");
 
         for (int i=0 ; i<certificates.length ; i++) {
             try {
@@ -426,11 +422,11 @@ public class ApacheXMLDSigner implements XMLDSigner {
             }
             catch (XMLSecurityException e) {
                 String err = "Cannot add key info - " + e.getMessage();
-                logger.warn(err);
+                log.warn(err);
                 throw new SignException(err);
             }
         }
-        logger.debug("added the certificate chain to signature");
+        log.debug("added the certificate chain to signature");
 
         /*
         PrivateKey pk;
@@ -440,20 +436,20 @@ public class ApacheXMLDSigner implements XMLDSigner {
         catch (Exception e) {
             String err = "Cannot get private key: " + alias + " - "
                 + e.getMessage();
-            logger.warn(err);
+            log.warn(err);
             throw new SignException(err);
         }
-        logger.debug("got private key from keystore");
+        log.debug("got private key from keystore");
         */
         try {
             signature.sign(pk);
         }
         catch (Exception e) {
             String err = "Cannot sign - " + e.getMessage();
-            logger.warn(err);
+            log.warn(err);
             throw new SignException(err);
         }
-        logger.debug("message signed");
+        log.debug("message signed");
     }
 
     /**
@@ -475,11 +471,11 @@ public class ApacheXMLDSigner implements XMLDSigner {
      *                         verification
      */
     public boolean verify() throws VerifyException {
-        logger.debug("start verifying");
+        log.debug("start verifying");
 
         if (envelope == null) {
             String err = "Envelope element not set.";
-            logger.warn(err);
+            log.warn(err);
             throw new VerifyException(err);
         }
 
@@ -489,12 +485,12 @@ public class ApacheXMLDSigner implements XMLDSigner {
         if (nodeList.getLength() == 0) {
             String err = "No <" + NAMESPACE_PREFIX_DS + ":" + ELEMENT_SIGNATURE
                 + "> found";
-            logger.warn(err);
+            log.warn(err);
             throw new VerifyException(err);
         }
         Element signatureElement = (Element) nodeList.item(0);
         // addNamespaceDeclaration(signatureElement);
-        logger.debug("got the signature element");
+        log.debug("got the signature element");
 
         try {
             signature = new XMLSignature(signatureElement, NAMESPACE_URI_DS);
@@ -502,10 +498,10 @@ public class ApacheXMLDSigner implements XMLDSigner {
         catch (Exception e) {
             String err = "Cannot create XMLSignature object - " 
                 + e.getMessage(); 
-            logger.error(err);
+            log.error(err);
             throw new VerifyException(err);
         }
-        logger.debug("created signature object");
+        log.debug("created signature object");
 
         DocumentDetail[] doc_array = new DocumentDetail[documents.size()];
         for (int i=0 ; i<doc_array.length ; i++) {
@@ -513,26 +509,26 @@ public class ApacheXMLDSigner implements XMLDSigner {
         }
         DocumentResolver resolver = new DocumentResolver(doc_array);
         signature.addResourceResolver(resolver);
-        logger.debug("created document resolver");
+        log.debug("created document resolver");
 
         Certificate[] certs = null;
         if (certResolver != null) {
             certs = certResolver.resolve(obj);
             if (certs == null || certs.length <= 0) {
                 String err = "Certificates returned by certResolver is null";
-                logger.warn(err);
+                log.warn(err);
                 throw new VerifyException(err);
             }
         } else if (trusted == null) {
             String err = "Cannot verify cert path, but certResolver is null";
-            logger.warn(err);
+            log.warn(err);
             throw new VerifyException(err);
         }
         KeyInfo keyInfo = null;
         PublicKey publicKey = null;
         if (certs != null && certs.length > 0) {
             publicKey = certs[0].getPublicKey();
-            logger.debug("got certificate and public key from CertResolver");
+            log.debug("got certificate and public key from CertResolver");
         }
         else {
             keyInfo = signature.getKeyInfo();
@@ -553,7 +549,7 @@ public class ApacheXMLDSigner implements XMLDSigner {
                             String err = "Cannot get X509 certficate from <" +
                                 signatureElement.getPrefix() + ":" +
                                 ELEMENT_KEY_INFO + ">";
-                            logger.warn(err);
+                            log.warn(err);
                             throw new VerifyException(err);
                         }
                     }
@@ -562,19 +558,19 @@ public class ApacheXMLDSigner implements XMLDSigner {
                 if (certificate != null) {
                     publicKey = certificate.getPublicKey();
                 }
-                logger.debug("got X509 certificate and public key from " +
+                log.debug("got X509 certificate and public key from " +
                              ELEMENT_SIGNATURE + " element in message");
             }
             catch (KeyResolverException e) {
                 String err = "Cannot get X509 certificate from <" +
                     signatureElement.getPrefix() + ":" + ELEMENT_KEY_INFO + ">";
-                logger.warn(err);
+                log.warn(err);
                 throw new VerifyException(err);
             }
         }
         if (publicKey == null) {
             String err = "No PublicKey found";
-            logger.warn(err);
+            log.warn(err);
             throw new VerifyException(err);
         }
 
@@ -584,20 +580,20 @@ public class ApacheXMLDSigner implements XMLDSigner {
         }
         catch (Exception e) {
             String err = "Cannot check signature - " + e.getMessage();
-            logger.warn(err);
+            log.warn(err);
             throw new VerifyException(err);
         }
-        logger.debug("checked signature value, result: " + ret);
+        log.debug("checked signature value, result: " + ret);
 
 
         if (ret == true && trusted != null && certs != null 
             && certs.length > 1) {
 
-            logger.debug("start verifying cert path");
+            log.debug("start verifying cert path");
             ret = CertPathVerifier.verify(certs, trusted);
-            logger.debug("verified, result: " + ret);
+            log.debug("verified, result: " + ret);
         } else {
-            logger.debug("verification of cert path skipped");
+            log.debug("verification of cert path skipped");
         }
 
         return ret;

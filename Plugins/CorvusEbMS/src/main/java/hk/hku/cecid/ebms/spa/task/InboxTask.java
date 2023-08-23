@@ -21,11 +21,13 @@ import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.module.ActiveTask;
 import hk.hku.cecid.piazza.commons.util.StringUtilities;
 import hk.hku.cecid.piazza.commons.net.HostInfo;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Donahue Sze
  * 
  */
+@Slf4j
 public class InboxTask implements ActiveTask {
 
     private MessageDVO message;
@@ -60,11 +62,11 @@ public class InboxTask implements ActiveTask {
 			
 			fireEvent();
 
-            EbmsProcessor.core.log.info("Ebxml Message ("
+            log.info("Ebxml Message ("
                     + message.getMessageId()
                     + ") is stored in inbox with order number: " + nextOrderNo);
         } catch (DAOException e) {
-            EbmsProcessor.core.log
+            log
                     .error("Error in storing message to inbox", e);
             throw new DeliveryException("Error in storing message to inbox", e);
         }
@@ -138,7 +140,7 @@ public class InboxTask implements ActiveTask {
      */
     public void onFailure(Throwable arg0) {
         try {
-            EbmsProcessor.core.log.error(
+            log.error(
                     "Exception when store the msg to inbox", arg0);
             MessageDAO messageDAO = (MessageDAO) EbmsProcessor.core.dao
                     .createDAO(MessageDAO.class);

@@ -26,18 +26,19 @@ import hk.hku.cecid.corvus.ws.data.EBMSStatusQueryData;
 import hk.hku.cecid.corvus.ws.data.EBMSStatusQueryResponseData;
 import hk.hku.cecid.corvus.ws.data.EBMSMessageHistoryRequestData;
 import hk.hku.cecid.piazza.commons.soap.SOAPSender;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
+;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.commons.util.SOAPUtilities;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class EBMSMessageHistoryQuerySender extends SOAPSender {
 
 	public static String NAMESPACE = "http://service.ebms.edi.cecid.hku.hk/";
 	private ArrayList resultMessages = new ArrayList();
 	
-	public EBMSMessageHistoryQuerySender(FileLogger l
-											,EBMSMessageHistoryRequestData m) {
-		super(l, m);			
+	public EBMSMessageHistoryQuerySender(EBMSMessageHistoryRequestData m) {
+		super(m);			
 		EBMSMessageHistoryRequestData d = (EBMSMessageHistoryRequestData) m;		
 		// Setup the sender config.
 		//this.setLoopTimes(1);
@@ -46,23 +47,23 @@ public class EBMSMessageHistoryQuerySender extends SOAPSender {
 	
 	public void onStart(){
 		super.onStart();
-		if (this.log != null){
+		if (log != null){
 			// Log all information for this sender.
-			this.log.log("EBMS EbMS Message History Query init at " + new Date().toString());
-			this.log.log("----------------------------------------------------");
-			this.log.log("Configuration Data using: ");
-			this.log.log("----------------------------------------------------");
+			log.info("EBMS EbMS Message History Query init at " + new Date().toString());
+			log.info("----------------------------------------------------");
+			log.info("Configuration Data using: ");
+			log.info("----------------------------------------------------");
 			if (this.properties != null){
-				this.log.log(this.properties.toString());
+				log.info(this.properties.toString());
 			}			
-			this.log.log("----------------------------------------------------");
+			log.info("----------------------------------------------------");
 		}		
 		try{
 			this.initializeMessage();
 			this.setRequestDirty(false);
 		}catch(Exception e){
 			if (this.log != null)
-				this.log.log("Unable to initialize the SOAP Message");
+				log.info("Unable to initialize the SOAP Message");
 			this.onError(e);
 		}
 	}
@@ -71,8 +72,8 @@ public class EBMSMessageHistoryQuerySender extends SOAPSender {
 		EBMSMessageHistoryRequestData  requestData= (EBMSMessageHistoryRequestData) this.properties;		
 		List msgList = this.getResponseElementList("messageList", NAMESPACE, 0);
 		
-		this.log.log("Available Message(s): ");
-		this.log.log("----------------------------------------------------");
+		log.info("Available Message(s): ");
+		log.info("----------------------------------------------------");
 		
 		if(msgList == null)
 			return;
@@ -82,7 +83,7 @@ public class EBMSMessageHistoryQuerySender extends SOAPSender {
 			List msgElement = (List)msgIterator.next();
 			this.resultMessages.add(msgElement);			
 			if (this.log != null)
-				this.log.log("Message Id: " + (String)msgElement.get(0) +
+				log.info("Message Id: " + (String)msgElement.get(0) +
 								"  MessageBox: " + (String)msgElement.get(1));	
 		}
 		for(int i =0; i < this.resultMessages.size(); i ++){
@@ -177,10 +178,6 @@ public class EBMSMessageHistoryQuerySender extends SOAPSender {
 			System.out.println("----------------------------------------------------");
 			System.out.println("         EbMS Message History Queryer      ");
 			System.out.println("----------------------------------------------------");
-
-			// Initialize the logger.			
-			System.out.println("Initialize Logger ... ");
-			FileLogger logger = new FileLogger(new java.io.File(args[1]));
 			
 			// Initialize the query parameter.
 			System.out.println("Importing  ebMS config parameters ... "  + args[0]);			
@@ -191,7 +188,7 @@ public class EBMSMessageHistoryQuerySender extends SOAPSender {
 											
 			// Initialize the sender.
 			System.out.println("Initialize ebMS messsage history queryer ... ");
-			EBMSMessageHistoryQuerySender sender = new EBMSMessageHistoryQuerySender(logger, requestData);
+			EBMSMessageHistoryQuerySender sender = new EBMSMessageHistoryQuerySender(requestData);
 			// Send the message.
 			System.out.println("Sending ebMS message history query request ... ");
 			sender.run();
@@ -274,7 +271,7 @@ public class EBMSMessageHistoryQuerySender extends SOAPSender {
 					
 					System.out.println("Initialize ebMS receiving web service client... ");
 					
-					EBMSMessageReceiver msgReceiver =	new EBMSMessageReceiver(logger, recvData);
+					EBMSMessageReceiver msgReceiver =	new EBMSMessageReceiver(recvData);
 					msgReceiver.setOutputDirectory(outDir.getAbsolutePath());
 					System.out.println("Sending    ebMS receiving request ... for " + messageId);
 					msgReceiver.run();
@@ -291,7 +288,7 @@ public class EBMSMessageHistoryQuerySender extends SOAPSender {
 					queryData.setQueryMessageId(messageId);
 				
 					boolean historyQueryNeeded = false;
-					EBMSStatusQuerySender statusQuerySender = new EBMSStatusQuerySender(logger, queryData);
+					EBMSStatusQuerySender statusQuerySender = new EBMSStatusQuerySender(queryData);
 					
 					System.out.println("Sending    EBMS-status sending request ... ");
 					statusQuerySender.run();			

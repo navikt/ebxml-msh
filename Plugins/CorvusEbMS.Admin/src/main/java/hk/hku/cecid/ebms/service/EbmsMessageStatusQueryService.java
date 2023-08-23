@@ -21,6 +21,7 @@ import hk.hku.cecid.piazza.commons.soap.WebServicesResponse;
 
 import jakarta.xml.soap.SOAPElement;
 
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Element;
 
 /**
@@ -29,6 +30,7 @@ import org.w3c.dom.Element;
  * @author Donahue Sze
  *  
  */
+@Slf4j
 public class EbmsMessageStatusQueryService extends WebServicesAdaptor {
 
     public void serviceRequested(WebServicesRequest request,
@@ -42,7 +44,7 @@ public class EbmsMessageStatusQueryService extends WebServicesAdaptor {
             throw new SOAPRequestException("Missing Parameters - Message ID");
         }
 
-        EbmsProcessor.core.log
+        log
                 .info("Message status query request - Message ID: " + messageID);
 
         MessageDAO messageDAO = (MessageDAO) EbmsProcessor.core.dao

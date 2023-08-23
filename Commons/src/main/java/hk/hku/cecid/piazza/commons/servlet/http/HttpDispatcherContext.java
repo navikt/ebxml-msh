@@ -12,6 +12,7 @@ package hk.hku.cecid.piazza.commons.servlet.http;
 import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.servlet.StatefulServletContext;
 import hk.hku.cecid.piazza.commons.util.Instance;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public class HttpDispatcherContext extends StatefulServletContext {
 
     private static final Hashtable contexts = new Hashtable();
@@ -123,14 +125,14 @@ public class HttpDispatcherContext extends StatefulServletContext {
 
             pathInfo = fixPathInfo(pathInfo);
             requestListeners.put(pathInfo, listener);
-            Sys.main.log.info("HTTP request listener '"
+            log.info("HTTP request listener '"
                     + listener.getClass().getName()
                     + "' registered successfully at '" + pathInfo + "'");
 
             return true;
         }
         catch (Exception e) {
-            Sys.main.log.error("Unable to register listener '"
+            log.error("Unable to register listener '"
                     + requestListener + "' at '" + pathInfo + "'", e);
             return false;
         }
@@ -156,10 +158,10 @@ public class HttpDispatcherContext extends StatefulServletContext {
                 listener.listenerDestroyed();
             }
             catch (Exception e) {
-                Sys.main.log.error("Error in destroying listener '"
+                log.error("Error in destroying listener '"
                         + listener.getClass().getName() + "'", e);
             }
-            Sys.main.log.info("HTTP request listener '"
+            log.info("HTTP request listener '"
                     + listener.getClass().getName()
                     + "' unregistered successfully at '" + pathInfo + "'");
             return true;
@@ -280,7 +282,7 @@ public class HttpDispatcherContext extends StatefulServletContext {
             return true;
         }
         catch (Exception e) {
-            Sys.main.log.error("Unable to add HTTP request filter '"
+            log.error("Unable to add HTTP request filter '"
                     + requestFilter + "'", e);
             return false;
         }

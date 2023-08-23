@@ -9,10 +9,14 @@
 
 package hk.hku.cecid.piazza.corvus.core.main.listener;
 
-import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.servlet.RequestListenerException;
 import hk.hku.cecid.piazza.commons.servlet.http.HttpRequestAdaptor;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -22,11 +26,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * HttpProxyListener is an HTTP request listener which serves as a simple
  * HTTP proxy handler. It does not support HTTPS nor caching. 
@@ -34,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public class HttpProxyListener extends HttpRequestAdaptor {
 
     /**
@@ -53,7 +53,7 @@ public class HttpProxyListener extends HttpRequestAdaptor {
             InetAddress[] targetServerAddresses = InetAddress
                     .getAllByName(request.getServerName());
             InetAddress localServerAddress = InetAddress.getLocalHost();
-            Sys.main.log.debug("Local server address: "+localServerAddress);
+            log.debug("Local server address: "+localServerAddress);
 
             for (int i = 0; i < targetServerAddresses.length; i++) {
                 if (targetServerAddresses[i].isLoopbackAddress()
@@ -68,14 +68,14 @@ public class HttpProxyListener extends HttpRequestAdaptor {
              * Reconstruct the request url
              */
             String requrl = request.getRequestURL().toString();
-            Sys.main.log.debug("REQ URL: " + requrl);
+            log.debug("REQ URL: " + requrl);
 
             requrl = getURL(requrl);
-            Sys.main.log.debug("REQ URL Modified: " + requrl);
+            log.debug("REQ URL Modified: " + requrl);
 
             String query = request.getQueryString();
             requrl = requrl + (query == null ? "" : "?" + query);
-            Sys.main.log.debug("REQ URL FINAL: " + requrl);
+            log.debug("REQ URL FINAL: " + requrl);
 
             /*
              * Prepare connection for the request url
@@ -98,7 +98,7 @@ public class HttpProxyListener extends HttpRequestAdaptor {
                             .nextElement().toString());
                     conn.addRequestProperty(requestHeaderKey,
                             requestHeaderValue);
-                    Sys.main.log.debug("REQ Header: " + requestHeaderKey + "="
+                    log.debug("REQ Header: " + requestHeaderKey + "="
                             + requestHeaderValue);
                 }
             }
@@ -120,7 +120,7 @@ public class HttpProxyListener extends HttpRequestAdaptor {
             /*
              * Establish the connection
              */
-            Sys.main.log.debug("Connecting to " + requrl);
+            log.debug("Connecting to " + requrl);
             conn.connect();
 
             /*
@@ -133,8 +133,8 @@ public class HttpProxyListener extends HttpRequestAdaptor {
                 return null;
             }
             response.setStatus(responseCode);
-            Sys.main.log.debug("RES CODE: " + responseCode);
-            Sys.main.log.debug("RES Message: " + responseMessage);
+            log.debug("RES CODE: " + responseCode);
+            log.debug("RES Message: " + responseMessage);
 
             /*
              * Set the response headers
@@ -148,7 +148,7 @@ public class HttpProxyListener extends HttpRequestAdaptor {
                             .get(reponseHeaderKey).toString());
                     response.addHeader(reponseHeaderKey.toString(),
                             reponseHeaderValue);
-                    Sys.main.log.debug("RES Header: " + reponseHeaderKey + "="
+                    log.debug("RES Header: " + reponseHeaderKey + "="
                             + reponseHeaderValue);
                 }
             }
@@ -167,7 +167,7 @@ public class HttpProxyListener extends HttpRequestAdaptor {
             outs.flush();
         }
         catch (Exception e) {
-            Sys.main.log.error("HttpProxy error: " + e);
+            log.error("HttpProxy error: " + e);
         }
         return null;
     }

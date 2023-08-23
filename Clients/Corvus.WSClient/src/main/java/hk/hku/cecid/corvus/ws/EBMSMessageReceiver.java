@@ -17,8 +17,9 @@ import hk.hku.cecid.corvus.ws.data.DataFactory;
 import hk.hku.cecid.corvus.ws.data.EBMSMessageData;
 import hk.hku.cecid.corvus.ws.data.Payload;
 import hk.hku.cecid.piazza.commons.io.NIOHandler;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
+;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -37,6 +38,7 @@ import hk.hku.cecid.piazza.commons.util.PropertyTree;
  * 
  * @see hk.hku.cecid.corvus.ws.data.EBMSMessageData
  */
+@Slf4j
 public class EBMSMessageReceiver extends MessageReceiver{
 
 	private final String NS_URI = EBMSMessageSender.NS_URI;
@@ -50,9 +52,8 @@ public class EBMSMessageReceiver extends MessageReceiver{
 	 */
 	private String messageId;	
 	
-	public EBMSMessageReceiver(FileLogger 		 l
-			,EBMSMessageData 	 m) {
-		super(l, m);
+	public EBMSMessageReceiver(EBMSMessageData 	 m) {
+		super(m);
 		EBMSMessageData d = (EBMSMessageData) m;
 		
 		this.messageId = d.getMessageIdForReceive();
@@ -95,21 +96,21 @@ public class EBMSMessageReceiver extends MessageReceiver{
 		super.onStart();
 		if (this.log != null){
 			// Log all information for this sender.
-			this.log.log("EBMS Message Receiver Client init at " + new Date().toString());
-			this.log.log("----------------------------------------------------");		
-			this.log.log("Configuration Data using: ");
-			this.log.log("----------------------------------------------------");
+			log.info("EBMS Message Receiver Client init at " + new Date().toString());
+			log.info("----------------------------------------------------");		
+			log.info("Configuration Data using: ");
+			log.info("----------------------------------------------------");
 			if (this.properties != null){
-				this.log.log(this.properties.toString());
+				log.info(this.properties.toString());
 			}			
-			this.log.log("----------------------------------------------------");
+			log.info("----------------------------------------------------");
 		}		
 		try{
 			this.initializeMessage();
 			this.setRequestDirty(false);
 		}catch(Exception e){
 			if (this.log != null)
-				this.log.log("Unable to initialize the SOAP Message");
+				log.info("Unable to initialize the SOAP Message");
 			this.onError(e);
 		}
 	}
@@ -126,8 +127,8 @@ public class EBMSMessageReceiver extends MessageReceiver{
 		String result		= this.getResponseElementText("hasMessage",NS_URI, 0);
 		
 		if (log != null){
-			this.log.log("Received Message id: " + this.messageId);			
-			this.log.log("Has payload ?      : " + result);
+			log.info("Received Message id: " + this.messageId);			
+			log.info("Has payload ?      : " + result);
 		}
 						
 		if (Boolean.valueOf(result).booleanValue()){
@@ -168,10 +169,6 @@ public class EBMSMessageReceiver extends MessageReceiver{
 			System.out.println("----------------------------------------------------");
 			System.out.println("       EBMS Message Receiver           ");
 			System.out.println("----------------------------------------------------");
-
-			// Initalize the logger.			
-			System.out.println("Initialize Logger ... ");
-			FileLogger logger = new FileLogger(new java.io.File(args[1]));
 			
 			// Initialize the query parameter.
 			System.out.println("Importing  ebMS sending parameters ... "  + args[0] );			
@@ -183,7 +180,7 @@ public class EBMSMessageReceiver extends MessageReceiver{
 			
 			// Initalize the receiver client for downloading available message.
 			System.out.println("Initialize ebMS message receiver... ");
-			EBMSMessageReceiver recvSender =	new EBMSMessageReceiver(logger, requestData);				
+			EBMSMessageReceiver recvSender =	new EBMSMessageReceiver(requestData);
 			recvSender.setOutputDirectory(args[2]);
 			
 

@@ -12,6 +12,7 @@ package hk.hku.cecid.piazza.corvus.core;
 import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.servlet.http.HttpDispatcherContext;
 import hk.hku.cecid.piazza.commons.spa.PluginRegistry;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +28,7 @@ import java.util.Properties;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public class Kernel {
 
     private static Kernel  kernel = new Kernel();
@@ -108,12 +110,12 @@ public class Kernel {
                 hasErrors = true;
             } else {
                 hasErrors = false;
-                Sys.main.log.info("Corvus Kernel initialized successfully");
+                log.info("Corvus Kernel initialized successfully");
             }
         }
         catch (Throwable e) {
             hasErrors = true;
-            Sys.main.log.error("Corvus Kernel initialized with errors", e);
+            log.error("Corvus Kernel initialized with errors", e);
         }
     }
 
@@ -125,7 +127,7 @@ public class Kernel {
                 props.load(new FileInputStream(f));
                 System.getProperties().putAll(props);
             } catch (IOException e) {
-                Sys.main.log.warn("unable to load " + propFile + " into system properties");
+                log.warn("unable to load " + propFile + " into system properties");
             }
         }
     }
@@ -137,7 +139,7 @@ public class Kernel {
         if (pluginRegistry != null) {
             pluginRegistry.deactivate();
         }
-        Sys.main.log.error("Corvus Kernel has been shutdown successfully");
+        log.error("Corvus Kernel has been shutdown successfully");
     }
     
     /**

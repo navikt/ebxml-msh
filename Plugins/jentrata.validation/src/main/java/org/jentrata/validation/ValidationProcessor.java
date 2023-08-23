@@ -27,7 +27,7 @@ public class ValidationProcessor implements PluginHandler {
     }
     
     public void processActivation(Plugin plugin) throws PluginException {
-        Sys.main.log.debug("ValidationProcessor activation");
+        log.debug("ValidationProcessor activation");
         processor = this;
         
         String mgDescriptor = plugin.getParameters().getProperty("module-group-descriptor");

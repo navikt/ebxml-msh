@@ -1,27 +1,22 @@
 package hk.hku.cecid.ebms.spa.service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import jakarta.xml.soap.SOAPElement;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.dao.MessageDAO;
 import hk.hku.cecid.ebms.spa.dao.MessageDVO;
 import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
-import hk.hku.cecid.piazza.commons.soap.SOAPRequest;
 import hk.hku.cecid.piazza.commons.soap.SOAPRequestException;
-import hk.hku.cecid.piazza.commons.soap.SOAPResponse;
 import hk.hku.cecid.piazza.commons.soap.WebServicesAdaptor;
 import hk.hku.cecid.piazza.commons.soap.WebServicesRequest;
 import hk.hku.cecid.piazza.commons.soap.WebServicesResponse;
+import jakarta.xml.soap.SOAPElement;
+import lombok.extern.slf4j.Slf4j;
+import org.w3c.dom.Element;
 
+import java.util.Iterator;
+import java.util.List;
+
+@Slf4j
 public class EbmsMessageHistoryService extends WebServicesAdaptor{
 	
 	public static int MAX_NUMBER = 2147483647;
@@ -40,7 +35,7 @@ public class EbmsMessageHistoryService extends WebServicesAdaptor{
 	      String status = getText(bodies, "status");
 	      String limit = getText(bodies, "limit");
         
-		  EbmsProcessor.core.log
+		  log
           .info("Message History Query received request - "+
         		  "MessageID : " + (msgId ==null?"NULL":msgId)
                   + ", MessageBox: " + (msgBox ==null?"NULL":msgBox)

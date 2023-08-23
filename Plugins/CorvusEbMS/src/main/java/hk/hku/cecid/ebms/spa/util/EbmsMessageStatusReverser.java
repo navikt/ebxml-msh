@@ -20,6 +20,7 @@ import hk.hku.cecid.piazza.commons.dao.ds.DataSourceDAO;
 import hk.hku.cecid.piazza.commons.dao.ds.DataSourceProcess;
 import hk.hku.cecid.piazza.commons.dao.ds.DataSourceTransaction;
 import hk.hku.cecid.piazza.commons.net.HostInfo;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Reverse message status for message redownload and resend
@@ -27,6 +28,7 @@ import hk.hku.cecid.piazza.commons.net.HostInfo;
  * @author franz
  * 
  */
+@Slf4j
 public class EbmsMessageStatusReverser {
 	private DAOFactory daoFactory = EbmsProcessor.core.dao;
 
@@ -106,7 +108,7 @@ public class EbmsMessageStatusReverser {
 
 		process.start();
 
-		EbmsProcessor.core.log.info("Message [" + messageId
+		log.info("Message [" + messageId
 				+ "] is prepared for resend");
 		return criteriaDVO;
 	}
@@ -142,7 +144,7 @@ public class EbmsMessageStatusReverser {
 		criteriaDVO.setStatus(MessageClassifier.INTERNAL_STATUS_PROCESSED);
 		dao.persist(criteriaDVO);
 
-		EbmsProcessor.core.log.info("Message [" + messageId
+		log.info("Message [" + messageId
 				+ "] is prepared for redownload");
 	}
 }

@@ -9,31 +9,25 @@
 
 package hk.hku.cecid.corvus.http;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-
 import com.sun.mail.util.BASE64DecoderStream;
+import hk.hku.cecid.corvus.ws.data.KVPairData;
+import hk.hku.cecid.piazza.commons.io.IOHandler;
 import junit.framework.TestCase;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.RequestContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import hk.hku.cecid.piazza.commons.io.IOHandler;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
-import hk.hku.cecid.corvus.ws.data.KVPairData;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
+;
 
 /** 
  * The <code>PartnershipSenderUnitTest</code> is unit test of <code>PartnershipSender</code>. 
@@ -44,16 +38,10 @@ import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
  * @version 1.0.0 
  * @since   H2O 0908 
  */
+@Slf4j
 public class PartnershipSenderUnitTest extends TestCase
 {
-	// Instance logger
-	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	// Fixture name.
-	public static final String 	TEST_LOG 		= "test.log";
-	// Fixture loader
-	private static ClassLoader 	FIXTURE_LOADER	= FixtureStore.createFixtureLoader(false, PartnershipSender.class);
-	
+
 	// Parameters 
 	public static final int 	TEST_PORT 		= 1999;	
 	public static final String 	TEST_ENDPOINT 	= "http://localhost:" + TEST_PORT;
@@ -74,7 +62,6 @@ public class PartnershipSenderUnitTest extends TestCase
 	/** The testing target which is an PartnershipSender and the associated data*/
 	protected PartnershipSender 	target;
 	protected KVPairData			kvData;
-	protected FileLogger 			testClassLogger;	
 	
 	/** The helper for capturing the HTTP data */
 	private SimpleHttpMonitor	monitor;
@@ -83,8 +70,7 @@ public class PartnershipSenderUnitTest extends TestCase
 	public void setUp() throws Exception {
 		this.initTestData();
 		this.initTestTarget();
-		logger = LoggerFactory.getLogger(this.getName());
-		logger.info(this.getName() + " Start ");		
+		log.info(this.getName() + " Start ");
 	}
 
 	/** Initialize the test data **/
@@ -114,10 +100,6 @@ public class PartnershipSenderUnitTest extends TestCase
 	/** Initialize the test target which is a PartnershipSender. */
 	public void initTestTarget() throws Exception 
 	{
-		URL logURL = FIXTURE_LOADER.getResource(TEST_LOG);
-		if (logURL == null)
-			throw new NullPointerException("Missing fixture " + TEST_LOG + " in the fixture path");
-
 		/*
 		 * The data is constructed at this method instead of initTestData because 
 		 * it has to be referred by the inner method for our testing target.
@@ -135,13 +117,10 @@ public class PartnershipSenderUnitTest extends TestCase
 		final Map partnershipOpMap = new HashMap();
 		partnershipOpMap.put(new Integer(0), "add");
 		partnershipOpMap.put(new Integer(1), "delete");
-		partnershipOpMap.put(new Integer(2), "update");		
-		
-		File log = new File(logURL.getFile());
-		this.testClassLogger = new FileLogger(log);
+		partnershipOpMap.put(new Integer(2), "update");
 		
 		// Create an anonymous partnership sender and implement the abstract method for our testing.
-		this.target = new PartnershipSender(this.testClassLogger, this.kvData){ 			
+		this.target = new PartnershipSender( this.kvData){ 			
 			public Map getPartnershipOperationMapping()	{ return partnershipOpMap; }  						
 			public Map getPartnershipMapping()			{ return data2webForm; }
 		};
@@ -183,7 +162,7 @@ public class PartnershipSenderUnitTest extends TestCase
 	public void tearDown() throws Exception {
 		this.monitor.stop();		
 		Thread.sleep(1500); // Make some delay for releasing the socket.
-		logger.info(this.getName() + " End ");
+		log.info(this.getName() + " End ");
 	}
 	
 	/**
@@ -201,10 +180,10 @@ public class PartnershipSenderUnitTest extends TestCase
 		Map.Entry tmp 	= null;
 		Iterator itr	= null;
 		itr = headers.entrySet().iterator();
-		logger.info("Header information");
+		log.info("Header information");
 		while (itr.hasNext()){
 			tmp = (Map.Entry) itr.next();
-			logger.info(tmp.getKey() + " : " + tmp.getValue());
+			log.info(tmp.getKey() + " : " + tmp.getValue());
 		}
 		
 		// #1 Check BASIC authentication value.
@@ -282,7 +261,7 @@ public class PartnershipSenderUnitTest extends TestCase
 					throw new IllegalArgumentException("Invalid content found in multipart.");
 				}
 				// Log information.
-				logger.info("Field name found and verifed: " + fstream.getFieldName() + " content type:" + fstream.getContentType());				
+				log.info("Field name found and verifed: " + fstream.getFieldName() + " content type:" + fstream.getContentType());
 			}
 		}
 		/* Check whether the partnership operation in the HTTP request is expected as i thought */

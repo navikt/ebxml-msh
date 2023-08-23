@@ -11,6 +11,7 @@ package hk.hku.cecid.piazza.commons.servlet.http;
 
 import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.servlet.RequestListenerException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -34,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public class HttpDispatcher extends HttpServlet {
 
     private ServletConfig         servletConfig;
@@ -60,7 +62,7 @@ public class HttpDispatcher extends HttpServlet {
         if (dispatcherContext == null) {
             dispatcherContext = HttpDispatcherContext.getDefaultContext();
         }
-        Sys.main.log.info(servletConfig.getServletName()
+        log.info(servletConfig.getServletName()
                 + " initialized successfully");
     }
 
@@ -70,7 +72,7 @@ public class HttpDispatcher extends HttpServlet {
     public void destroy() {
         super.destroy();
         dispatcherContext.unregisterAll();
-        Sys.main.log.info(servletConfig.getServletName()
+        log.info(servletConfig.getServletName()
                 + " destroyed successfully");
     }
 
@@ -98,7 +100,7 @@ public class HttpDispatcher extends HttpServlet {
              * Send an HTTP NOT FOUND error if no listener found for the event.
              */
             if (listener == null) {
-                Sys.main.log.debug(event + " has no listener.");
+                log.debug(event + " has no listener.");
                 response.sendError(HttpURLConnection.HTTP_NOT_FOUND, pathInfo);
                 return;
             }
@@ -115,7 +117,7 @@ public class HttpDispatcher extends HttpServlet {
                      * process it if it should be accepted.
                      */
                     if (fireRequestAcceptedEvent(event)) {
-                        Sys.main.log.debug(event + " is being processed by "
+                        log.debug(event + " is being processed by "
                                 + listener);
 
                         /*
@@ -128,7 +130,7 @@ public class HttpDispatcher extends HttpServlet {
                         }
                         long end = new Date().getTime();
 
-                        Sys.main.log.debug(event
+                        log.debug(event
                                 + " had been processed successfully for "
                                 + (end - start) + " ms");
 
@@ -139,7 +141,7 @@ public class HttpDispatcher extends HttpServlet {
                      * rejected.
                      */
                     else {
-                        Sys.main.log.debug(event + " is rejected.");
+                        log.debug(event + " is rejected.");
                         if (!response.isCommitted()) {
                             response.sendError(
                                     HttpURLConnection.HTTP_BAD_REQUEST,
@@ -153,7 +155,7 @@ public class HttpDispatcher extends HttpServlet {
                  * or unexpected server error.
                  */
                 catch (Throwable e) {
-                    Sys.main.log.error("Error in processing HTTP request", e);
+                    log.error("Error in processing HTTP request", e);
                     String errMsg = (e instanceof RequestListenerException ? e
                             .getMessage() : e.getClass().getName() + ": "
                             + e.getMessage());
@@ -177,7 +179,7 @@ public class HttpDispatcher extends HttpServlet {
                         }
                     }
 
-                    Sys.main.log.debug(event + " is being forwarded to '" + path + "'");
+                    log.debug(event + " is being forwarded to '" + path + "'");
 
                     RequestDispatcher dispatcher = getServletContext()
                             .getRequestDispatcher(path);
@@ -217,7 +219,7 @@ public class HttpDispatcher extends HttpServlet {
             }
         }
         catch (Exception e) {
-            Sys.main.log.error("Unable to set servlet default encoding", e);
+            log.error("Unable to set servlet default encoding", e);
         }
     }
 

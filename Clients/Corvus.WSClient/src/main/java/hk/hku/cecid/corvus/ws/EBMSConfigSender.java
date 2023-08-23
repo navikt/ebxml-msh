@@ -9,16 +9,17 @@
 
 package hk.hku.cecid.corvus.ws;
 
+import hk.hku.cecid.corvus.ws.data.DataFactory;
+import hk.hku.cecid.corvus.ws.data.EBMSConfigData;
+import hk.hku.cecid.piazza.commons.data.Data;
+import hk.hku.cecid.piazza.commons.soap.SOAPSender;
+import hk.hku.cecid.piazza.commons.util.PropertyTree;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Date;
 import java.util.Map;
 
-import hk.hku.cecid.corvus.ws.data.DataFactory;
-import hk.hku.cecid.corvus.ws.data.EBMSConfigData;
-
-import hk.hku.cecid.piazza.commons.data.Data;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
-import hk.hku.cecid.piazza.commons.util.PropertyTree;
-import hk.hku.cecid.piazza.commons.soap.SOAPSender;
+;
 
 /**
  * The <code>EBMSConfigSender</code> is a client sender sending SOAP web
@@ -41,6 +42,7 @@ import hk.hku.cecid.piazza.commons.soap.SOAPSender;
  * @version 1.0.2
  * @since	Elf 0818
  */
+@Slf4j
 public class EBMSConfigSender extends SOAPSender
 {				
 	private final String NS_URI = EBMSMessageSender.NS_URI;
@@ -52,13 +54,12 @@ public class EBMSConfigSender extends SOAPSender
 	
 	/**
 	 * Explicit Constructor.
-	 * 
-	 * @param l		The logger used for log message and exception.
+	 *
 	 * @param data	The EBMS Configuration parameters.
 	 */
-	public EBMSConfigSender(FileLogger l, EBMSConfigData data)
+	public EBMSConfigSender(EBMSConfigData data)
 	{	
-		super(l, (Data)data, data.getSendEndpoint());
+		super((Data)data, data.getSendEndpoint());
 		this.setLoopTimes(1);		
 	}	
 	
@@ -73,14 +74,14 @@ public class EBMSConfigSender extends SOAPSender
 		if (log != null)
 		{		
 			// Log all information for this sender.	
-			this.log.log("EbMS Configurator Client init at " + new Date().toString());
-			this.log.log("");
-			this.log.log("Sending EbMS Config SOAP Message with following configuration");						
-			this.log.log("------------------------------------------------------------------");
+			log.info("EbMS Configurator Client init at " + new Date().toString());
+			log.info("");
+			log.info("Sending EbMS Config SOAP Message with following configuration");						
+			log.info("------------------------------------------------------------------");
 			if (data != null)
-				this.log.log(data.toString());
-			this.log.log("------------------------------------------------------------------");
-			this.log.log("");	
+				log.info(data.toString());
+			log.info("------------------------------------------------------------------");
+			log.info("");	
 		}		
 		// Initialize the message.
 		try{
@@ -88,7 +89,7 @@ public class EBMSConfigSender extends SOAPSender
 			this.setRequestDirty(false);
 		}catch(Exception e){
 			if (this.log != null)
-				this.log.log("Unable to initialize the SOAP Message");
+				log.info("Unable to initialize the SOAP Message");
 			this.onError(e);
 		}		
 	}	
@@ -96,7 +97,7 @@ public class EBMSConfigSender extends SOAPSender
 	/**
 	 * The SOAPRequest in the creation stage should be liked this.
 	 * 
-	 * @throws Exceptions
+	 * @throws Exception
 	 */
 	public void initializeMessage() throws Exception
 	{	
@@ -126,9 +127,8 @@ public class EBMSConfigSender extends SOAPSender
 		EBMSConfigData data = (EBMSConfigData) this.properties;
 		// Get the first element with name "status".
 		this.lastSuccessfulConfigStatus = 
-			this.getResponseElementText("status", NS_URI, 0);				
-		if (this.log != null)
-			log.log("Configuration Result: " + this.lastSuccessfulConfigStatus);
+			this.getResponseElementText("status", NS_URI, 0);
+			log.info("Configuration Result: " + this.lastSuccessfulConfigStatus);
 	}
 	
 	/**
@@ -153,9 +153,7 @@ public class EBMSConfigSender extends SOAPSender
 			System.out.println("        EBMS Configuration Updater          ");
 			System.out.println("----------------------------------------------------");
 			
-			// Initialize the logger.
-			System.out.println("Initialize logger .. ");
-			FileLogger logger = new FileLogger(new java.io.File(args[1]));	
+
 			
 			// Initialize the query parameter.
 			System.out.println("Importing  EBMS sending parameters ... ");	
@@ -166,7 +164,7 @@ public class EBMSConfigSender extends SOAPSender
 			
 			// Initialize the sender.
 			System.out.println("Initialize EBMS configuration updater ... "); 			
-			EBMSConfigSender sender = new EBMSConfigSender(logger, ecd);
+			EBMSConfigSender sender = new EBMSConfigSender(ecd);
 			
 			System.out.println("Sending    EBMS-config sending request ... ");
 			sender.run();			

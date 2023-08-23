@@ -9,14 +9,12 @@
 
 package hk.hku.cecid.corvus.http;
 
-import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 
 import hk.hku.cecid.corvus.ws.data.EBMSAdminData;
 import hk.hku.cecid.piazza.commons.io.IOHandler;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
-import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
+;
+import lombok.extern.slf4j.Slf4j;
 
 /** 
  * The <code>EBMSEnvelopQuerySenderUnitTest</code> is unit test of <code>EBMSEnvelopQuerySender</code>. 
@@ -25,13 +23,9 @@ import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
  * @version 1.0.0
  * @since   H2O 28/11/2007
  */
+@Slf4j
 public class EBMSEnvelopQuerySenderUnitTest extends EnvelopQuerySenderUnitTest 
 {
-	// Fixture name.
-	public static final String 	TEST_LOG 		= "test.log";
-	// Fixture loader
-	private static ClassLoader 	FIXTURE_LOADER	= FixtureStore.createFixtureLoader(false, EBMSEnvelopQuerySenderUnitTest.class);
-	
 	/** 
 	 * The testing target which is an EBMSEnvelopQuerySender and the associated data. 
 	 * The testing target variable is available in the super class.
@@ -55,15 +49,8 @@ public class EBMSEnvelopQuerySenderUnitTest extends EnvelopQuerySenderUnitTest
 	/** Initialize the test target which is a PartnershipSender. */
 	public void initTestTarget() throws Exception 
 	{
-		URL logURL = FIXTURE_LOADER.getResource(TEST_LOG);
-		if (logURL == null)
-			throw new NullPointerException("Missing fixture " + TEST_LOG + " in the fixture path");
-				
-		File log = new File(logURL.getFile());
-		this.testClassLogger = new FileLogger(log);
-		
 		// Create an AS2EnvelopQuerySender sender.
-		this.target = new EBMSEnvelopQuerySender(this.testClassLogger, this.adata); 
+		this.target = new EBMSEnvelopQuerySender( this.adata); 
 		// Set something for preventing throwing exception
 		this.target.setMessageCriteriaToDownload("test-message-id", "INBOX");		
 	}
@@ -75,7 +62,7 @@ public class EBMSEnvelopQuerySenderUnitTest extends EnvelopQuerySenderUnitTest
 		super.testEnvelopQuery();
 		InputStream eins = this.target.getEnvelopStream();
 		String envelop = IOHandler.readString(eins, null);
-		this.logger.info(envelop);
+		log.info(envelop);
 	}
 	
 	/* 
@@ -89,6 +76,6 @@ public class EBMSEnvelopQuerySenderUnitTest extends EnvelopQuerySenderUnitTest
 		this.target.run();
 		InputStream eins = this.target.getEnvelopStream();
 		String envelop = IOHandler.readString(eins, null);
-		this.logger.info(envelop);
+		log.info(envelop);
 	}*/
 }

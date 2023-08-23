@@ -1,11 +1,11 @@
 package org.jentrata.spa.integration.handler;
 
-import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.message.MessageHandler;
 import hk.hku.cecid.piazza.commons.spa.Extension;
 import hk.hku.cecid.piazza.commons.spa.ExtensionPointIteratedHandler;
 import hk.hku.cecid.piazza.commons.spa.PluginException;
 import hk.hku.cecid.piazza.commons.util.Instance;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.jentrata.spa.integration.IntegrationPluguin;
@@ -16,6 +16,7 @@ import java.util.Properties;
 /**
  * Created by aaronwalker on 11/07/2016.
  */
+@Slf4j
 public class MessageHandlerExtensionPointHandler extends ExtensionPointIteratedHandler {
 
     @Override
@@ -41,9 +42,9 @@ public class MessageHandlerExtensionPointHandler extends ExtensionPointIteratedH
     }
 
     public void registerHandler(String id, MessageHandler handler, Properties config) throws Exception {
-        Sys.main.log.debug("Adding message handler:" + id);
+        log.debug("Adding message handler:" + id);
         IntegrationPluguin.getInstance().getSpringBootstrapComponent().registerBean(id,new MessageHandlerProcessor(handler,config));
-        Sys.main.log.info("Added message handler:" + id);
+        log.info("Added message handler:" + id);
     }
 
     private static class MessageHandlerProcessor implements Processor {

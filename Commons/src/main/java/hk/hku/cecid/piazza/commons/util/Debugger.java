@@ -11,6 +11,7 @@ package hk.hku.cecid.piazza.commons.util;
 
 import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.module.Module;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Enumeration;
@@ -27,6 +28,7 @@ import java.util.Map;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public final class Debugger {
 
     private static Module module = Sys.main;
@@ -182,7 +184,7 @@ public final class Debugger {
      */
     private static void printDebug(String caller, String objId, Object msg) {
         if (module != null) {
-            module.getLogger().debug(caller + " -- " + objId + ": " + msg);
+            log.debug(caller + " -- " + objId + ": " + msg);
         }
     }
 

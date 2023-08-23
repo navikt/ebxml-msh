@@ -13,9 +13,8 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 
 import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
 
@@ -26,11 +25,9 @@ import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
  * @version 1.0.0 $STABLE
  * @since   H2O 0908
  */
+@Slf4j
 public class PartnershipOpVeriferUnitTest extends TestCase 
 {
-	// Instance logger
-	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
 	/*
 	 * Since the partnership operation verifer requires Internet connectivity 
 	 * and therefore i have added this dirty proxy settings here. Changed if needed.
@@ -56,8 +53,7 @@ public class PartnershipOpVeriferUnitTest extends TestCase
 	/** Setup the fixture. */
 	public void setUp() throws Exception {
 		this.initTestTarget();
-		logger = LoggerFactory.getLogger(this.getName());
-		logger.info(this.getName() + " Start ");
+		log.info(this.getName() + " Start ");
 	}
 		
 	/** Initialize the test target which is a Partnership Operation Verifier. */
@@ -114,8 +110,8 @@ public class PartnershipOpVeriferUnitTest extends TestCase
 	}
 	
 	/** Setup the fixture. */
-	public void tearDown() throws Exception {			
-		logger.info(this.getName() + " End ");
+	public void tearDown() throws Exception {
+		log.info(this.getName() + " End ");
 	}
 	
 	/**
@@ -129,7 +125,7 @@ public class PartnershipOpVeriferUnitTest extends TestCase
 			InputStream ins = FIXTURE_LOADER.getResourceAsStream(fixtureName);
 			this.target.validate(ins);		
 		}catch(Exception ex){
-			logger.info("Expected: " + ex.getMessage());
+			log.info("Expected: " + ex.getMessage());
 			failed = true;
 		}
 		assertTrue(failed);		

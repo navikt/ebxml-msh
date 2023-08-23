@@ -11,10 +11,6 @@ public abstract class SystemComponent extends Component {
 			throw new ModuleException("System module not found.");
 		return (SystemModule)getModule();
 	}
-
-	public Logger getLogger() {
-		return (Logger)getSystemModule().getComponent("logger");
-	}
 	
 	public DAOFactory getDAOFactory() {
 		return (DAOFactory)getSystemModule().getComponent("daofactory");

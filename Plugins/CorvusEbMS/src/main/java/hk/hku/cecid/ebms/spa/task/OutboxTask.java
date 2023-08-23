@@ -15,27 +15,25 @@ import hk.hku.cecid.ebms.pkg.ErrorList;
 import hk.hku.cecid.ebms.pkg.SignatureHandler;
 import hk.hku.cecid.ebms.pkg.validation.EbxmlMessageValidator;
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
-import hk.hku.cecid.ebms.spa.dao.MessageDAO;
-import hk.hku.cecid.ebms.spa.dao.MessageDVO;
-import hk.hku.cecid.ebms.spa.dao.MessageServerDAO;
-import hk.hku.cecid.ebms.spa.dao.OutboxDAO;
-import hk.hku.cecid.ebms.spa.dao.OutboxDVO;
-import hk.hku.cecid.ebms.spa.handler.EbxmlMessageDAOConvertor;
-import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
-import hk.hku.cecid.ebms.spa.handler.MessageServiceHandler;
-import hk.hku.cecid.ebms.spa.handler.MessageServiceHandlerException;
-import hk.hku.cecid.ebms.spa.handler.SignalMessageGenerator;
+import hk.hku.cecid.ebms.spa.dao.*;
+import hk.hku.cecid.ebms.spa.handler.*;
 import hk.hku.cecid.ebms.spa.listener.EbmsRequest;
 import hk.hku.cecid.ebms.spa.listener.EbmsResponse;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.module.ActiveTask;
+import hk.hku.cecid.piazza.commons.net.HostInfo;
 import hk.hku.cecid.piazza.commons.security.SMimeMessage;
 import hk.hku.cecid.piazza.commons.security.TrustedHostnameVerifier;
 import hk.hku.cecid.piazza.commons.soap.SOAPHttpConnector;
 import hk.hku.cecid.piazza.commons.soap.SOAPMailSender;
 import hk.hku.cecid.piazza.commons.util.StringUtilities;
-import hk.hku.cecid.piazza.commons.net.HostInfo;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.mail.Session;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,16 +46,11 @@ import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.mail.Session;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import jakarta.xml.soap.SOAPException;
-import jakarta.xml.soap.SOAPMessage;
-
 /**
  * @author Donahue Sze, Twinsen Tsang (modifiers)
  * 
  */
+@Slf4j
 public class OutboxTask implements ActiveTask {
 
 	// The error message when internal error thrown.
@@ -149,7 +142,7 @@ public class OutboxTask implements ActiveTask {
             boolean isOutboundAgreementCheck = MessageServiceHandler.getInstance()
             	.isOutboundAgreementCheck();
             if (isOutboundAgreementCheck) {
-                EbmsProcessor.core.log.info("Outbound agreement checking for interop");
+                log.info("Outbound agreement checking for interop");
                 outboxAgreement = new AgreementHandler(message, true);
             } else {
                 outboxAgreement = new AgreementHandler(message, false);
@@ -181,11 +174,11 @@ public class OutboxTask implements ActiveTask {
 
         } catch (MessageValidationException mve) {
             errorMessage = mve.getMessage();
-            EbmsProcessor.core.log.error("Message Validation Exception: "
+            log.error("Message Validation Exception: "
                     + messageDVO.getMessageId(), mve);
         } catch (Throwable e) {
             errorMessage = "Internal Server Error: " + e;
-            EbmsProcessor.core.log.error("Internal Server Error: ", e);
+            log.error("Internal Server Error: ", e);
         }
 
     }
@@ -219,7 +212,7 @@ public class OutboxTask implements ActiveTask {
 	            if (!outboxDao.findOutbox(outboxDVO))	            	
 	            {	            	
 	            	//throw new NullPointerException("Unable to retrieve the outbox record for :" + messageDVO.getMessageId());
-	            	EbmsProcessor.core.log.warn("Redundant working thread for : " + messageDVO.getMessageId());
+	            	log.warn("Redundant working thread for : " + messageDVO.getMessageId());
 	            		            	
 	            	/*
 	            	 * 18/12/2007  Temporary Solution for further guarding the status being overridden by the out-box 
@@ -237,7 +230,7 @@ public class OutboxTask implements ActiveTask {
 	            		if (!messageDAO.findRefToMessage(ackDVO))
 	            		{
 	            			// Seems impossible ?	            		
-		            		EbmsProcessor.core.log.error(
+		            		log.error(
 		            			"Redundant working thread, Cannot find the ACK / Error, Update message to PE:" + 
 		            			this.messageDVO.getMessageId());
 		            		
@@ -249,7 +242,7 @@ public class OutboxTask implements ActiveTask {
 	            	}
 	            	else
 	            	{
-	            		EbmsProcessor.core.log.warn(
+	            		log.warn(
 	            			"Redundant working thread, found associated ACK / Error : " + ackDVO.getMessageId());
 	            		
 	            		 // Get the ebxml acknowledgment from repository.
@@ -258,7 +251,7 @@ public class OutboxTask implements ActiveTask {
 	                    
 	                    if (ebxmlMessage.getAcknowledgment() != null)
 	                    {
-	                    	EbmsProcessor.core.log.warn(
+	                    	log.warn(
 	                    		"Re-update status for message " + 
 	                    		this.messageDVO.getMessageId()  + 
 	                    		" to " + MessageClassifier.INTERNAL_STATUS_PROCESSED);
@@ -271,7 +264,7 @@ public class OutboxTask implements ActiveTask {
 	                    }
 	            		else if (ebxmlMessage.getErrorList() != null)
 	                    {
-	            			EbmsProcessor.core.log.warn(
+	            			log.warn(
 		                    	"Re-update status for message " + 
 		                    	this.messageDVO.getMessageId()  + 
 		                    	" to " + MessageClassifier.INTERNAL_STATUS_PROCESSED_ERROR);
@@ -300,7 +293,7 @@ public class OutboxTask implements ActiveTask {
 	            this.maxAllowedAttempt = Math.max(outboxAgreement.getRetries() - 1, 0) + 1;
 	            this.attempted = outboxDVO.getRetried();
 	        } catch (Throwable t) {
-	        	EbmsProcessor.core.log.error("Cannot get the maximum retries", t);
+	        	log.error("Cannot get the maximum retries", t);
 	        }
     	}
         return this.maxAllowedAttempt;
@@ -352,20 +345,20 @@ public class OutboxTask implements ActiveTask {
         try {
             checkAndSignEbxmlMessage(ebxmlMessage);
         } catch (MessageValidationException mve) {
-            EbmsProcessor.core.log.error("Cannot get the sign the message: ", mve);
+            log.error("Cannot get the sign the message: ", mve);
             errorMessage = mve.getMessage();
         }
 
         // Error occurred when constructing the outbox messageDVO or sign the EbXML message.  
         if (errorMessage != null) {            
             try {
-                EbmsProcessor.core.log.info("Mark as failed (Message id: " + mID + ")");                
+                log.info("Mark as failed (Message id: " + mID + ")");                
                 messageDVO.setStatus(MessageClassifier.INTERNAL_STATUS_DELIVERY_FAILURE);
                 messageDVO.setStatusDescription(errorMessage);
                 messageServerDAO.clearMessage(messageDVO);
                 generateErrorMessage(ERROR_TYPE_INTERNAL_ERROR);
             } catch (DAOException daoe) {
-                EbmsProcessor.core.log.error("Cannot generate error message", daoe);
+                log.error("Cannot generate error message", daoe);
             }
             retryEnabled = false;
             throw new DeliveryException(errorMessage);
@@ -386,19 +379,19 @@ public class OutboxTask implements ActiveTask {
 	        	
 	       		if (this.checkUpdateStatusIsAllow()){       
 	       			// TODO: The operations below is not atomic and may have race condition between the incoming thread.
-	       			EbmsProcessor.core.log.info("Reliable message (" + mID
+	       			log.info("Reliable message (" + mID
 	       				+ ") - no acknowledgement received until maximum retries");
 	       			try {
-		        		EbmsProcessor.core.log.info("Mark as failed (Message id: " + mID + ")");
+		        		log.info("Mark as failed (Message id: " + mID + ")");
 						this.messageDVO.setStatus(MessageClassifier.INTERNAL_STATUS_DELIVERY_FAILURE);
 						this.messageDVO.setTimeoutTimestamp(null);
 						messageServerDAO.clearMessage(messageDVO);
 						generateErrorMessage(ERROR_TYPE_MAXIMUM_RETRIES_REACHED);
 					} catch (DAOException e) {
-						EbmsProcessor.core.log.error("Cannot generate error message", e);
+						log.error("Cannot generate error message", e);
 					}				
 	       		} else {
-	       			EbmsProcessor.core.log.warn("Reliable message (" + mID
+	       			log.warn("Reliable message (" + mID
 	       				+ ") - Redundant working thread is now terminated");  
 	       		}       		
 	       		this.retryEnabled = false;
@@ -425,7 +418,7 @@ public class OutboxTask implements ActiveTask {
            		}            	            	
             } catch (DAOException daoe){
             	String detail = "Cannot update the timeout timestamp (Message id: " + mID + ")";
-            	EbmsProcessor.core.log.error(detail, daoe);
+            	log.error(detail, daoe);
                 throw new DeliveryException (detail, daoe);
             }            
         }
@@ -463,7 +456,7 @@ public class OutboxTask implements ActiveTask {
              * message when there is error in delivery.
              */
         	if (protocolCommErr != null){
-        		EbmsProcessor.core.log.info("Mark as failed (Message id: " + mID + ")");
+        		log.info("Mark as failed (Message id: " + mID + ")");
         		toStatus = MessageClassifier.INTERNAL_STATUS_DELIVERY_FAILURE;
         		toStatusDesc = "Delivery Failure when sending message: "
        				+ StringUtilities.toString(protocolCommErr);
@@ -485,7 +478,7 @@ public class OutboxTask implements ActiveTask {
                 messageServerDAO.clearMessage(this.messageDVO);
         	} catch (DAOException daoe){
             	String detail = "Error in clear the non-reliable message: " + mID;  
-                EbmsProcessor.core.log.error(detail, daoe);
+                log.error(detail, daoe);
                 throw new DeliveryException (detail, daoe);
             }
         }        
@@ -503,7 +496,7 @@ public class OutboxTask implements ActiveTask {
                 outboxDao.updateOutbox(outboxDVO);
             } catch (DAOException daoe){
             	String detail = "Cannont update the retires count (Message id: " + mID + ")";
-                EbmsProcessor.core.log.error(detail, daoe);
+                log.error(detail, daoe);
                 throw new DeliveryException (detail, daoe);
             }           
         }
@@ -537,13 +530,13 @@ public class OutboxTask implements ActiveTask {
                     MessageClassifier.MESSAGE_TYPE_ORDER)) {
                 boolean isSign = outboxAgreement.isSign();
                 if (isSign){
-                    EbmsProcessor.core.log.info("Sign the message: " + ebxmlMessage.getMessageId());
+                    log.info("Sign the message: " + ebxmlMessage.getMessageId());
                     String dsAlgorithm = outboxAgreement.getDsAlgorithm();
                     String mdAlgorithm = outboxAgreement.getMdAlgorithm();
                     SignatureHandler signatureHandler = MessageServiceHandler
                             .createSignatureHandler(ebxmlMessage);
                     if (MessageServiceHandler.getInstance().isSignHeaderOnly()) {
-                        EbmsProcessor.core.log.info("Sign header only for interop");
+                        log.info("Sign header only for interop");
                         signatureHandler.sign(dsAlgorithm, mdAlgorithm, true);
                     } else {
                         signatureHandler.sign(dsAlgorithm, mdAlgorithm, false);
@@ -552,7 +545,7 @@ public class OutboxTask implements ActiveTask {
             }
         } catch (Exception e) {
         	String detail = "Cannot sign the ebxml message";
-//            EbmsProcessor.core.log.error(detail, e);
+//            log.error(detail, e);
             throw new MessageValidationException(detail, e);
         }
     }
@@ -563,7 +556,7 @@ public class OutboxTask implements ActiveTask {
      * @param link
      */
     private void sendMsgByHttp(URL link, boolean isSyncReply, EbxmlMessage ebxmlMessage) throws DeliveryException {
-        EbmsProcessor.core.log.info("Send message " + messageDVO.getMessageId() + " to " + link);
+        log.info("Send message " + messageDVO.getMessageId() + " to " + link);
 
         HttpURLConnection conn = null;
         SOAPMessage reply = null;
@@ -594,7 +587,7 @@ public class OutboxTask implements ActiveTask {
             	
 				EbxmlMessage replyMsg = new EbxmlMessage(reply);;
             
-            	EbmsProcessor.core.log.info("Store incoming sync reply message");
+            	log.info("Store incoming sync reply message");
 
             	// Philip 20081116 
             	// in case sync reply = true and ack requested = false
@@ -603,7 +596,7 @@ public class OutboxTask implements ActiveTask {
                     EbxmlMessageValidator validator = new EbxmlMessageValidator();
                     validator.validate(replyMsg);
                 } catch (Exception e) {
-                    EbmsProcessor.core.log.info("Reply message is not a valid ebxml message");
+                    log.info("Reply message is not a valid ebxml message");
                     return;
                 }
 
@@ -618,7 +611,7 @@ public class OutboxTask implements ActiveTask {
                 msh.processInboundMessage(ebmsRequest, ebmsResponse);
                 
             } catch (Exception e) {
-                EbmsProcessor.core.log.error("Cannot convert the reply message", e);
+                log.error("Cannot convert the reply message", e);
                 throw new DeliveryException("Cannot convert the reply message", e);
             }
         }
@@ -631,7 +624,7 @@ public class OutboxTask implements ActiveTask {
         MessageServiceHandler msh = MessageServiceHandler.getInstance();
 
         String toMailAddress = toPartyURL.getPath();
-        EbmsProcessor.core.log.info("Send message " + messageDVO.getMessageId()
+        log.info("Send message " + messageDVO.getMessageId()
                 + " to " + toMailAddress);
 
         SOAPMailSender smtp = new SOAPMailSender(msh.smtpProtocol,
@@ -651,7 +644,7 @@ public class OutboxTask implements ActiveTask {
             message.setHeader(EbxmlMessage.SOAP_ACTION, EbxmlMessage.SOAP_ACTION_VALUE);            
 
             if (outboxAgreement.isEncrypt()) {
-                EbmsProcessor.core.log.info("Encrypt the message");
+                log.info("Encrypt the message");
 
                 X509Certificate serverCert = null;
                 if (outboxAgreement.getEncryptCert() != null) {
@@ -663,7 +656,7 @@ public class OutboxTask implements ActiveTask {
                     bais.close();
                     bais = null;
                 } else {
-                    EbmsProcessor.core.log.error("Please upload the cert");
+                    log.error("Please upload the cert");
                     throw new RuntimeException("Please upload the cert");
                 }
 
@@ -688,7 +681,7 @@ public class OutboxTask implements ActiveTask {
             smtp.send(message);
             
         } catch (Exception e) {
-            EbmsProcessor.core.log.error("Cannot send the message", e);
+            log.error("Cannot send the message", e);
             throw new DeliveryException("Cannot send the message", e);
         }
     }
@@ -697,7 +690,7 @@ public class OutboxTask implements ActiveTask {
      * Invoke when {@link #execute()} throw any kind of uncaught exception.
      */
     public void onFailure(Throwable t) {
-        EbmsProcessor.core.log.error("Error in outbox task", t);
+        log.error("Error in outbox task", t);
     }
     
     public boolean isSucceedFast(){
@@ -743,12 +736,12 @@ public class OutboxTask implements ActiveTask {
             ebxmlMessage = EbxmlMessageDAOConvertor.getEbxmlMessage(messageDVO
                     .getMessageId(), MessageClassifier.MESSAGE_BOX_OUTBOX);
         } catch (MessageValidationException mve) {
-            EbmsProcessor.core.log.error("Cannot get the ebxml message: "
+            log.error("Cannot get the ebxml message: "
                     + messageDVO.getMessageId(), mve);
             try {
                 ebxmlMessage = new EbxmlMessage();
             } catch (SOAPException e1) {
-                EbmsProcessor.core.log.error("Cannot new the ebxml message: "
+                log.error("Cannot new the ebxml message: "
                         + messageDVO.getMessageId(), e1);
             }
         }
@@ -756,7 +749,7 @@ public class OutboxTask implements ActiveTask {
         try {
             EbxmlMessage errorEbxmlMessage = null;
             if (failureType.equalsIgnoreCase(ERROR_TYPE_INTERNAL_ERROR)) {
-                EbmsProcessor.core.log.info("Generate internal error message");
+                log.info("Generate internal error message");
                 // messageDVO error, agreement error or repository error
                 // when initiation
                 errorEbxmlMessage = SignalMessageGenerator
@@ -765,7 +758,7 @@ public class OutboxTask implements ActiveTask {
                                 ErrorList.SEVERITY_ERROR, errorMessage, null);
             } else 
             if (failureType.equalsIgnoreCase(ERROR_TYPE_DELIVERY_FAILTURE)) {
-                EbmsProcessor.core.log.info("Generate delivery failure error message");
+                log.info("Generate delivery failure error message");
                 // delivery failure if no error messageDVO
                 errorEbxmlMessage = SignalMessageGenerator
                         .generateErrorMessageBySender(ebxmlMessage,
@@ -774,7 +767,7 @@ public class OutboxTask implements ActiveTask {
                                 null);
             } else 
             	if (failureType.equalsIgnoreCase(ERROR_TYPE_MAXIMUM_RETRIES_REACHED)) {
-                EbmsProcessor.core.log.info("Generate delivery failure error message");
+                log.info("Generate delivery failure error message");
                 // delivery failure if no error messageDVO
                 errorEbxmlMessage = SignalMessageGenerator
                         .generateErrorMessageBySender(ebxmlMessage,
@@ -785,9 +778,9 @@ public class OutboxTask implements ActiveTask {
             }
             storeIncomingMessage(errorEbxmlMessage);
         } catch (SOAPException e) {
-            EbmsProcessor.core.log.error("Cannot generate error message", e);
+            log.error("Cannot generate error message", e);
         } catch (MessageServiceHandlerException e) {
-            EbmsProcessor.core.log.error("Cannot store incoming message", e);
+            log.error("Cannot store incoming message", e);
         }
     }
    
@@ -863,7 +856,7 @@ public class OutboxTask implements ActiveTask {
             messageServerDAO.storeMessage(messageDVO, message.getRepositoryDVO());
         } catch (DAOException daoe) {
         	String detail = "Error in storing incoming message.";
-            EbmsProcessor.core.log.error(detail, daoe);
+            log.error(detail, daoe);
             throw new MessageServiceHandlerException(detail, daoe);
         }
     }
@@ -897,7 +890,7 @@ public class OutboxTask implements ActiveTask {
                     return messageDVO.getPrincipalId();
                 }
             } catch (DAOException e) {
-                EbmsProcessor.core.log.error("Error in finding principal id", e);
+                log.error("Error in finding principal id", e);
             }
         }
         // search in receiver channel
@@ -912,7 +905,7 @@ public class OutboxTask implements ActiveTask {
             partnershipDAO.findPartnershipByCPA(partnershipDVO);
             return partnershipDVO.getPrincipalId();
         } catch (DAOException e) {
-            EbmsProcessor.core.log.error("Error in finding principal id", e);
+            log.error("Error in finding principal id", e);
         }
         return "nobody";
     }

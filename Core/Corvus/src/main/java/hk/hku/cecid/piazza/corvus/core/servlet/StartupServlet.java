@@ -9,8 +9,8 @@
 
 package hk.hku.cecid.piazza.corvus.core.servlet;
 
-import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.corvus.core.Kernel;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -27,6 +27,7 @@ import java.util.Properties;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public class StartupServlet extends HttpServlet {
 
     /**
@@ -53,7 +54,7 @@ public class StartupServlet extends HttpServlet {
 
         Kernel.getInstance();
         
-        Sys.main.log.info("Corvus Startup Servlet initialized successfully");
+        log.info("Corvus Startup Servlet initialized successfully");
     }
     
     
@@ -67,6 +68,6 @@ public class StartupServlet extends HttpServlet {
         
         Kernel.getInstance().shutdown(); 
 
-        Sys.main.log.info("Corvus Startup Servlet destroyed successfully");
+        log.info("Corvus Startup Servlet destroyed successfully");
     }
 }

@@ -8,6 +8,7 @@ import hk.hku.cecid.ebms.spa.dao.MessageDVO;
 import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.Source;
@@ -17,6 +18,7 @@ import java.io.StringWriter;
 /**
  * Created by aaronwalker on 22/12/2016.
  */
+@Slf4j
 public class ResendPayloadAdapter extends AdminPageletAdaptor {
     protected Source getCenterSource(HttpServletRequest request) {
         PropertyTree dom;
@@ -58,7 +60,7 @@ public class ResendPayloadAdapter extends AdminPageletAdaptor {
             e.printStackTrace(printWriter);
             dom.setProperty("exception_message", stringWriter.toString());
 
-            EbmsProcessor.core.log.debug(
+            log.debug(
                     "Unable to process the \"Resend as New\" request", e);
         }
         return dom.getSource();

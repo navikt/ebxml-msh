@@ -9,45 +9,29 @@
 
 package hk.hku.cecid.corvus.ws;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.Iterator;
-
+import hk.hku.cecid.corvus.ws.data.EBMSMessageHistoryRequestData;
+import hk.hku.cecid.corvus.ws.data.KVPairData;
+import hk.hku.cecid.piazza.commons.net.SimpleHttpMonitor;
 import jakarta.xml.soap.MessageFactory;
 import jakarta.xml.soap.MimeHeaders;
 import jakarta.xml.soap.SOAPElement;
 import jakarta.xml.soap.SOAPMessage;
-
+import junit.framework.Assert;
+import junit.framework.TestCase;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.RequestContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import hk.hku.cecid.corvus.ws.data.EBMSMessageHistoryRequestData;
-import hk.hku.cecid.corvus.ws.EBMSMessageHistoryQuerySender;
-import hk.hku.cecid.corvus.ws.data.KVPairData;
-import hk.hku.cecid.piazza.commons.io.IOHandler;
-import hk.hku.cecid.piazza.commons.net.SimpleHttpMonitor;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
-import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import java.io.*;
+import java.util.Iterator;
+
+;
 @Ignore
+@Slf4j
 public class EBMSMessageHistoryQuerySenderTest extends TestCase{
-	
-	public static final String 	TEST_LOG 		= "test.log";
-
-	private static ClassLoader 	FIXTURE_LOADER	= 
-					FixtureStore.createFixtureLoader(false, EBMSMessageHistoryQuerySender.class);
 
 	// Parameters 
 	public static final int 	TEST_PORT 		= 9000;	
@@ -58,12 +42,10 @@ public class EBMSMessageHistoryQuerySenderTest extends TestCase{
 	/** The testing target which is an PartnershipSender and the associated data*/
 	protected EBMSMessageHistoryQuerySender 	target;
 	protected KVPairData						kvData;
-	protected FileLogger 						testClassLogger;
 	
 	/** The helper for capturing the HTTP data */
 	private SimpleHttpMonitor	monitor;
 	// Instance logger
-	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/** Setup the fixture. */
 
@@ -71,21 +53,13 @@ public class EBMSMessageHistoryQuerySenderTest extends TestCase{
 	public void setUp() throws Exception {
 		
 		this.initTest();
-		logger = LoggerFactory.getLogger(this.getName());
-		logger.info(this.getName() + " Start ");	
+		log.info(this.getName() + " Start ");
 		this.monitor.start();
 		Thread.sleep(5000);
 	}
 	
 	public void initTest()throws Exception 
 	{
-		URL logURL = FIXTURE_LOADER.getResource(TEST_LOG);
-		if (logURL == null)
-			throw new NullPointerException(
-					"Missing fixture " + TEST_LOG + " in the fixture path");
-		
-		File log = new File(logURL.getFile());
-		this.testClassLogger = new FileLogger(log);
 		
 		this.monitor 	= new SimpleHttpMonitor(TEST_PORT)
 		{
@@ -113,11 +87,7 @@ public class EBMSMessageHistoryQuerySenderTest extends TestCase{
 				os.write(CRLF);		
 				os.write("Content-type: text/xml;charset=utf-8".getBytes());
 				os.write(CRLF);
-				os.write(CRLF);*/								
-				
-				
-				InputStream ins = FIXTURE_LOADER.getResourceAsStream("testResponse.log");
-				IOHandler.pipe(ins, os);				
+				os.write(CRLF);*/
 			}
 		};
 	}
@@ -145,7 +115,7 @@ public class EBMSMessageHistoryQuerySenderTest extends TestCase{
 		expectData.setCpaId("cpaid");
 		
 		
-		this.target = new EBMSMessageHistoryQuerySender(this.testClassLogger,expectData);
+		this.target = new EBMSMessageHistoryQuerySender(expectData);
 		try{
 			this.target.run();
 		}catch(Error err){
@@ -181,7 +151,7 @@ public class EBMSMessageHistoryQuerySenderTest extends TestCase{
 		expectData.setCpaId("%_%");
 		
 		
-		this.target = new EBMSMessageHistoryQuerySender(this.testClassLogger,expectData);
+		this.target = new EBMSMessageHistoryQuerySender(expectData);
 		try{
 			this.target.run();
 		}catch(Error err){
@@ -209,7 +179,7 @@ public class EBMSMessageHistoryQuerySenderTest extends TestCase{
 		expectData.setMessageBox("");
 		expectData.setStatus("");
 		
-		this.target = new EBMSMessageHistoryQuerySender(this.testClassLogger,expectData);
+		this.target = new EBMSMessageHistoryQuerySender(expectData);
 		this.target.run();
 		
 		EBMSMessageHistoryRequestData actualData = getHttpRequestData();
@@ -240,7 +210,7 @@ public class EBMSMessageHistoryQuerySenderTest extends TestCase{
 		expectData.setCpaId("#^&--");
 		
 		
-		this.target = new EBMSMessageHistoryQuerySender(this.testClassLogger,expectData);
+		this.target = new EBMSMessageHistoryQuerySender(expectData);
 		try{
 			this.target.run();
 		}catch(Error err){
@@ -269,7 +239,7 @@ public class EBMSMessageHistoryQuerySenderTest extends TestCase{
 		expectData.setMessageBox("");
 		expectData.setStatus("");
 		
-		this.target = new EBMSMessageHistoryQuerySender(this.testClassLogger,expectData);
+		this.target = new EBMSMessageHistoryQuerySender(expectData);
 		try{
 			this.target.run();
 		}catch(Error err){

@@ -18,6 +18,7 @@ import hk.hku.cecid.ebms.spa.listener.EbmsResponse;
 import hk.hku.cecid.piazza.commons.module.ActiveModule;
 import hk.hku.cecid.piazza.commons.security.KeyStoreManagementException;
 import hk.hku.cecid.piazza.commons.security.KeyStoreTrustManager;
+import lombok.extern.slf4j.Slf4j;
 
 import java.security.cert.Certificate;
 import java.util.Properties;
@@ -29,6 +30,7 @@ import java.util.Properties;
  * @author cyng
  * @version $Revision: 1.6 $
  */
+@Slf4j
 public class MessageServiceHandler {
 
     private static MessageServiceHandler messageServiceHandler;
@@ -152,7 +154,7 @@ public class MessageServiceHandler {
             dsProvider = signparams.getProperty("keystore-provider");
             */
         } catch (Exception e) {
-            EbmsProcessor.core.log.debug(
+            log.debug(
                     "Error in getting key store for signature", e);
         }
 
@@ -179,14 +181,14 @@ public class MessageServiceHandler {
 
             smtpPassword = EbmsProcessor.core.properties.getProperty(XPATH_MAIL
                     + XPATH_SMTP + XPATH_PASSWORD);
-            EbmsProcessor.core.log.debug("Smtp Server Setting: ");
-            EbmsProcessor.core.log.debug("- Smtp Host: " + smtpHost);
-            EbmsProcessor.core.log.debug("- Smtp Protocol: " + smtpProtocol);
-            EbmsProcessor.core.log.debug("- Smtp Port: " + smtpPort);
-            EbmsProcessor.core.log.debug("- Smtp From Mail Address: "
+            log.debug("Smtp Server Setting: ");
+            log.debug("- Smtp Host: " + smtpHost);
+            log.debug("- Smtp Protocol: " + smtpProtocol);
+            log.debug("- Smtp Port: " + smtpPort);
+            log.debug("- Smtp From Mail Address: "
                     + smtpFromMailAddress);
-            EbmsProcessor.core.log.debug("- Smtp Username: " + smtpUsername);
-            EbmsProcessor.core.log.debug("- Smtp Password: " + smtpPassword);
+            log.debug("- Smtp Username: " + smtpUsername);
+            log.debug("- Smtp Password: " + smtpPassword);
         }
 
         // pop server
@@ -214,15 +216,15 @@ public class MessageServiceHandler {
                     + XPATH_POP + XPATH_PASSWORD);
             ((ActiveModule) EbmsProcessor.getModuleGroup().getModule(
                     "ebms.mail-collector")).start();
-            EbmsProcessor.core.log.info("Mail Collector started - Host: "
+            log.info("Mail Collector started - Host: "
                     + popHost);
-            EbmsProcessor.core.log.debug("Pop Server Setting: ");
-            EbmsProcessor.core.log.debug("- Pop Host: " + popHost);
-            EbmsProcessor.core.log.debug("- Pop Protocol: " + popProtocol);
-            EbmsProcessor.core.log.debug("- Pop Port: " + popPort);
-            EbmsProcessor.core.log.debug("- Pop Folder: " + popFolder);
-            EbmsProcessor.core.log.debug("- Pop Username: " + popUsername);
-            EbmsProcessor.core.log.debug("- Pop Password: " + popPassword);
+            log.debug("Pop Server Setting: ");
+            log.debug("- Pop Host: " + popHost);
+            log.debug("- Pop Protocol: " + popProtocol);
+            log.debug("- Pop Port: " + popPort);
+            log.debug("- Pop Folder: " + popFolder);
+            log.debug("- Pop Username: " + popUsername);
+            log.debug("- Pop Password: " + popPassword);
         }
 
         // optional properties for interop
@@ -253,7 +255,7 @@ public class MessageServiceHandler {
 
     public synchronized static MessageServiceHandler getInstance() {
         if (!messageServiceHandler_initFlag) {
-            EbmsProcessor.core.log.debug("Message service handler started");
+            log.debug("Message service handler started");
             messageServiceHandler = new MessageServiceHandler();
             messageServiceHandler_initFlag = true;
         }
@@ -265,7 +267,7 @@ public class MessageServiceHandler {
     public synchronized void destroy() {
         if (!messageServiceHandler_destroyFlag) {
             messageServiceHandler_destroyFlag = true;
-            EbmsProcessor.core.log.debug("Message service handler stopped");
+            log.debug("Message service handler stopped");
         }
     }
 

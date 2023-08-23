@@ -9,23 +9,22 @@
 
 package hk.hku.cecid.corvus.ws;
 
-import java.io.File;
-import java.io.IOException;
-
-import java.net.MalformedURLException;
-import java.util.Date;
-import java.util.Iterator;
-
+import hk.hku.cecid.corvus.ws.data.Payload;
+import hk.hku.cecid.piazza.commons.data.Data;
+import hk.hku.cecid.piazza.commons.soap.SOAPSender;
 import jakarta.activation.DataHandler;
 import jakarta.activation.FileDataSource;
 import jakarta.xml.soap.AttachmentPart;
 import jakarta.xml.soap.SOAPException;
+import lombok.extern.slf4j.Slf4j;
 
-import hk.hku.cecid.corvus.ws.data.Payload;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.Date;
+import java.util.Iterator;
 
-import hk.hku.cecid.piazza.commons.data.Data;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
-import hk.hku.cecid.piazza.commons.soap.SOAPSender;
+;
 
 /**
  * The <code>MessageSender</code> is the abstract class which is used to send 
@@ -35,6 +34,7 @@ import hk.hku.cecid.piazza.commons.soap.SOAPSender;
  * @version	1.0.2
  * @since	Elf 0818 
  */
+@Slf4j
 public abstract class MessageSender extends SOAPSender {
 		
 	/**
@@ -62,14 +62,13 @@ public abstract class MessageSender extends SOAPSender {
 	
 	/**
 	 * Explicit Constructor. 
-	 * 
-	 * @param l			The logger used for log message and exception.
+	 *
 	 * @param m			The message properties including how many message need to 
 	 * 					be sent and some performance parameter.
 	 * @param p			The partnership properties used for sending.			
 	 */
-	public MessageSender(FileLogger l, Data m, Data p){
-		super(l,m);
+	public MessageSender(Data m, Data p){
+		super(m);
 		this.ps = p;
 	}		
 			
@@ -98,15 +97,14 @@ public abstract class MessageSender extends SOAPSender {
 		
 		if (this.log != null){
 			if (t instanceof SOAPException){
-				this.log.log("Could not send the SOAP message: " + msg);				
+				this.log.error("Could not send the SOAP message: " + msg, t);
 			} else if (t instanceof MalformedURLException){
-				this.log.log("Could not find the URL: " + this.getServiceEndPoint());
+				this.log.error("Could not find the URL: " + this.getServiceEndPoint(), t);
 			} else if (t instanceof UnsupportedOperationException){
-				this.log.log("Unsupported SOAP class and web services: " + msg);
+				this.log.error("Unsupported SOAP class and web services: " + msg, t);
 			} else if (t instanceof NullPointerException){
-				this.log.log("Null Pointer Exception");
+				this.log.error("Null Pointer Exception", t);
 			}
-			this.log.logStackTrace(t);		
 		} else {
 			t.printStackTrace();
 		}

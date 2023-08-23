@@ -3,9 +3,6 @@
  */
 package hk.hku.cecid.piazza.commons.test;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import hk.hku.cecid.piazza.commons.dao.ds.DataSourceDAO;
 
 
@@ -14,9 +11,7 @@ import hk.hku.cecid.piazza.commons.dao.ds.DataSourceDAO;
  *
  */
 public abstract class DAOTest<T extends DataSourceDAO> {
-    
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     public T getTestingTarget() {
         return null;
     }

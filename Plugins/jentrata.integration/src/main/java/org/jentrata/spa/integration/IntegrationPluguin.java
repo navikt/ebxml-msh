@@ -7,12 +7,13 @@ import hk.hku.cecid.piazza.commons.module.SystemModule;
 import hk.hku.cecid.piazza.commons.spa.Plugin;
 import hk.hku.cecid.piazza.commons.spa.PluginException;
 import hk.hku.cecid.piazza.commons.spa.PluginHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.jentrata.spa.integration.module.SpringBootstrapComponent;
-import org.springframework.context.ApplicationContext;
 
 /**
  * Created by aaronwalker on 11/07/2016.
  */
+@Slf4j
 public class IntegrationPluguin implements PluginHandler {
 
     public static final String PLUGIN_ID = "org.jentrata.jms";
@@ -33,7 +34,7 @@ public class IntegrationPluguin implements PluginHandler {
 
     @Override
     public void processActivation(Plugin plugin) throws PluginException {
-        Sys.main.log.debug("Integration Plugin activation");
+        log.debug("Integration Plugin activation");
         pluginHandler = this;
 
         String mgDescriptor = plugin.getParameters().getProperty("module-group-descriptor");

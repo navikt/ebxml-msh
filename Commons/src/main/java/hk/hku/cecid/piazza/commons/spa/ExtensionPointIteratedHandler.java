@@ -10,6 +10,7 @@
 package hk.hku.cecid.piazza.commons.spa;
 
 import hk.hku.cecid.piazza.commons.Sys;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import java.util.Iterator;
  * @author Hugo Y. K. Lam
  *
  */
+@Slf4j
 public abstract class ExtensionPointIteratedHandler implements ExtensionPointHandler {
 
     /**
@@ -57,7 +59,7 @@ public abstract class ExtensionPointIteratedHandler implements ExtensionPointHan
                 String err = "Error in processing extension: " + 
                                 extension.getName() + "@" + extension.getPoint();
                 if (isFaultTolerated()) {
-                    Sys.main.log.error(err, e);
+                    log.error(err, e);
                 }
                 else {
                     throw new PluginException(err, e);

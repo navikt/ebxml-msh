@@ -1,5 +1,6 @@
 package hk.hku.cecid.piazza.corvus.core.main.admin.hc.module;
 
+import com.sun.mail.smtp.SMTPMessage;
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.dao.InboxDAO;
 import hk.hku.cecid.ebms.spa.dao.InboxDVO;
@@ -16,24 +17,19 @@ import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.corvus.core.main.admin.AdminMainProcessor;
 import hk.hku.cecid.piazza.corvus.core.main.admin.hc.util.AdminProperties;
 import hk.hku.cecid.piazza.corvus.core.main.admin.hc.util.AdminPropertiesException;
-
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-import com.sun.mail.smtp.SMTPMessage;
-
+@Slf4j
 public class SchedulerTask implements ActiveTask {
 
 	// private int retried;
@@ -200,7 +196,7 @@ public class SchedulerTask implements ActiveTask {
 	 * @param s
 	 */
 	private void AdminError(String s) {
-		AdminMainProcessor.core.log.error("Housecleaning: " + s);
+		log.error("Housecleaning: " + s);
 	}
 
 	/**
@@ -209,7 +205,7 @@ public class SchedulerTask implements ActiveTask {
 	 * @param s
 	 */
 	private void AdminLogging(String s) {
-		AdminMainProcessor.core.log.info("Housecleaning: " + s);
+		log.info("Housecleaning: " + s);
 	}
 
 	/**
@@ -419,7 +415,7 @@ public class SchedulerTask implements ActiveTask {
 	 * @param msg
 	 */
 	private void EBMSError(String msg) {
-		AdminMainProcessor.core.log.error("EBmS Cleaning: " + msg);
+		log.error("EBmS Cleaning: " + msg);
 	}
 
 	/**
@@ -428,7 +424,7 @@ public class SchedulerTask implements ActiveTask {
 	 * @param msg
 	 */
 	private void EBMSLogging(String msg) {
-		AdminMainProcessor.core.log.info("EBmS Cleaning: " + msg);
+		log.info("EBmS Cleaning: " + msg);
 	}
 
 	/**
@@ -611,7 +607,7 @@ public class SchedulerTask implements ActiveTask {
 		StackTraceElement[] list = e.getStackTrace();
 		for (int index = 0; index < list.length; index++) {
 
-			AdminMainProcessor.core.log.debug("Housecleaning: "
+			log.debug("Housecleaning: "
 					+ list[index].toString());
 		}
 	}

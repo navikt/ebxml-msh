@@ -17,18 +17,19 @@ import hk.hku.cecid.ebms.spa.listener.EbmsResponse;
 import hk.hku.cecid.piazza.commons.module.ActiveTask;
 import hk.hku.cecid.piazza.commons.security.KeyStoreManager;
 import hk.hku.cecid.piazza.commons.security.SMimeMessage;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.mail.Message;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 /**
  * @author Donahue Sze
  * 
  */
+@Slf4j
 public class MailTask implements ActiveTask {
 
     // private Message message;
@@ -59,7 +60,7 @@ public class MailTask implements ActiveTask {
                     .getX509Certificate(), ksm.getPrivateKey());
 
             if (smsg.isEncrypted()) {
-                EbmsProcessor.core.log.info("Decrypt the message");
+                log.info("Decrypt the message");
                 smsg = smsg.decrypt();
                 MimeBodyPart bp = smsg.getBodyPart();
                 baos = new ByteArrayOutputStream();
@@ -71,7 +72,7 @@ public class MailTask implements ActiveTask {
             }
 
         } catch (Exception e) {
-            EbmsProcessor.core.log.error(
+            log.error(
                     "Error in processing the decryption process", e);
             errorMessage = "Error in processing the decryption process"
                     + e.getMessage();
@@ -81,7 +82,7 @@ public class MailTask implements ActiveTask {
         try {
             ebxmlMessage = new EbxmlMessage(message.getInputStream());
         } catch (Exception e) {
-            EbmsProcessor.core.log.error(
+            log.error(
                     "Error in reconstruct the ebxml message", e);
             errorMessage = "Error in reconstruct the ebxml message"
                     + e.getMessage();
@@ -98,13 +99,13 @@ public class MailTask implements ActiveTask {
 
         // error when construct the outbox message
         if (errorMessage != null) {
-            EbmsProcessor.core.log
+            log
                     .error("Error when construct the message from mail box - "
                             + errorMessage);
             throw new DeliveryException(errorMessage);
         }
 
-        EbmsProcessor.core.log.info("Received an ebxml message from mail box");
+        log.info("Received an ebxml message from mail box");
         try {
             EbxmlMessage ebxmlResponseMessage = new EbxmlMessage();
 
@@ -117,7 +118,7 @@ public class MailTask implements ActiveTask {
             MessageServiceHandler msh = MessageServiceHandler.getInstance();
             msh.processInboundMessage(ebmsRequest, ebmsResponse);
         } catch (Exception e) {
-            EbmsProcessor.core.log
+            log
                     .error("Cannot put the message to inbound", e);
             throw new DeliveryException("Cannot put the message to inbound", e);
         }

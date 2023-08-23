@@ -9,34 +9,27 @@
 
 package hk.hku.cecid.ebms.spa.handler;
 
-import hk.hku.cecid.ebms.spa.EbmsUtility;
 import hk.hku.cecid.ebms.pkg.EbxmlMessage;
 import hk.hku.cecid.ebms.pkg.MessageHeader;
 import hk.hku.cecid.ebms.pkg.MessageHeader.PartyId;
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
-import hk.hku.cecid.ebms.spa.dao.InboxDAO;
-import hk.hku.cecid.ebms.spa.dao.InboxDVO;
-import hk.hku.cecid.ebms.spa.dao.MessageDAO;
-import hk.hku.cecid.ebms.spa.dao.MessageDVO;
-import hk.hku.cecid.ebms.spa.dao.OutboxDAO;
-import hk.hku.cecid.ebms.spa.dao.OutboxDVO;
-import hk.hku.cecid.ebms.spa.dao.RepositoryDAO;
-import hk.hku.cecid.ebms.spa.dao.RepositoryDVO;
+import hk.hku.cecid.ebms.spa.EbmsUtility;
+import hk.hku.cecid.ebms.spa.dao.*;
 import hk.hku.cecid.ebms.spa.task.MessageValidationException;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.util.DataFormatter;
+import jakarta.xml.soap.MessageFactory;
+import jakarta.xml.soap.MimeHeaders;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Iterator;
 import java.util.Date;
-
-import jakarta.xml.soap.MessageFactory;
-import jakarta.xml.soap.MimeHeaders;
-import jakarta.xml.soap.SOAPException;
-import jakarta.xml.soap.SOAPMessage;
+import java.util.Iterator;
 
 /**
  * 
@@ -46,6 +39,7 @@ import jakarta.xml.soap.SOAPMessage;
  * @author Donahue Sze
  *  
  */
+@Slf4j
 public class EbxmlMessageDAOConvertor {
 
     private String messageId;
@@ -114,7 +108,7 @@ public class EbxmlMessageDAOConvertor {
             setEbxmlMessageByteStream(ebxmlMessage);
             setMessage(ebxmlMessage, messageBox, messageType);
         } catch (Exception e) {
-            EbmsProcessor.core.log.error(
+            log.error(
                     "Error in converting ebxml message to dvo", e);
         }
 

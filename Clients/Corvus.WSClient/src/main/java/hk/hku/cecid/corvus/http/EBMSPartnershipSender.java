@@ -9,16 +9,17 @@
 
 package hk.hku.cecid.corvus.http;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-
-import hk.hku.cecid.piazza.commons.util.FileLogger;
-import hk.hku.cecid.piazza.commons.util.PropertyTree;
-
 import hk.hku.cecid.corvus.ws.data.DataFactory;
 import hk.hku.cecid.corvus.ws.data.EBMSAdminData;
 import hk.hku.cecid.corvus.ws.data.EBMSPartnershipData;
+import hk.hku.cecid.piazza.commons.util.PropertyTree;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+;
 
 /**
  * The <code>EBMSPartnershipSender</code> is a client service sender using HTTP protocol
@@ -64,6 +65,7 @@ import hk.hku.cecid.corvus.ws.data.EBMSPartnershipData;
  * @see hk.hku.cecid.corvus.ws.data.EBMSPartnershipData
  * @see hk.hku.cecid.corvus.http.PartnershipOp
  */
+@Slf4j
 public class EBMSPartnershipSender extends PartnershipSender
 {
 	/*
@@ -110,14 +112,13 @@ public class EBMSPartnershipSender extends PartnershipSender
 
 	/**
 	 * Explicit Constructor. Create an instance of <code>EBMSPartnershipSender</code>
-	 * 
-	 * @param logger The logger for log the sending process.
+	 *
 	 * @param ad The <code>EBMSAdminData</code> for locating the HTTP end-point the request send to. 
 	 * @param p  The <code>EBMSPartnershipData</code> 
 	 */
-	public EBMSPartnershipSender(FileLogger logger, EBMSAdminData ad, EBMSPartnershipData p) 
+	public EBMSPartnershipSender(EBMSAdminData ad, EBMSPartnershipData p)
 	{
-		super(logger, p);
+		super(p);
 		if (p == null)
 			throw new NullPointerException("Missing 'partnershipData' for creating partnerhsip sender.");
 		String endpoint = ad.getManagePartnershipEndpoint();
@@ -160,21 +161,16 @@ public class EBMSPartnershipSender extends PartnershipSender
 		try{			
 			java.io.PrintStream out = System.out;
 			
-			if (args.length < 3){
-				out.println("Usage: ebms-partnership [partnership-xml] [config-xml] [log-path]");
+			if (args.length < 2){
+				out.println("Usage: ebms-partnership [partnership-xml] [config-xml]");
 				out.println();
-				out.println("Example: ebms-partnership ./config/ebms-partnership.xml ./config/ebms-partnership/ebms-request.xml ./logs/ebms-partnership.log");
+				out.println("Example: ebms-partnership ./config/ebms-partnership.xml ./config/ebms-partnership/ebms-request.xml");
 				System.exit(1);
 			}			
 			
 			out.println("----------------------------------------------------");
 			out.println("      EBMS Partnership Maintainance Tool      ");
 			out.println("----------------------------------------------------");
-
-			// Initialize the logger.
-			out.println("Initialize logger .. ");
-			// The logger path is specified at the last argument.
-			FileLogger logger = new FileLogger(new java.io.File(args[args.length-1]));			
 
 			out.println("Importing EBMS partnership parameters ...");
 			EBMSPartnershipData pd = DataFactory.getInstance()
@@ -189,7 +185,7 @@ public class EBMSPartnershipSender extends PartnershipSender
 					
 			// Initialize the sender.
 			out.println("Initialize EBMS HTTP data service client... "); 
-			EBMSPartnershipSender sender = new EBMSPartnershipSender(logger, acd, pd);
+			EBMSPartnershipSender sender = new EBMSPartnershipSender(acd, pd);
 			
 			out.println("Sending    EBMS HTTP partnership maintenance request ... ");			
 			sender.run();			

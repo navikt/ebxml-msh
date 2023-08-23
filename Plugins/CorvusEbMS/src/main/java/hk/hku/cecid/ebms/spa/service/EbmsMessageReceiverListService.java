@@ -13,18 +13,13 @@ import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.dao.MessageDAO;
 import hk.hku.cecid.ebms.spa.dao.MessageDVO;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
-import hk.hku.cecid.piazza.commons.soap.SOAPFaultException;
-import hk.hku.cecid.piazza.commons.soap.SOAPRequestException;
-import hk.hku.cecid.piazza.commons.soap.WebServicesAdaptor;
-import hk.hku.cecid.piazza.commons.soap.WebServicesRequest;
-import hk.hku.cecid.piazza.commons.soap.WebServicesResponse;
+import hk.hku.cecid.piazza.commons.soap.*;
+import jakarta.xml.soap.SOAPElement;
+import lombok.extern.slf4j.Slf4j;
+import org.w3c.dom.Element;
 
 import java.util.Iterator;
 import java.util.List;
-
-import jakarta.xml.soap.SOAPElement;
-
-import org.w3c.dom.Element;
 
 /**
  * EbmsMessageReceiverListService
@@ -32,6 +27,7 @@ import org.w3c.dom.Element;
  * @author Donahue Sze
  *  
  */
+@Slf4j
 public class EbmsMessageReceiverListService extends WebServicesAdaptor {
     
     public static int MAX_NUMBER = 2147483647;
@@ -66,7 +62,7 @@ public class EbmsMessageReceiverListService extends WebServicesAdaptor {
             numOfMessages = MAX_NUMBER;
         }
 
-        EbmsProcessor.core.log
+        log
                 .info("Message Receiver received request - From: " + cpaId
                         + ", service: " + service + ", action: " + action 
                         + ", convId: " + convId + ", fromPartyId: "

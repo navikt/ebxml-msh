@@ -11,7 +11,6 @@ package hk.hku.cecid.ebms.spa;
 
 import hk.hku.cecid.ebms.spa.handler.ValidationComponent;
 import hk.hku.cecid.piazza.commons.Sys;
-import hk.hku.cecid.piazza.commons.module.Component;
 import hk.hku.cecid.piazza.commons.module.ModuleException;
 import hk.hku.cecid.piazza.commons.module.ModuleGroup;
 import hk.hku.cecid.piazza.commons.module.SystemModule;
@@ -19,6 +18,7 @@ import hk.hku.cecid.piazza.commons.security.KeyStoreManager;
 import hk.hku.cecid.piazza.commons.spa.Plugin;
 import hk.hku.cecid.piazza.commons.spa.PluginException;
 import hk.hku.cecid.piazza.commons.spa.PluginHandler;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -27,6 +27,7 @@ import java.io.IOException;
  * @author Donahue Sze
  *
  */
+@Slf4j
 public class EbmsProcessor implements PluginHandler {
     
     /**
@@ -121,7 +122,7 @@ public class EbmsProcessor implements PluginHandler {
                 try {
                     ((Closeable)o).close();
                 } catch (IOException e) {
-                    core.log.warn("unable stop component:" + o.toString());
+                    log.warn("unable stop component:" + o.toString());
                 }
             }
         }

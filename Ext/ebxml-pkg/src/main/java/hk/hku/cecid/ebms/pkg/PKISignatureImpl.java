@@ -68,42 +68,26 @@
 
 package hk.hku.cecid.ebms.pkg;
 
-import hk.hku.cecid.ebms.pkg.pki.ApacheXMLDSigner;
-import hk.hku.cecid.ebms.pkg.pki.CertResolver;
-import hk.hku.cecid.ebms.pkg.pki.CompositeKeyStore;
-import hk.hku.cecid.ebms.pkg.pki.ErrorMessages;
-import hk.hku.cecid.ebms.pkg.pki.SignException;
-import hk.hku.cecid.ebms.pkg.pki.VerifyException;
+import hk.hku.cecid.ebms.pkg.pki.*;
 import hk.hku.cecid.ebms.pkg.validation.SOAPValidationException;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.cert.X509Certificate;
-import java.util.Iterator;
-
 import jakarta.activation.DataSource;
 import jakarta.xml.soap.SOAPElement;
 import jakarta.xml.soap.SOAPEnvelope;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPPart;
-
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.dom4j.io.DocumentResult;
 import org.dom4j.io.XMLWriter;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerFactory;
+import java.io.*;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
+import java.util.Iterator;
 
 /**
  * An implementation of ebXML <code>Signature</code>, making use 
@@ -112,9 +96,8 @@ import javax.xml.transform.TransformerFactory;
  * @author kcyee
  * @version $Revision: 1.1 $
  */
+@Slf4j
 class PKISignatureImpl extends Signature {
-
-    static Logger logger = Logger.getLogger(PKISignatureImpl.class);
 
     private final EbxmlMessage ebxmlMessage;
 
@@ -203,7 +186,7 @@ class PKISignatureImpl extends Signature {
             catch (Exception e) {
                 String err = "Cannot get private key: " + alias + " - "
                     + e.getMessage();
-               logger.warn(err);
+               log.warn(err);
                 throw new SignException(err);
             }*/
 

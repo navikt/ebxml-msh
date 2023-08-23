@@ -9,7 +9,6 @@
 
 package hk.hku.cecid.corvus.http;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -21,16 +20,14 @@ import junit.framework.TestCase;
 
 //import sun.misc.BASE64Encoder;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 
-import hk.hku.cecid.piazza.commons.util.FileLogger;
+;
 import hk.hku.cecid.piazza.commons.io.IOHandler;
 import hk.hku.cecid.piazza.commons.test.utils.FixtureStore;
 
@@ -47,11 +44,9 @@ import hk.hku.cecid.corvus.ws.data.KVPairData;
  *
  * I fall back to Junit3 because this project may use under J2SE 1.4.2.
  */
+@Slf4j
 public class HttpSenderUnitTest extends TestCase 
-{	
-	// Instance logger
-	Logger logger = LoggerFactory.getLogger(this.getClass());  
-	
+{
 	// Fixture name.
 	public static final String TEST_LOG = "test.log";	
 	// The fixture loader to load test-case
@@ -63,27 +58,18 @@ public class HttpSenderUnitTest extends TestCase
 	
 	/** The testing target which is a HttpSender */
 	private HttpSender target;
-	private FileLogger testClassLogger;
-	
 	private SimpleHttpMonitor monitor;
 
 	/** Setup the fixture. */
 	public void setUp() throws Exception {
 		this.initTestTarget();
-		logger = LoggerFactory.getLogger(this.getName());
-		logger.info(this.getName() + " Start ");		
+		log.info(this.getName() + " Start ");
 	}
 
 	/** Initialize the test target which is a HTTP Sender. */
 	public void initTestTarget() throws Exception 
 	{
-		URL logURL = FIXTURE_LOADER.getResource(TEST_LOG);
-		if (logURL == null)
-			throw new NullPointerException("Missing fixture " + TEST_LOG + " in the fixture path");
-		
-		File log = new File(logURL.getFile());
-		this.testClassLogger = new FileLogger(log);		
-		this.target = new HttpSender(this.testClassLogger, new KVPairData(0));
+		this.target = new HttpSender(new KVPairData(0));
 		this.target.setServiceEndPoint(TEST_ENDPOINT);
 	}
 	
@@ -132,7 +118,7 @@ public class HttpSenderUnitTest extends TestCase
 	/** Test whether the HTTP sender able to send the HTTP header with POST parameter to our monitor successfully. */
 	public void testSendWithParameter() throws Exception 
 	{
-		this.target = new HttpSender(this.testClassLogger, new KVPairData(0)){
+		this.target = new HttpSender( new KVPairData(0)){
 
 			public HttpMethod onCreateRequest() throws Exception {
 				PostMethod method = new PostMethod("http://localhost:1999");
@@ -146,7 +132,7 @@ public class HttpSenderUnitTest extends TestCase
 	/** Test whether the HTTP sender able to send the HTTP header with multi-part to our monitor successfully. */
 	public void testSendWithMultipart() throws Exception 
 	{
-		this.target = new HttpSender(this.testClassLogger, new KVPairData(0)){
+		this.target = new HttpSender( new KVPairData(0)){
 
 			public HttpMethod onCreateRequest() throws Exception 
 			{
@@ -188,7 +174,7 @@ public class HttpSenderUnitTest extends TestCase
 			this.monitor.stop();		
 			Thread.sleep(1500); // Make some delay for releasing the socket.
 		}
-		logger.info(this.getName() + " End ");
+		log.info(this.getName() + " End ");
 	}
 	
 	/*
@@ -211,14 +197,14 @@ public class HttpSenderUnitTest extends TestCase
 		Iterator itr 	= headers.entrySet().iterator();
 		
 		// Log the header information.
-		logger.info("Header information");
+		log.info("Header information");
 		while (itr.hasNext()){
 			tmp = (Map.Entry) itr.next();
-			logger.info(tmp.getKey() + " : " + tmp.getValue());
+			log.info(tmp.getKey() + " : " + tmp.getValue());
 		}
 		
 		InputStream mins;
 		assertNotNull("The monitor has not received any data yet !.", (mins = this.monitor.getInputStream()));
-		this.logger.info(IOHandler.readString(mins,null)); // Print the HTTP content to log.
+		this.log.info(IOHandler.readString(mins,null)); // Print the HTTP content to log.
 	}
 }

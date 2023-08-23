@@ -18,9 +18,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
+import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -42,10 +40,10 @@ import org.w3c.tidy.Tidy;
  * @version 1.0.0 $CHANGE FREQUENTLY$
  * @since   H2O 28/11
  */
+@Slf4j
 public class PartnershipOpVerifer 
 {
 	// Instance logger.
-	final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/* The constant HTML content representing the partnership is added successfully */
 	public static final String OP_ADD_SUCCESS 	 = "Partnership added successfully";

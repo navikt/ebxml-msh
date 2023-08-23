@@ -1,17 +1,19 @@
 package hk.hku.cecid.corvus.ws;
 
-import java.net.MalformedURLException;
-import java.util.Date;
-
-import jakarta.xml.soap.SOAPElement;
-import jakarta.xml.soap.SOAPException;
-
 import hk.hku.cecid.corvus.ws.data.PermitRedownloadData;
 import hk.hku.cecid.piazza.commons.data.Data;
 import hk.hku.cecid.piazza.commons.soap.SOAPSender;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
 import hk.hku.cecid.piazza.commons.util.SOAPUtilities;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPException;
+import lombok.extern.slf4j.Slf4j;
 
+import java.net.MalformedURLException;
+import java.util.Date;
+
+;
+
+@Slf4j
 public abstract class PermitRedownloadServiceSender 
 	extends SOAPSender{
 	
@@ -29,13 +31,12 @@ public abstract class PermitRedownloadServiceSender
 	
 	/**
 	 * Explicit Constructor. 
-	 * 
-	 * @param l			The logger used for log message and exception.
+	 *
 	 * @param m			The message properties including how many message need to 
 	 * 					be sent and some performance parameter.
 	 */
-	public PermitRedownloadServiceSender(FileLogger l, Data m){
-		super(l,m);
+	public PermitRedownloadServiceSender(Data m){
+		super(m);
 		this.setLoopTimes(1);
 	}	
 	
@@ -65,7 +66,7 @@ public abstract class PermitRedownloadServiceSender
 			msgId = elem.getValue();
 		
 		if (this.log != null)	
-			this.log.log("Message Id Reset: " + msgId);
+			log.info("Message Id Reset: " + msgId);
 	}	
 	
 	/**
@@ -96,21 +97,21 @@ public abstract class PermitRedownloadServiceSender
 		
 		if (this.log != null){
 			// Log all information for this sender.
-			this.log.log("Permit Redownload Request Sender init at " + new Date().toString());
-			this.log.log("----------------------------------------------------");
-			this.log.log("Configuration Data using: ");
-			this.log.log("----------------------------------------------------");
+			log.info("Permit Redownload Request Sender init at " + new Date().toString());
+			log.info("----------------------------------------------------");
+			log.info("Configuration Data using: ");
+			log.info("----------------------------------------------------");
 			if (this.properties != null){
-				this.log.log(this.properties.toString());
+				log.info(this.properties.toString());
 			}			
-			this.log.log("----------------------------------------------------");
+			log.info("----------------------------------------------------");
 		}		
 		try{
 			this.initializeMessage();
 			this.setRequestDirty(false);
 		}catch(Exception e){
 			if (this.log != null)
-				this.log.log("Unable to initialize the SOAP Message");
+				log.info("Unable to initialize the SOAP Message");
 			this.onError(e);
 		}
 	}
@@ -132,15 +133,15 @@ public abstract class PermitRedownloadServiceSender
 		
 		if (this.log != null){
 			if (t instanceof MalformedURLException){
-				this.log.log("Could not find the URL: " + this.getServiceEndPoint());
+				this.log.error("Could not find the URL: " + this.getServiceEndPoint(), t);
 			} else if (t instanceof UnsupportedOperationException){
-				this.log.log("Unsupported SOAP class and web services: " + msg);
+				this.log.error("Unsupported SOAP class and web services: " + msg, t);
 			} else if (t instanceof NullPointerException){
-				this.log.log("Null Pointer Exception");
+				this.log.error("Null Pointer Exception", t);
 			}else if (t instanceof SOAPException){
-				this.log.log("Could not send the SOAP message: " + msg);	
+				this.log.error("Could not send the SOAP message: " + msg, t);
 			}
-			this.log.logStackTrace(t);	
+
 			
 		} else {
 			t.printStackTrace();

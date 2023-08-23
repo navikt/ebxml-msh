@@ -16,6 +16,7 @@ import hk.hku.cecid.ebms.spa.dao.MessageDVO;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.module.ActiveTaskList;
 import hk.hku.cecid.piazza.commons.net.HostInfo;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Vector;
  * @author Donahue Sze
  * 
  */
+@Slf4j
 public class InboxCollector extends ActiveTaskList {
 
     /*
@@ -74,7 +76,7 @@ public class InboxCollector extends ActiveTaskList {
                 }
             }
         } catch (DAOException e) {
-            EbmsProcessor.core.log.error(
+            log.error(
                     "Error in collecing message from inbox", e);
         }
         return messageList;

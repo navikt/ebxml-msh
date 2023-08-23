@@ -9,15 +9,16 @@
 
 package hk.hku.cecid.corvus.ws;
 
-import java.util.Date;
-
+import hk.hku.cecid.corvus.ws.data.DataFactory;
 import hk.hku.cecid.corvus.ws.data.EBMSMessageData;
 import hk.hku.cecid.corvus.ws.data.EBMSPartnershipData;
-import hk.hku.cecid.corvus.ws.data.DataFactory;
 import hk.hku.cecid.corvus.ws.data.Payload;
-
-import hk.hku.cecid.piazza.commons.util.FileLogger;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Date;
+
+;
 
 /**
  * The <code>EBMSMessageSender</code> is a client sender sending 
@@ -45,6 +46,7 @@ import hk.hku.cecid.piazza.commons.util.PropertyTree;
  * @see hk.hku.cecid.corvus.ws.data.EBMSMessageData
  * @see hk.hku.cecid.corvus.ws.data.EBMSPartnershipData
  */
+@Slf4j
 public class EBMSMessageSender extends MessageSender {
 		
 	/**
@@ -61,15 +63,13 @@ public class EBMSMessageSender extends MessageSender {
 			
 	/**
 	 * Explicit Constructor.
-	 * 
-	 * @param l		The logger used for log message and exception.
+
 	 * @param m		The message data for party information and send/recv configuration.
 	 * @param p		The partnership data.
 	 */
-	public EBMSMessageSender(FileLogger 		 l
-							,EBMSMessageData 	 m
+	public EBMSMessageSender(EBMSMessageData 	 m
 							,EBMSPartnershipData p) throws MessageSenderException{
-		super(l, m, p);											
+		super(m, p);
 		EBMSMessageData d = (EBMSMessageData) m;		
 		// Setup the sender config.
 		this.setLoopTimes(1);
@@ -83,28 +83,28 @@ public class EBMSMessageSender extends MessageSender {
 		super.onStart();
 		if (this.log != null){
 			// Log all information for this sender.
-			this.log.log("EBMS Message Client init at " + new Date().toString());
-			this.log.log("----------------------------------------------------");
-			this.log.log("Partnership Data using: ");
-			this.log.log("----------------------------------------------------");
+			log.info("EBMS Message Client init at " + new Date().toString());
+			log.info("----------------------------------------------------");
+			log.info("Partnership Data using: ");
+			log.info("----------------------------------------------------");
 			if (this.ps != null){				
-				this.log.log(this.ps.toString());
+				log.info(this.ps.toString());
 			}
-			this.log.log("");
-			this.log.log("----------------------------------------------------");
-			this.log.log("Configuration Data using: ");
-			this.log.log("----------------------------------------------------");
+			log.info("");
+			log.info("----------------------------------------------------");
+			log.info("Configuration Data using: ");
+			log.info("----------------------------------------------------");
 			if (this.properties != null){
-				this.log.log(this.properties.toString());
+				log.info(this.properties.toString());
 			}			
-			this.log.log("----------------------------------------------------");
+			log.info("----------------------------------------------------");
 		}		
 		try{
 			this.initializeMessage();
 			this.setRequestDirty(false);
 		}catch(Exception e){
 			if (this.log != null)
-				this.log.log("Unable to initialize the SOAP Message");
+				log.info("Unable to initialize the SOAP Message");
 			this.onError(e);
 		}
 	}
@@ -144,7 +144,7 @@ public class EBMSMessageSender extends MessageSender {
 			this.getResponseElementText("message_id", NS_URI, 0);
 		
 		if (this.log != null)		
-			this.log.log("Message Id: " + lastSuccessfulQueryMessageId);
+			log.info("Message Id: " + lastSuccessfulQueryMessageId);
 	}		
 	
 	/** 
@@ -162,23 +162,18 @@ public class EBMSMessageSender extends MessageSender {
 	 */
 	public static void main(String [] args){
 		try{			
-			if (args.length < 3){
-				System.out.println("Usage: ebms-send [partnership-xml] [config-xml] [log-path] [payload]");
+			if (args.length < 2){
+				System.out.println("Usage: ebms-send [partnership-xml] [config-xml] [payload]");
 				System.out.println();
 				System.out.println("Example: ebms-send " +
 								   "./config/ebms-send/ebms-request.xml " +
 								   "./config/ebms-partnership.xml " +
-								   "./logs/ebms-send.log " +
 								   "./config/ebms-send/testpayload");
 				System.exit(1);
 			}					
 			System.out.println("----------------------------------------------------");
 			System.out.println("          EbMS sender web service client            ");
 			System.out.println("----------------------------------------------------");
-
-			// Initialize the logger.			
-			System.out.println("Initialize Logger ... ");
-			FileLogger logger = new FileLogger(new java.io.File(args[2]));
 			
 			// Initialize the query parameter.
 			System.out.println("Importing  ebMS sending parameters ... " + args[1] );
@@ -198,11 +193,11 @@ public class EBMSMessageSender extends MessageSender {
 								
 			// Initialize the sender.
 			System.out.println("Initialize ebMS web service client... ");
-			EBMSMessageSender sender = new EBMSMessageSender(logger, emd, ps);
+			EBMSMessageSender sender = new EBMSMessageSender(emd, ps);
 			
 			// Add payload part
 			System.out.println("Adding     payload in the ebMS message... ");
-			if (args.length >= 4){
+			if (args.length >= 3){
 				Payload    payload = new Payload(args[3], "application/octet-stream");																
 				Payload[] payloads = new Payload[]{payload};
 												

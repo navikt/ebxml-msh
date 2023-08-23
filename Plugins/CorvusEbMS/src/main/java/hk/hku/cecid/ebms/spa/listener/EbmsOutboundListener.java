@@ -9,13 +9,14 @@
 
 package hk.hku.cecid.ebms.spa.listener;
 
-import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.handler.MessageServiceHandler;
 import hk.hku.cecid.piazza.commons.servlet.RequestListenerException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Donahue Sze
  */
+@Slf4j
 public class EbmsOutboundListener extends EbmsAdaptor {
 
     private MessageServiceHandler msh;
@@ -58,7 +59,7 @@ public class EbmsOutboundListener extends EbmsAdaptor {
         try {
             msh.processOutboundMessage(request, response);
         } catch (Exception e) {
-            EbmsProcessor.core.log.error("Error in processing outgoing message", e);
+            log.error("Error in processing outgoing message", e);
             throw new RequestListenerException(
                     "Error in processing outgoing message", e);
         }

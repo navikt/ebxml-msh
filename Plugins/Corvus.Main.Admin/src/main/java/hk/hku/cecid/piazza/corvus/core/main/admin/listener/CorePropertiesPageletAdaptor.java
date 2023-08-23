@@ -17,15 +17,15 @@ import hk.hku.cecid.piazza.corvus.core.main.admin.AdminMainProcessor;
 import hk.hku.cecid.piazza.corvus.core.main.admin.hc.module.SchedulerTask;
 import hk.hku.cecid.piazza.corvus.core.main.admin.hc.util.AdminProperties;
 import hk.hku.cecid.piazza.corvus.core.main.admin.hc.util.AdminPropertiesException;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Source;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.Source;
 
 /**
  * CorePropertiesPageletAdaptor is a properties pagelet adaptor which provides
@@ -34,6 +34,7 @@ import javax.xml.transform.Source;
  * @author Hugo Y. K. Lam
  * 
  */
+@Slf4j
 public class CorePropertiesPageletAdaptor extends PropertiesPageletAdaptor {
 
 	private static final String REQ_PARAM_PROPERTY_HC = "hc:";
@@ -188,7 +189,7 @@ public class CorePropertiesPageletAdaptor extends PropertiesPageletAdaptor {
 		try {
 			AdminMainProcessor.core.properties.load();
 		} catch (Exception e) {
-			AdminMainProcessor.core.log.error("Unable to load the properties.");
+			log.error("Unable to load the properties.");
 		}
 		return AdminMainProcessor.core.properties;
 	}

@@ -1,37 +1,26 @@
 package hk.hku.cecid.ebms.spa.handler.jms;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-//import static org.mockito.Matchers.any;
-//import static org.mockito.Matchers.anyString;
-//import static org.mockito.Matchers.isNull;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import hk.hku.cecid.ebms.pkg.EbxmlMessage;
 import hk.hku.cecid.ebms.pkg.MessageHeader.PartyId;
 import hk.hku.cecid.ebms.spa.handler.MessageServiceHandler;
 import hk.hku.cecid.ebms.spa.listener.EbmsRequest;
 import hk.hku.cecid.ebms.spa.listener.EbmsResponse;
 import hk.hku.cecid.piazza.commons.message.Message;
-import hk.hku.cecid.piazza.commons.util.Logger;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.*;
+@Slf4j
 public class EbmsMessageHandlerTest {
 
     EbmsMessageHandler mh = null;
@@ -40,7 +29,6 @@ public class EbmsMessageHandlerTest {
     @Before
     public void setup() throws Exception {
         mh = spy(new EbmsMessageHandler());
-        doReturn(mock(Logger.class)).when(mh).log();
         doReturn(true).when(mh).checkValidChannel(anyString(), anyString(), anyString());
         msh = mock(MessageServiceHandler.class);
         doReturn(msh).when(mh).getMSH();

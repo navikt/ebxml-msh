@@ -14,10 +14,9 @@ import hk.hku.cecid.piazza.commons.spa.ExtensionPoint;
 import hk.hku.cecid.piazza.commons.test.PluginTest;
 import hk.hku.cecid.piazza.corvus.core.Kernel;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-
+@Slf4j
 public class JMSPluginTest extends PluginTest {
 
     @Override

@@ -15,6 +15,7 @@ import hk.hku.cecid.piazza.commons.ejb.EjbConnectionFactory;
 import hk.hku.cecid.piazza.commons.util.ArrayUtilities;
 import hk.hku.cecid.piazza.commons.util.Instance;
 import hk.hku.cecid.piazza.commons.util.InstanceException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
@@ -68,6 +69,7 @@ import java.util.Properties;
  * @see RemoteCommandBean
  * @see EjbConnection
  */
+@Slf4j
 public final class RemoteCommandHandler {
 
     private static Hashtable commands = new Hashtable();
@@ -180,17 +182,17 @@ public final class RemoteCommandHandler {
                 runner = home.create();
             }
             catch (Throwable e) {
-                Sys.main.log.error("Unable to create remote RemoteCommand. Local instance will be invoked.", e);
+                log.error("Unable to create remote RemoteCommand. Local instance will be invoked.", e);
                 useLocalClass = true;
             }
 
             if (!useLocalClass) {
-                Sys.main.log.debug("Using remote instance for command: "+cmdName);
+                log.debug("Using remote instance for command: "+cmdName);
                 return runner.execute(cmdName, parameters);
             }
         }
 
-        Sys.main.log.debug("Using local instance for command: "+cmdName);
+        log.debug("Using local instance for command: "+cmdName);
         return executeLocal(cmdName, parameters);
     }
 

@@ -13,6 +13,7 @@ import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.io.FileSystem;
 import hk.hku.cecid.piazza.commons.io.IOHandler;
 import hk.hku.cecid.piazza.commons.util.Zip;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,6 +34,7 @@ import java.util.Map;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public class PluginRegistry {
     
     private String  pluginExtension  = PluginFile.DEFAULT_FILE_EXT;
@@ -109,11 +111,11 @@ public class PluginRegistry {
         setClasspaths(plugins.values());
 
         if (hasErrors) {
-            Sys.main.log.info("Plugin registry (" + registrySystem
+            log.info("Plugin registry (" + registrySystem
                     + ") initialized with errors.");
         }
         else {
-            Sys.main.log.info("Plugin registry (" + registrySystem
+            log.info("Plugin registry (" + registrySystem
                     + ") initialized successfully.");
         }
     }
@@ -133,7 +135,7 @@ public class PluginRegistry {
         while (spaFiles.hasNext()) {
             File spaFile = (File)spaFiles.next();
             try {
-                Sys.main.log.debug("Deploying SPA file: " + spaFile);
+                log.debug("Deploying SPA file: " + spaFile);
 
                 PluginFile pluginFile = new PluginFile(spaFile, pluginDescriptor);
                 String pluginID = pluginFile.getDescriptor().getId();
@@ -143,17 +145,17 @@ public class PluginRegistry {
                     undeploy(pluginID);
                 }
                 catch (Exception e) {
-                    Sys.main.log.warn("Cannot undeploy plugin for re-deployment", e);
+                    log.warn("Cannot undeploy plugin for re-deployment", e);
                 }
                 
                 Zip.extract(spaFile, pluginDir);
                 spaFile.delete();
                 spaDirs.add(pluginDir);
-                Sys.main.log.info("SPA file (" + spaFile + ") deployed successfully");
+                log.info("SPA file (" + spaFile + ") deployed successfully");
             }
             catch (Throwable e) {
                 hasErrors = true;
-                Sys.main.log.error("Error in deploying SPA file: "
+                log.error("Error in deploying SPA file: "
                         + spaFile, e);
             }
         }
@@ -174,7 +176,7 @@ public class PluginRegistry {
             try {
                 File pluginDir = (File)pluginDirs.next();
                 if (!new File(pluginDir, pluginDescriptor).exists()) {
-                    Sys.main.log.info("Cleaning invalid plugin directory: " + pluginDir);
+                    log.info("Cleaning invalid plugin directory: " + pluginDir);
                     new FileSystem(pluginDir).remove();
                     continue;
                 }
@@ -183,12 +185,12 @@ public class PluginRegistry {
                         pluginDescriptor);
                 plugins.put(plugin.getId(), plugin);
                 createdPlugins.add(plugin);
-                Sys.main.log.info("Plugin '" + plugin.getId()
+                log.info("Plugin '" + plugin.getId()
                         + "' created successfully");
             }
             catch (Throwable e) {
                 hasErrors = true;
-                Sys.main.log.error("Error in creating plugin", e);
+                log.error("Error in creating plugin", e);
             }
         }
         return createdPlugins;
@@ -264,7 +266,7 @@ public class PluginRegistry {
                 File pluginDir = new File(registrySystem.getRoot(), pluginID);
                 if (pluginDir.exists()) {
                     new FileSystem(pluginDir).purge();
-                    Sys.main.log.info("Plugin '"+pluginID+"' undeployed successfully");
+                    log.info("Plugin '"+pluginID+"' undeployed successfully");
                 }
             }
         }
@@ -308,7 +310,7 @@ public class PluginRegistry {
             }
             catch (Throwable e) {
                 hasErrors = true;
-                Sys.main.log.error("Error in activating plugin: "
+                log.error("Error in activating plugin: "
                         + plugin.getId(), e);
             }
         }
@@ -330,7 +332,7 @@ public class PluginRegistry {
             }
             catch (Throwable e) {
                 hasErrors = true;
-                Sys.main.log.error("Error in deactivating plugin: "
+                log.error("Error in deactivating plugin: "
                         + plugin.getId(), e);
             }
         }
@@ -358,7 +360,7 @@ public class PluginRegistry {
                 }
                 catch (Throwable e) {
                     hasErrors = true;
-                    Sys.main.log.error("Error in binding extension point: "
+                    log.error("Error in binding extension point: "
                             + extensionPoint.getId(), e);
                 }
             }

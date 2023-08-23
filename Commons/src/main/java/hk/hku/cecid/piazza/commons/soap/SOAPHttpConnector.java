@@ -13,22 +13,19 @@ import hk.hku.cecid.piazza.commons.io.IOHandler;
 import hk.hku.cecid.piazza.commons.net.ConnectionException;
 import hk.hku.cecid.piazza.commons.net.HttpConnector;
 import hk.hku.cecid.piazza.commons.util.Headers;
+import jakarta.xml.soap.MessageFactory;
+import jakarta.xml.soap.MimeHeaders;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-
-import javax.servlet.http.HttpServletResponse;
-import jakarta.xml.soap.MessageFactory;
-import jakarta.xml.soap.MimeHeaders;
-import jakarta.xml.soap.SOAPException;
-import jakarta.xml.soap.SOAPMessage;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -38,9 +35,8 @@ import org.slf4j.LoggerFactory;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public class SOAPHttpConnector extends HttpConnector {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SOAPHttpConnector.class);
     /**
      * Creates a new instance of SOAPHttpConnector.
      * 
@@ -116,8 +112,8 @@ public class SOAPHttpConnector extends HttpConnector {
                 }
                 catch(SOAPException ex) {
                     //TODO: Should probably throw a custom exception to communicate failure to parse response
-                    LOG.error("HTTP Response code: {} - Unable to parse response: {}",responseCode,ex.getMessage());
-                    LOG.debug("",ex);
+                    log.error("HTTP Response code: {} - Unable to parse response: {}",responseCode,ex.getMessage());
+                    log.debug("",ex);
                 }
             }
             return null;

@@ -11,37 +11,32 @@ package hk.hku.cecid.ebms.spa.handler;
 
 import hk.hku.cecid.ebms.pkg.EbxmlMessage;
 import hk.hku.cecid.ebms.pkg.MessageHeader;
+import hk.hku.cecid.ebms.pkg.MessageHeader.PartyId;
 import hk.hku.cecid.ebms.pkg.MessageOrder;
 import hk.hku.cecid.ebms.pkg.PayloadContainer;
-import hk.hku.cecid.ebms.pkg.MessageHeader.PartyId;
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.EbmsUtility;
-import hk.hku.cecid.ebms.spa.dao.MessageDAO;
-import hk.hku.cecid.ebms.spa.dao.MessageDVO;
-import hk.hku.cecid.ebms.spa.dao.MessageServerDAO;
-import hk.hku.cecid.ebms.spa.dao.OutboxDVO;
-import hk.hku.cecid.ebms.spa.dao.PartnershipDAO;
-import hk.hku.cecid.ebms.spa.dao.PartnershipDVO;
-import hk.hku.cecid.ebms.spa.dao.RepositoryDVO;
+import hk.hku.cecid.ebms.spa.dao.*;
 import hk.hku.cecid.ebms.spa.listener.EbmsRequest;
 import hk.hku.cecid.ebms.spa.listener.EbmsResponse;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.message.Message;
+import hk.hku.cecid.piazza.commons.net.HostInfo;
 import hk.hku.cecid.piazza.commons.soap.SOAPRequest;
 import hk.hku.cecid.piazza.commons.soap.WebServicesRequest;
 import hk.hku.cecid.piazza.commons.util.Generator;
-import hk.hku.cecid.piazza.commons.net.HostInfo;
-
-import java.util.Iterator;
-import java.util.List;
+import jakarta.xml.soap.SOAPException;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-import jakarta.xml.soap.SOAPException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Donahue Sze
  * 
  */
+@Slf4j
 public class OutboundMessageProcessor {
 
 	static OutboundMessageProcessor outboundMessageProcessor;
@@ -71,7 +66,7 @@ public class OutboundMessageProcessor {
 			if (ebxmlMsg.getMessageHeader().getMessageId() == null) {
 				String messageId = Generator.generateMessageID();
 				ebxmlMsg.getMessageHeader().setMessageId(messageId);
-				EbmsProcessor.core.log.info("Genereating message id: " + messageId);
+				log.info("Genereating message id: " + messageId);
 			}
 
 			// classify where the message come from
@@ -202,17 +197,17 @@ public class OutboundMessageProcessor {
 			int currentSequenceNo = previousMaxSequenceNo + 1;
 
 			if (previousMaxSequenceNo >= 9000000) {
-				EbmsProcessor.core.log.debug("Try to reset the sequence");
+				log.debug("Try to reset the sequence");
 				if (isResetAllowed(messageCPADVO)) {
 					status = MessageOrder.STATUS_RESET;
 					currentSequenceNo = 0;
-					EbmsProcessor.core.log.debug("Reset the sequence allowed");
+					log.debug("Reset the sequence allowed");
 				} else {
-					EbmsProcessor.core.log.debug("Reset the sequence not allowed");
+					log.debug("Reset the sequence not allowed");
 				}
 			}
 
-			EbmsProcessor.core.log.debug("Ordered message ("
+			log.debug("Ordered message ("
 					+ ebxmlRequestMessage.getMessageId()
 					+ ") with sequence no: " + currentSequenceNo);
 
@@ -235,12 +230,12 @@ public class OutboundMessageProcessor {
 				.findMaxSequenceGroupByMessageBoxAndCpa(messageDVO);
 		if (messageClassifier.isSeqeunceStatusReset()) {
 			currentMaxSequenceGroup++;
-			EbmsProcessor.core.log
+			log
 					.debug("Ordered RESET message with new sequence group "
 							+ currentMaxSequenceGroup + " for message: "
 							+ ebxmlRequestMessage.getMessageId());
 		} else {
-			EbmsProcessor.core.log.debug("Ordered message with sequence group "
+			log.debug("Ordered message with sequence group "
 					+ currentMaxSequenceGroup + " for message: "
 					+ ebxmlRequestMessage.getMessageId());
 		}
@@ -257,7 +252,7 @@ public class OutboundMessageProcessor {
 				.createDAO(MessageServerDAO.class);
 		messageServerDAO.storeOutboxMessage(messageDVO, repositoryDVO,
 				outboxDVO, null);
-		EbmsProcessor.core.log.info("Store outgoing ordered message: "
+		log.info("Store outgoing ordered message: "
 				+ ebxmlRequestMessage.getMessageId());
 
 	}
@@ -334,7 +329,7 @@ public class OutboundMessageProcessor {
 
 		dao.storeOutboxMessage(messageDVO, repositoryDVO, outboxDVO, primalMsgDVO);
 
-		EbmsProcessor.core.log.info("Store outgoing message: "
+		log.info("Store outgoing message: "
 				+ ebxmlRequestMessage.getMessageId());
 	}
 
@@ -357,7 +352,7 @@ public class OutboundMessageProcessor {
 		partnershipDVO.setAction(ebxmlRequestMessage.getAction());
 
 		if (!partnershipDAO.findPartnershipByCPA(partnershipDVO)) {
-			EbmsProcessor.core.log.error("Partnership not found");
+			log.error("Partnership not found");
 			throw new MessageServiceHandlerException("Partnership not found");
 		}
 
@@ -462,7 +457,7 @@ public class OutboundMessageProcessor {
 
 			String messageId = Generator.generateMessageID();
 			msgHeader.setMessageId(messageId);
-			EbmsProcessor.core.log.info("Genereating message id: " + messageId);
+			log.info("Genereating message id: " + messageId);
 
 			msgHeader.setTimestamp(EbmsUtility.getCurrentUTCDateTime());
 
@@ -499,7 +494,7 @@ public class OutboundMessageProcessor {
 			
 			return newMessage;
 		} catch (Exception e) {
-			EbmsProcessor.core.log.error("Error in constructing ebxml message",
+			log.error("Error in constructing ebxml message",
 					e);
 			throw new Exception("Error in constructing ebxml message", e);
 		}

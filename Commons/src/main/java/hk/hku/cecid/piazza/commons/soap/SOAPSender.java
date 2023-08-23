@@ -6,12 +6,13 @@ import hk.hku.cecid.piazza.commons.util.*;
 import java.net.*;
 import java.util.List;
 import jakarta.xml.soap.*;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public abstract class SOAPSender extends Component
         implements Runnable
 {
     protected static final String NS_PREFIX = "tns";
-    protected FileLogger log;
     protected Data properties;
     protected SOAPMessage request;
     protected SOAPMessage response;
@@ -52,7 +53,7 @@ public abstract class SOAPSender extends Component
         userObj = null;
     }
 
-    public SOAPSender(FileLogger l, Data d)
+    public SOAPSender(Data d)
     {
         request = null;
         response = null;
@@ -62,7 +63,6 @@ public abstract class SOAPSender extends Component
         loopTimes = 1;
         curTimes = 0;
         userObj = null;
-        log = l;
         properties = d;
         try
         {
@@ -74,9 +74,9 @@ public abstract class SOAPSender extends Component
         }
     }
 
-    public SOAPSender(FileLogger l, Data d, String endpoint)
+    public SOAPSender(Data d, String endpoint)
     {
-        this(l, d);
+        this(d);
         try
         {
             serviceEndPoint = new URL(endpoint);
@@ -87,9 +87,9 @@ public abstract class SOAPSender extends Component
         }
     }
 
-    public SOAPSender(FileLogger l, Data d, URL endpoint)
+    public SOAPSender(Data d, URL endpoint)
     {
-        this(l, d);
+        this(d);
         serviceEndPoint = endpoint;
     }
 
@@ -137,7 +137,7 @@ public abstract class SOAPSender extends Component
     {
         t.printStackTrace();
         if(log != null)
-            log.error(t);
+            log.error("",t);
     }
 
     public void setLoopTimes(int loopTimes)
@@ -166,7 +166,7 @@ public abstract class SOAPSender extends Component
         catch(MalformedURLException mue)
         {
             if(log != null)
-                log.error(mue);
+                log.error("",mue);
         }
     }
 

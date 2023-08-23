@@ -1,14 +1,14 @@
 package hk.hku.cecid.ebms.spa.task;
 
-import java.util.Date;
-
-import hk.hku.cecid.piazza.commons.dao.DAOException;
-import hk.hku.cecid.piazza.commons.module.ActiveModule;
-import hk.hku.cecid.piazza.commons.module.ModuleException;
-
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.dao.MessageDAO;
 import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
+import hk.hku.cecid.piazza.commons.dao.DAOException;
+import hk.hku.cecid.piazza.commons.module.ActiveModule;
+import hk.hku.cecid.piazza.commons.module.ModuleException;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Date;
 
 /**
  * The <code>MessageMonitor</code> is a monitor which correct all 
@@ -19,6 +19,7 @@ import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
  * @version	1.0.0
  * @since	H20 01062007 
  */
+@Slf4j
 public class MessageMonitor extends ActiveModule {
 	
 	// Internal Message DAO object. 
@@ -62,7 +63,7 @@ public class MessageMonitor extends ActiveModule {
 			msgDAO = (MessageDAO) EbmsProcessor.core.dao.createDAO(MessageDAO.class);
 			this.initialized = true;
 		}catch(DAOException daoe){
-			EbmsProcessor.core.log.fatal("Unable to intialize 'MessageDAO' object.");
+			log.error("Unable to intialize 'MessageDAO' object.");
 		}
 	}
 
@@ -86,10 +87,10 @@ public class MessageMonitor extends ActiveModule {
 				MessageClassifier.INTERNAL_STATUS_PENDING, new Date());
 
 			if (numberOfTimedoutMessage > 0)
-				EbmsProcessor.core.log.info ( numberOfTimedoutMessage + " message(s) has been marked re-sending.");
+				log.info ( numberOfTimedoutMessage + " message(s) has been marked re-sending.");
 			
 		}catch(DAOException daoe){
-			EbmsProcessor.core.log.fatal("Unable to mark re-send for timed-out message.", daoe);
+			log.error("Unable to mark re-send for timed-out message.", daoe);
 		}		
 		return true;
 	}

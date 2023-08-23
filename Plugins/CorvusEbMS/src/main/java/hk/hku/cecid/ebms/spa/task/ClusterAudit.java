@@ -1,24 +1,19 @@
 package hk.hku.cecid.ebms.spa.task;
 
-import java.net.*;
-import java.io.*;
+import hk.hku.cecid.ebms.spa.EbmsProcessor;
+import hk.hku.cecid.ebms.spa.dao.ClusterDAO;
+import hk.hku.cecid.ebms.spa.dao.ClusterDVO;
+import hk.hku.cecid.ebms.spa.dao.MessageDAO;
+import hk.hku.cecid.piazza.commons.dao.DAOException;
+import hk.hku.cecid.piazza.commons.module.ActiveModule;
+import hk.hku.cecid.piazza.commons.net.HostInfo;
+import lombok.extern.slf4j.Slf4j;
 
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.sql.Timestamp;
-
-import hk.hku.cecid.piazza.commons.dao.DAOException;
-import hk.hku.cecid.piazza.commons.module.ActiveModule;
-import hk.hku.cecid.piazza.commons.module.ModuleException;
-import hk.hku.cecid.piazza.commons.net.HostInfo;
-
-import hk.hku.cecid.ebms.spa.EbmsProcessor;
-import hk.hku.cecid.ebms.spa.dao.MessageDAO;
-import hk.hku.cecid.ebms.spa.dao.MessageDVO;
-import hk.hku.cecid.ebms.spa.dao.ClusterDAO;
-import hk.hku.cecid.ebms.spa.dao.ClusterDVO;
-import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
 
 /**
  * The <code>ClusterAudit</code> audits messages in the cluster and redistributes them if needed
@@ -33,6 +28,7 @@ import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
  * @version	1.0.1
  * 
  */
+@Slf4j
 public class ClusterAudit extends ActiveModule {
 	
     // Internal Message DAO object. 
@@ -87,7 +83,7 @@ public class ClusterAudit extends ActiveModule {
 	    registerCurrentHost();
 	    this.initialized = true;
 	}catch(DAOException daoe){
-	    EbmsProcessor.core.log.fatal("ClusterAudit: Unable to intialize." + daoe);
+	    log.error("ClusterAudit: Unable to intialize." + daoe);
 	}
     }
     
@@ -113,9 +109,9 @@ public class ClusterAudit extends ActiveModule {
 	    // Check if audit starttime is passed or not
 	    if (timeStamp > currentTimestamp) {
 		date.setTime( timeStamp );
-		EbmsProcessor.core.log.debug ( "ClusterAudit: wait (" + date.toString() + ")");
+		log.debug ( "ClusterAudit: wait (" + date.toString() + ")");
 	    } else {
-		EbmsProcessor.core.log.debug ( "ClusterAudit: start (" + date.toString() + ")");
+		log.debug ( "ClusterAudit: start (" + date.toString() + ")");
 		// To prevent more hosts auditing the cluster at the same time the
 		// status of our host is set to auditor. Then the cluster is checked
 		// if this is the only auditor in the cluster. In case this is the
@@ -130,20 +126,20 @@ public class ClusterAudit extends ActiveModule {
 		    while (i.hasNext()) {
 			ClusterDVO clusterEntry = (ClusterDVO) i.next();
 			oldHostname = clusterEntry.getHostname();
-			EbmsProcessor.core.log.debug ( "ClusterAudit: check host: " + oldHostname );
+			log.debug ( "ClusterAudit: check host: " + oldHostname );
 			counter = 0;
 			// Skip this host and check if the host is available
 			if (!oldHostname.equals(Hostname) && !hostIsAvailable(oldHostname)) {
-			    EbmsProcessor.core.log.debug ( "ClusterAudit: host no longer available: " + oldHostname );
+			    log.debug ( "ClusterAudit: host no longer available: " + oldHostname );
 			    // Replace hostname for those messages that are still related to the other host
 			    counter = replaceHostname( Hostname, oldHostname );
 			    if (counter == 0) {
 				// If there are no messages left in the other host remove it from the cluster list
-				EbmsProcessor.core.log.debug ( "ClusterAudit: remove host: " + oldHostname );
+				log.debug ( "ClusterAudit: remove host: " + oldHostname );
 				removeHostname( oldHostname );
 			    } else {
 				// Update the status of the host to inactive
-				EbmsProcessor.core.log.debug ( "ClusterAudit: inactive host: " + oldHostname + " message(s) moved" );
+				log.debug ( "ClusterAudit: inactive host: " + oldHostname + " message(s) moved" );
 				updateStatusHostname( oldHostname, "inactive" );
 			    }
 			}
@@ -151,10 +147,10 @@ public class ClusterAudit extends ActiveModule {
 		}
 		// Put us at the end of the cluster list
 		registerCurrentHost();
-		EbmsProcessor.core.log.debug ( "ClusterAudit: end (" + date.toString() + ")");
+		log.debug ( "ClusterAudit: end (" + date.toString() + ")");
 	    }
 	}catch(DAOException daoe){
-	    EbmsProcessor.core.log.fatal("ClusterAudit: Unable to complete cluster audit." + daoe);
+	    log.error("ClusterAudit: Unable to complete cluster audit." + daoe);
 	}
 	return true;
     }
@@ -344,21 +340,21 @@ public class ClusterAudit extends ActiveModule {
 
 	counter = msgDAO.updateOldIncomingMessagesPendingbyTimestamp(newhostname, oldhostname);
 	if (counter > 0) {
-	    EbmsProcessor.core.log.debug ( "ClusterAudit: inbox message(s) recovered.");
+	    log.debug ( "ClusterAudit: inbox message(s) recovered.");
 	}
 	totcounter += counter;
 	counter = 0;
 
 	counter = msgDAO.updateOldOutboxPendingMessagesbyTimestamp(newhostname, oldhostname);
 	if (counter > 0) {
-	    EbmsProcessor.core.log.debug ( "ClusterAudit: pending outbox message(s) recovered.");
+	    log.debug ( "ClusterAudit: pending outbox message(s) recovered.");
 	}
 	totcounter += counter;
 	counter = 0;
 
 	counter = msgDAO.updateOldOutboxProcessingMessagesbyTimestamp(newhostname, oldhostname);
 	if (counter > 0) {
-	    EbmsProcessor.core.log.debug ( "ClusterAudit: processing outbox message(s) recovered.");
+	    log.debug ( "ClusterAudit: processing outbox message(s) recovered.");
 	}
 	totcounter += counter;
 

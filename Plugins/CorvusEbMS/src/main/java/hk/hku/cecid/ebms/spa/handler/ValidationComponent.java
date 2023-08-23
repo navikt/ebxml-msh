@@ -1,21 +1,19 @@
 package hk.hku.cecid.ebms.spa.handler;
 
-import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.piazza.commons.module.Component;
-
-import java.io.File;
-import java.io.IOException;
-
 import jakarta.xml.soap.AttachmentPart;
 import jakarta.xml.soap.SOAPException;
+import lombok.extern.slf4j.Slf4j;
+import org.xml.sax.SAXException;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
-import org.xml.sax.SAXException;
-
+import java.io.File;
+import java.io.IOException;
+@Slf4j
 public class ValidationComponent extends Component {
 
 	private static final String SCHEMA_LANGUAGE = "http://www.w3.org/2001/XMLSchema";
@@ -41,7 +39,7 @@ public class ValidationComponent extends Component {
 		} catch (SAXException e) {
 			throw new InvalidAttachmentException(e);
 		} catch (IOException e) {
-			EbmsProcessor.core.log.error(e);
+			log.error("IOException", e);
 		}
 
 	}

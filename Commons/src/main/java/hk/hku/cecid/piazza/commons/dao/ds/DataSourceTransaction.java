@@ -11,6 +11,7 @@ package hk.hku.cecid.piazza.commons.dao.ds;
 
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.dao.Transaction;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 
@@ -24,6 +25,7 @@ import java.sql.Connection;
  * @author Hugo Y. K. Lam
  *
  */
+@Slf4j
 public class DataSourceTransaction implements Transaction {
 
     private DataSourceDAOFactory dsFactory;
@@ -76,7 +78,7 @@ public class DataSourceTransaction implements Transaction {
             }
         }
         catch (Exception e) {
-            dsFactory.getModule().getLogger().error("Error in releasing connection", e);
+            log.error("Error in releasing connection", e);
         }
     }
     

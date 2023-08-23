@@ -19,23 +19,17 @@ import hk.hku.cecid.ebms.spa.handler.MessageServiceHandler;
 import hk.hku.cecid.ebms.spa.handler.MessageServiceHandlerException;
 import hk.hku.cecid.ebms.spa.listener.EbmsRequest;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
-import hk.hku.cecid.piazza.commons.soap.SOAPFaultException;
-import hk.hku.cecid.piazza.commons.soap.SOAPRequest;
-import hk.hku.cecid.piazza.commons.soap.SOAPRequestException;
-import hk.hku.cecid.piazza.commons.soap.WebServicesAdaptor;
-import hk.hku.cecid.piazza.commons.soap.WebServicesRequest;
-import hk.hku.cecid.piazza.commons.soap.WebServicesResponse;
+import hk.hku.cecid.piazza.commons.soap.*;
 import hk.hku.cecid.piazza.commons.util.Generator;
 import hk.hku.cecid.piazza.commons.util.StringUtilities;
-
-import java.util.Iterator;
-
 import jakarta.xml.soap.AttachmentPart;
 import jakarta.xml.soap.SOAPElement;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
-
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Element;
+
+import java.util.Iterator;
 
 /**
  * EbmsMessageSenderService
@@ -43,6 +37,7 @@ import org.w3c.dom.Element;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public class EbmsMessageSenderService extends WebServicesAdaptor {
 
     public void serviceRequested(WebServicesRequest request,
@@ -90,7 +85,7 @@ public class EbmsMessageSenderService extends WebServicesAdaptor {
 			throwSoapClientFault("No registered sender channel");
 		}
 
-        EbmsProcessor.core.log.info("Outbound payload received - cpaId: " 
+        log.info("Outbound payload received - cpaId: " 
         		+ cpaId 
         		+ ", service: " 	+ service 
         		+ ", serviceType:" 	+ serviceType        		
@@ -122,7 +117,7 @@ public class EbmsMessageSenderService extends WebServicesAdaptor {
             
             messageId = Generator.generateMessageID();
             ebxmlMessage.getMessageHeader().setMessageId(messageId);
-            EbmsProcessor.core.log.info("Genereating message id: " + messageId);
+            log.info("Genereating message id: " + messageId);
 
             msgHeader.setTimestamp(EbmsUtility.getCurrentUTCDateTime());
             
@@ -147,7 +142,7 @@ public class EbmsMessageSenderService extends WebServicesAdaptor {
             setPayloads(request, ebxmlMessage);
 
         } catch (Exception e) {
-            EbmsProcessor.core.log.error(
+            log.error(
             		"Error in constructing ebxml message", e);
             throwSoapServerFault("Error in constructing ebxml message", e);
         }
@@ -158,13 +153,13 @@ public class EbmsMessageSenderService extends WebServicesAdaptor {
             ebmsRequest.setMessage(ebxmlMessage);
             msh.processOutboundMessage(ebmsRequest, null);
         } catch (MessageServiceHandlerException e) {
-            EbmsProcessor.core.log.error("Error in passing ebms Request to msh outbound", e);
+            log.error("Error in passing ebms Request to msh outbound", e);
             throwSoapServerFault("Error in passing ebms Request to msh outbound", e);
         }
 
         generateReply(response, messageId);
 
-        EbmsProcessor.core.log.info("Outbound payload processed - cpaId: "
+        log.info("Outbound payload processed - cpaId: "
                 + cpaId + ", service: " + service + ", action: " + action
                 + ", convId: " + convId + ", fromPartyId: " + fromPartyId
                 + ", fromPartyType: " + fromPartyType + ", toPartyId: "

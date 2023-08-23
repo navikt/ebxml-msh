@@ -2,31 +2,18 @@ package hk.hku.cecid.ebms.spa.client.jms;
 
 import hk.hku.cecid.ebms.pkg.EbxmlMessage;
 import hk.hku.cecid.ebms.pkg.MessageHeader.PartyId;
-import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.task.EbmsEventListener;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Iterator;
-
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.Session;
-import javax.jms.TextMessage;
 import jakarta.xml.soap.AttachmentPart;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
+import javax.jms.*;
+import java.io.*;
+import java.util.Iterator;
+
+@Slf4j
 public class MessageListenerJMSClient extends EbmsEventListener {
 
 	private Connection connection;
@@ -67,7 +54,7 @@ public class MessageListenerJMSClient extends EbmsEventListener {
 			sendMessageToQueue(requestMessage);
 			closeSession();
 		} catch (JMSException e) {
-			EbmsProcessor.core.log.error(e);
+			log.error("JMSException", e);
 			connection = null;
 		}
 	}
@@ -119,10 +106,10 @@ public class MessageListenerJMSClient extends EbmsEventListener {
 			try {
 				textMessage.setText(convertStreamToString(attachment.getRawContent()));
 			} catch (SOAPException e) {
-				EbmsProcessor.core.log.error("SOAP exception", e);
+				log.error("SOAP exception", e);
 			}
 			catch (IOException e) {
-				EbmsProcessor.core.log.error("IO exception", e);
+				log.error("IO exception", e);
 			}
 
 		}

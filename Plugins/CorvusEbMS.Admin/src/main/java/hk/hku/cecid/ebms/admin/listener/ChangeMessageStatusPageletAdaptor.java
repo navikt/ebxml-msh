@@ -9,11 +9,11 @@
 
 package hk.hku.cecid.ebms.admin.listener;
 
-import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.dao.MessageDVO;
 import hk.hku.cecid.ebms.spa.util.EbmsMessageStatusReverser;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.Source;
@@ -22,6 +22,7 @@ import javax.xml.transform.Source;
  * @author Donahue Sze
  *  
  */
+@Slf4j
 public class ChangeMessageStatusPageletAdaptor extends AdminPageletAdaptor {
 
     protected Source getCenterSource(HttpServletRequest request) {
@@ -83,7 +84,7 @@ public class ChangeMessageStatusPageletAdaptor extends AdminPageletAdaptor {
             dom.setProperty("search_criteria/message_time","");
 
         } catch (Exception e) {
-            EbmsProcessor.core.log.debug(
+            log.debug(
                     "Unable to process the pagelet request", e);
         }
         return dom.getSource();

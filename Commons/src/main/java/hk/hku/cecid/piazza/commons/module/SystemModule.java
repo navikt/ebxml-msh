@@ -10,9 +10,9 @@
 package hk.hku.cecid.piazza.commons.module;
 
 import hk.hku.cecid.piazza.commons.dao.DAOFactory;
-import hk.hku.cecid.piazza.commons.util.Logger;
 import hk.hku.cecid.piazza.commons.util.Messages;
 import hk.hku.cecid.piazza.commons.util.PropertySheet;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -22,13 +22,9 @@ import hk.hku.cecid.piazza.commons.util.PropertySheet;
  * @author Hugo Y. K. Lam
  *
  */
+@Slf4j
 public class SystemModule extends Module {
 
-    /**
-     * The system logger, having a component name 'logger'.
-     */
-    public final Logger log = (Logger)getComponent("logger");
-    
     /**
      * The system properties, having a component name 'properties'.
      */
@@ -87,18 +83,5 @@ public class SystemModule extends Module {
     public SystemModule(String descriptorLocation, ClassLoader loader,
             boolean shouldInitialize) {
         super(descriptorLocation, loader, shouldInitialize);
-    }
-    
-    
-    /**
-     * @see hk.hku.cecid.piazza.commons.module.Module#getLogger()
-     */
-    public Logger getLogger() {
-        if (log == null) {
-            return super.getLogger();
-        }
-        else {
-            return log;
-        }
     }
 }

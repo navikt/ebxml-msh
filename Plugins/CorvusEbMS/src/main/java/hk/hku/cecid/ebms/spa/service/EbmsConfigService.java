@@ -1,5 +1,6 @@
 package hk.hku.cecid.ebms.spa.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Element;
 import jakarta.xml.soap.SOAPElement;
 
@@ -28,6 +29,7 @@ import hk.hku.cecid.ebms.spa.EbmsProcessor;
  * @author Twinsen Tsang. 
  * @version 1.0
  */
+@Slf4j
 public class EbmsConfigService extends WebServicesAdaptor
 {
 	 private static final String ACTIVEMODULE_STATUS 	  = "active-module-status";
@@ -71,7 +73,7 @@ public class EbmsConfigService extends WebServicesAdaptor
 		        else
 		        	EbmsProcessor.getModuleGroup().stopActiveModules();		        	
 		        
-		        EbmsProcessor.core.log.info("Active Modules new status:" + String.valueOf(activeModuleStatus));
+		        log.info("Active Modules new status:" + String.valueOf(activeModuleStatus));
 		        		        		        		        		        
 		        ActiveTaskModule am = null;		        		       	        		       
 		        
@@ -84,7 +86,7 @@ public class EbmsConfigService extends WebServicesAdaptor
 			        	{
 			        		am.getMonitor().setMaxThreadCount(ebmsModMaxThread[i]);	
 			        		am.setExecutionInterval(ebmsModEI[i]);
-			        		EbmsProcessor.core.log.info(EBMS_MODS_NAMES[i] 
+			        		log.info(EBMS_MODS_NAMES[i] 
 			        		                           +" Thread set to: " 
 			        							  	   + am.getMonitor().getMaxThreadCount()
 			        							  	   +" with interval "
@@ -99,7 +101,7 @@ public class EbmsConfigService extends WebServicesAdaptor
 	        }
 	        catch(Exception e)
 	        {
-	        	EbmsProcessor.core.log.debug("Configuration Error", e);
+	        	log.debug("Configuration Error", e);
 	        	generateReply(response
 	        				 ,"Fail"
 	        				 ,"Error in configuring Ebms Configuration");

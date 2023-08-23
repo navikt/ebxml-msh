@@ -1,20 +1,14 @@
 package hk.hku.cecid.ebms.spa.service;
 
-import jakarta.xml.soap.SOAPElement;
-import jakarta.xml.soap.SOAPException;
-
-import org.w3c.dom.Element;
-
-import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.util.EbmsMessageStatusReverser;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
-import hk.hku.cecid.piazza.commons.soap.SOAPFaultException;
-import hk.hku.cecid.piazza.commons.soap.SOAPRequestException;
-import hk.hku.cecid.piazza.commons.soap.SOAPResponse;
-import hk.hku.cecid.piazza.commons.soap.WebServicesAdaptor;
-import hk.hku.cecid.piazza.commons.soap.WebServicesRequest;
-import hk.hku.cecid.piazza.commons.soap.WebServicesResponse;
+import hk.hku.cecid.piazza.commons.soap.*;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPException;
+import lombok.extern.slf4j.Slf4j;
+import org.w3c.dom.Element;
 
+@Slf4j
 public class EbmsPermitRedownloadService  extends WebServicesAdaptor{
 	
 	public static String NAMESPACE = "http://service.ebms.edi.cecid.hku.hk/";
@@ -44,7 +38,7 @@ public class EbmsPermitRedownloadService  extends WebServicesAdaptor{
 			  //	2. Database Connection Closed 
 			  throw daoExp;
 		  }catch(Exception exp){
-			  EbmsProcessor.core.log.error(
+			  log.error(
 					  "Fail to reset INBOX Message["+msgId+"] back to PS", exp);
 			  genreateFault(response, msgId, exp.getMessage());
 		  }

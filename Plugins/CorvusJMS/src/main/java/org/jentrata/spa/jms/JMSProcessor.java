@@ -4,6 +4,7 @@
 package org.jentrata.spa.jms;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.jentrata.spa.jms.module.JMSBrokerComponent;
 import org.jentrata.spa.jms.module.JMSComponent;
 
@@ -19,6 +20,7 @@ import hk.hku.cecid.piazza.commons.spa.PluginHandler;
  * @author aaronwalker
  *
  */
+@Slf4j
 public class JMSProcessor implements PluginHandler {
     
     public static final String PLUGIN_ID = "org.jentrata.jms";
@@ -39,7 +41,7 @@ public class JMSProcessor implements PluginHandler {
     }
     
     public void processActivation(Plugin plugin) throws PluginException {
-        Sys.main.log.debug("JMSProcessor activation");
+        log.debug("JMSProcessor activation");
         processor = this;
         
         String mgDescriptor = plugin.getParameters().getProperty("module-group-descriptor");

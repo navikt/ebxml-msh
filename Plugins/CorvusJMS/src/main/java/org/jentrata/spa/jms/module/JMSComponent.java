@@ -3,29 +3,24 @@
  */
 package org.jentrata.spa.jms.module;
 
-import java.util.Properties;
-
-import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.message.MessageHandler;
 import hk.hku.cecid.piazza.commons.module.Component;
-
-import javax.jms.ConnectionFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.camel.CamelContext;
-import org.apache.camel.ConsumerTemplate;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.jentrata.spa.jms.message.CamelMessage;
 
+import javax.jms.ConnectionFactory;
+import java.util.Properties;
+
 /**
  * @author aaronwalker
  *
  */
+@Slf4j
 public class JMSComponent extends Component {
 
     private ConnectionFactory connectionFactory;
@@ -88,8 +83,8 @@ public class JMSComponent extends Component {
                 camel.stop();
             }
         } catch (Exception e) {
-            Sys.main.log.warn("unable to shutdown jms component:" + e);
-            Sys.main.log.debug("",e);
+            log.warn("unable to shutdown jms component:" + e);
+            log.debug("",e);
         }
     }
 

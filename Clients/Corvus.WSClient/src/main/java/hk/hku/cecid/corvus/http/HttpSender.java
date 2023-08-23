@@ -12,6 +12,7 @@ package hk.hku.cecid.corvus.http;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -21,7 +22,7 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 
 import hk.hku.cecid.piazza.commons.data.Data;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
+;
 
 /** 
  * The <code>HttpSender</code> is top base class for sending HTTP request.
@@ -32,6 +33,7 @@ import hk.hku.cecid.piazza.commons.util.FileLogger;
  * @version 1.0.0
  * @since   JDK5.0, H2O 0908
  */
+@Slf4j
 public class HttpSender implements Runnable 
 {			
 	/* The boolean flag indicating whether the HTTP request requires Authentication. */
@@ -42,14 +44,7 @@ public class HttpSender implements Runnable
 	
 	/* The Apache HTTP client object for configuring the HTTP request and reading the HTTP response. */
 	private HttpMethod requestMethod;	
-	
-	/**
-	 * The logger used for log message and exception
-	 * 
-	 * @see hk.hku.cecid.piazza.commons.util.FileLogger
-	 */
-	protected FileLogger log;
-	
+
 	/* The data properties for this sender. */
 	protected Data properties;
 	
@@ -71,17 +66,15 @@ public class HttpSender implements Runnable
 	 * It is used when the HTTP Sender is a component in the SPA.
 	 */
 	public HttpSender(){ 
-		this(null, null);
+		this(null);
 	}
 	
 	/**
 	 * Explicit Constructor.
-	 * 
-	 * @param logger The logger used for log message and exception.
+	 *
 	 * @param d The data used for sending HTTP request.
 	 */
-	public HttpSender(FileLogger logger, Data d){
-		this.log = logger;	
+	public HttpSender(Data d){
 		if (d == null)
 			throw new NullPointerException("Missing 'data properties' when constructing HTTP sender.");
 		this.properties = d;		
@@ -95,8 +88,8 @@ public class HttpSender implements Runnable
 	 * @param d The data used for sending HTTP request. 
 	 * @param endpoint	The URL of service end point.
 	 */	
-	public HttpSender(FileLogger l, Data d, String endpoint){
-		this(l,d);
+	public HttpSender(Data d, String endpoint){
+		this(d);
 		try{
 			this.serviceEndPoint = new URL(endpoint);
 		}catch(MalformedURLException mue){
@@ -111,8 +104,8 @@ public class HttpSender implements Runnable
 	 * @param d 		The data used for sending HTTP request. 
 	 * @param endpoint	The URL of service end point.
 	 */	
-	public HttpSender(FileLogger l, Data d, URL endpoint){
-		this(l,d);
+	public HttpSender(Data d, URL endpoint){
+		this(d);
 		this.serviceEndPoint = endpoint;
 	}
 	
@@ -182,8 +175,8 @@ public class HttpSender implements Runnable
 	 */
 	protected void onError(Throwable t){		
 		t.printStackTrace();
-		if (this.log != null){
-			this.log.logStackTrace(t);
+		if (log != null){
+			log.error("", t);
 		}
 	}
 	
@@ -237,8 +230,8 @@ public class HttpSender implements Runnable
 			this.serviceEndPoint = new URL(endpoint);			
 		}		
 		catch(MalformedURLException mue){
-			if (this.log != null){
-				this.log.logStackTrace(mue);
+			if (log != null){
+				log.error("", mue);
 			}
 		}
 	}

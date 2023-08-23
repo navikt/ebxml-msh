@@ -9,13 +9,12 @@
 
 package hk.hku.cecid.piazza.corvus.core.main.listener;
 
-import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.soap.SOAPFaultException;
 import hk.hku.cecid.piazza.commons.soap.SOAPRequestException;
 import hk.hku.cecid.piazza.commons.soap.WebServicesAdaptor;
-
 import jakarta.xml.soap.Name;
 import jakarta.xml.soap.SOAPElement;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * WSPingService is a simple web service which provides a ping-pong function.
@@ -23,6 +22,7 @@ import jakarta.xml.soap.SOAPElement;
  * @author Hugo Y. K. Lam
  *  
  */
+@Slf4j
 public class WSPingService extends WebServicesAdaptor {
 
     /**
@@ -43,7 +43,7 @@ public class WSPingService extends WebServicesAdaptor {
                             )
                     && "action".equals(bodies[0].getElementName().getLocalName()
                             )) {
-                Sys.main.log.debug("Web Services Ping request received");
+                log.debug("Web Services Ping request received");
 
                 SOAPElement actionElement = super.soapFactory.createElement(actionName);
                 actionElement.addNamespaceDeclaration("xsd", "http://www.w3.org/2001/XMLSchema");
@@ -52,8 +52,7 @@ public class WSPingService extends WebServicesAdaptor {
                 return new SOAPElement[]{actionElement};
             }
             else {
-                Sys.main.log
-                        .debug("Invalid Web Services Ping request received");
+                log.debug("Invalid Web Services Ping request received");
                 SOAPFaultException sfe = new SOAPFaultException(
                         SOAPFaultException.SOAP_FAULT_CLIENT,
                         "Invalid body content");

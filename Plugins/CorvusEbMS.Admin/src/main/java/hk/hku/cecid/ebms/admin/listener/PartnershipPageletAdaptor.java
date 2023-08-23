@@ -17,7 +17,14 @@ import hk.hku.cecid.piazza.commons.io.IOHandler;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.commons.util.StringUtilities;
 import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.DiskFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.fileupload.FileUploadException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Source;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,18 +38,11 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.Source;
-
-import org.apache.commons.fileupload.DiskFileUpload;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUpload;
-import org.apache.commons.fileupload.FileUploadException;
-
 /**
  * @author Donahue Sze
  *  
  */
+@Slf4j
 public class PartnershipPageletAdaptor extends AdminPageletAdaptor {
 			
     /*
@@ -72,7 +72,7 @@ public class PartnershipPageletAdaptor extends AdminPageletAdaptor {
             }
             getAllPartnerships(dom);
         } catch (Exception e) {
-            EbmsProcessor.core.log.debug("Unable to process the partnership page request", e);
+            log.debug("Unable to process the partnership page request", e);
             throw new RuntimeException("Unable to process the partnership page request", e);
         }
               

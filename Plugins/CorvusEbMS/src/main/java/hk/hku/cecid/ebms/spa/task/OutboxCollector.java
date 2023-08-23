@@ -12,10 +12,10 @@ package hk.hku.cecid.ebms.spa.task;
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.dao.MessageDAO;
 import hk.hku.cecid.ebms.spa.dao.MessageDVO;
-import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.module.ActiveTaskList;
 import hk.hku.cecid.piazza.commons.net.HostInfo;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +25,7 @@ import java.util.Vector;
  * @author Donahue Sze
  * 
  */
+@Slf4j
 public class OutboxCollector extends ActiveTaskList {
 
     boolean isFirstTime = true;
@@ -50,7 +51,7 @@ public class OutboxCollector extends ActiveTaskList {
                 Iterator i = messageDVOList.iterator();
                 int num = 0;
                 while (i.hasNext()) {
-                    EbmsProcessor.core.log
+                    log
                             .info("Recover outbox message sending thread "
                                     + ++num + "/" + messageDVOList.size());
                     MessageDVO message = (MessageDVO) i.next();
@@ -70,7 +71,7 @@ public class OutboxCollector extends ActiveTaskList {
                 messageList.add(outboxTask);
             }
         } catch (DAOException e) {
-            EbmsProcessor.core.log.error(
+            log.error(
                     "Error in collecting message from outbox", e);
         }
         return messageList;

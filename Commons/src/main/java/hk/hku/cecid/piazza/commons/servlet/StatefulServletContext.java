@@ -11,6 +11,7 @@ package hk.hku.cecid.piazza.commons.servlet;
 
 import hk.hku.cecid.piazza.commons.Sys;
 import hk.hku.cecid.piazza.commons.util.Instance;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import javax.servlet.UnavailableException;
  * @author Hugo Y. K. Lam
  *
  */
+@Slf4j
 public class StatefulServletContext {
 
     /**
@@ -54,7 +56,7 @@ public class StatefulServletContext {
      */
     public synchronized boolean halt() {
         if (!halted) {
-            Sys.main.log.info(this.getClass().getName()+" is being halted");
+            log.info(this.getClass().getName()+" is being halted");
             halted = true;
             haltRequested = true;
     
@@ -74,14 +76,14 @@ public class StatefulServletContext {
                     listener.servletContextHalted();
                 }
                 catch (Exception e) {
-                    Sys.main.log.error("Error in invoking listener '"
+                    log.error("Error in invoking listener '"
                             + listener.getClass().getName()
                             + "' after context halted", e);
                 }
             }
     
             haltRequested = false;
-            Sys.main.log.info(this.getClass().getName()+" has been halted");
+            log.info(this.getClass().getName()+" has been halted");
             return true;
         }
         else {
@@ -150,7 +152,7 @@ public class StatefulServletContext {
      */
     public synchronized boolean resume() {
         if (halted && !haltRequested) {
-            Sys.main.log.info(this.getClass().getName()+" is being resumed");
+            log.info(this.getClass().getName()+" is being resumed");
             Iterator listeners = contextListeners.iterator();
             while (listeners.hasNext()) {
                 StatefulServletContextListener listener = (StatefulServletContextListener) listeners
@@ -159,13 +161,13 @@ public class StatefulServletContext {
                     listener.servletContextResumed();
                 }
                 catch (Exception e) {
-                    Sys.main.log.error("Error in invoking listener '"
+                    log.error("Error in invoking listener '"
                             + listener.getClass().getName()
                             + "' after context resumed", e);
                 }
             }
             halted = false;
-            Sys.main.log.info(this.getClass().getName()+" has been resumed");
+            log.info(this.getClass().getName()+" has been resumed");
             return true;
         }
         else {
@@ -187,7 +189,7 @@ public class StatefulServletContext {
             return true;
         }
         catch (Exception e) {
-            Sys.main.log.error("Unable to add context listener '"
+            log.error("Unable to add context listener '"
                     + contextListener + "'", e);
             return false;
         }

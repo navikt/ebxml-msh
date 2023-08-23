@@ -5,14 +5,16 @@ import jakarta.xml.soap.SOAPElement;
 import hk.hku.cecid.corvus.ws.data.DataFactory;
 import hk.hku.cecid.corvus.ws.data.PermitRedownloadData;
 import hk.hku.cecid.piazza.commons.data.Data;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
+;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.commons.util.SOAPUtilities;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class EBMSPermitRedownloadSender extends PermitRedownloadServiceSender {
 
-	public EBMSPermitRedownloadSender(FileLogger l, Data m) {
-		super(l, m);
+	public EBMSPermitRedownloadSender(Data m) {
+		super(m);
 	}
 
 	@Override
@@ -66,10 +68,6 @@ public class EBMSPermitRedownloadSender extends PermitRedownloadServiceSender {
 			System.out.println("           ebMS Permit Redownload Request Sender            ");
 			System.out.println("----------------------------------------------------");
 
-			// Initialize the logger.			
-			System.out.println("Initialize Logger ... ");
-			FileLogger logger = new FileLogger(new java.io.File(args[1]));
-
 			// Initialize the query parameter.
 			System.out.println("Importing  EBMS Redownload Permition Request parameters ... " + args[0] );			
 			PermitRedownloadData data = 
@@ -79,7 +77,7 @@ public class EBMSPermitRedownloadSender extends PermitRedownloadServiceSender {
 							new java.io.File(args[0]).toURI().toURL()));									
 			// Initialize the sender.
 			System.out.println("Initialize EBMS Permit Redownload Request ... ");
-			EBMSPermitRedownloadSender sender = new EBMSPermitRedownloadSender(logger, data);
+			EBMSPermitRedownloadSender sender = new EBMSPermitRedownloadSender(data);
 			
 			System.out.println("Sending EBMS Redownload Permition Request ... ");
 			sender.run();

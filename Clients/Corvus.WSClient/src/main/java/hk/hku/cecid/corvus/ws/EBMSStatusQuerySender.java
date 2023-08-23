@@ -14,12 +14,13 @@ import java.util.Map;
 
 import hk.hku.cecid.piazza.commons.data.Data;
 import hk.hku.cecid.piazza.commons.soap.SOAPSender;
-import hk.hku.cecid.piazza.commons.util.FileLogger;
+;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 
 import hk.hku.cecid.corvus.ws.data.DataFactory;
 import hk.hku.cecid.corvus.ws.data.EBMSStatusQueryData;
 import hk.hku.cecid.corvus.ws.data.EBMSStatusQueryResponseData;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The <code>EBMSStatusQuerySender</code> is a client sender sending SOAP web
@@ -37,6 +38,7 @@ import hk.hku.cecid.corvus.ws.data.EBMSStatusQueryResponseData;
  * @version 1.0.0
  * @since	Dwarf 10329
  */
+@Slf4j
 public class EBMSStatusQuerySender extends SOAPSender {
 
 	/*
@@ -53,9 +55,9 @@ public class EBMSStatusQuerySender extends SOAPSender {
 	 * @param l		The logger used for log message and exception.
 	 * @param data	The EBMS Status query parameter.
 	 */
-	public EBMSStatusQuerySender(FileLogger l, EBMSStatusQueryData data)
+	public EBMSStatusQuerySender(EBMSStatusQueryData data)
 	{	
-		super(l, (Data)data, data.getSendEndpoint());
+		super((Data)data, data.getSendEndpoint());
 		this.setLoopTimes(1);		
 	}	
 	
@@ -70,14 +72,14 @@ public class EBMSStatusQuerySender extends SOAPSender {
 		if (this.log != null)
 		{			
 			// Log all information for this sender.
-			this.log.log("EBMS Status query Client init at " + new Date().toString());
-			this.log.log("");
-			this.log.log("Sending EBMS Status Query SOAP Message with following configuration");				
-			this.log.log("-------------------------------------------------------------------");
+			log.info("EBMS Status query Client init at " + new Date().toString());
+			log.info("");
+			log.info("Sending EBMS Status Query SOAP Message with following configuration");				
+			log.info("-------------------------------------------------------------------");
 			if (data != null)
-				this.log.log(data.toString());
-			this.log.log("-------------------------------------------------------------------");
-			this.log.log("");						
+				log.info(data.toString());
+			log.info("-------------------------------------------------------------------");
+			log.info("");						
 		}
 		// Initial the message.
 		try{
@@ -85,7 +87,7 @@ public class EBMSStatusQuerySender extends SOAPSender {
 			this.setRequestDirty(false);
 		}catch(Exception e){
 			if (this.log != null)
-				this.log.log("Unable to initialize the SOAP Message");
+				log.info("Unable to initialize the SOAP Message");
 			this.onError(e);
 		}		
 	}
@@ -93,7 +95,7 @@ public class EBMSStatusQuerySender extends SOAPSender {
 	/**
 	 * The SOAPRequest in the creation stage should be liked this.	
 	 * 
-	 * @throws Exceptions
+	 * @throws Exception
 	 */
 	public void initializeMessage() throws Exception
 	{	
@@ -152,19 +154,17 @@ public class EBMSStatusQuerySender extends SOAPSender {
 	 */
 	public static void main(String [] args){
 		try{
-			if (args.length < 2){
-				System.out.println("Usage: ebms-status [config-xml] [log-path]");
+			if (args.length < 1){
+				System.out.println("Usage: ebms-status [config-xml]");
 				System.out.println();
-				System.out.println("Example: ebms-status ./config/ebms-status/ebms-request.xml ./logs/ebms-status.log");
+				System.out.println("Example: ebms-status ./config/ebms-status/ebms-request.xml");
 				System.exit(1);
 			}					
 			System.out.println("----------------------------------------------------");
 			System.out.println("            EBMS Status Queryer             ");
 			System.out.println("----------------------------------------------------");
 
-			// Initialize the logger.
-			System.out.println("Initialize logger .. ");
-			FileLogger logger = new FileLogger(new java.io.File(args[1]));			
+
 			
 			// Initialize the query parameter.
 			System.out.println("Importing  EBMS sending parameters ... ");	
@@ -189,7 +189,7 @@ public class EBMSStatusQuerySender extends SOAPSender {
 			
 			// Initialize the sender.
 			System.out.println("Initialize EBMS status queryer ... "); 
-			EBMSStatusQuerySender sender = new EBMSStatusQuerySender(logger, sqd);
+			EBMSStatusQuerySender sender = new EBMSStatusQuerySender(sqd);
 			
 			System.out.println("Sending    EBMS-status sending request ... ");
 			sender.run();			

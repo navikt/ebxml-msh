@@ -9,23 +9,23 @@
 
 package hk.hku.cecid.ebms.spa.task;
 
-import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.handler.MessageServiceHandler;
 import hk.hku.cecid.piazza.commons.module.ActiveTaskList;
 import hk.hku.cecid.piazza.commons.net.ConnectionException;
 import hk.hku.cecid.piazza.commons.net.MailReceiver;
-
-import java.util.List;
-import java.util.Vector;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @author Donahue Sze
  * 
  */
+@Slf4j
 public class MailCollector extends ActiveTaskList {
 
     /*
@@ -51,7 +51,7 @@ public class MailCollector extends ActiveTaskList {
             Folder folder = pop.openFolder(msh.popFolder);
             Message[] messages = folder.getMessages();
             if (messages.length > 0) {
-                EbmsProcessor.core.log.info("Found " + messages.length
+                log.info("Found " + messages.length
                         + " message(s) in mail box");
             }
             for (int messageIndex = 0; messageIndex < messages.length; messageIndex++) {
@@ -64,13 +64,13 @@ public class MailCollector extends ActiveTaskList {
             }
             folder.close(true);
         } catch (Exception e) {
-            EbmsProcessor.core.log.error(
+            log.error(
                     "Error in collecting message from mail box", e);
         } finally {
             try {
                 pop.disconnect();
             } catch (ConnectionException e1) {
-                EbmsProcessor.core.log.error(
+                log.error(
                         "Error in disconnection of pop server", e1);
             }
         }

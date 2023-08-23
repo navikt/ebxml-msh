@@ -1,11 +1,9 @@
 package org.jentrata.spa.integration.handler;
 
-import hk.hku.cecid.piazza.commons.Sys;
-import hk.hku.cecid.piazza.commons.message.MessageHandler;
 import hk.hku.cecid.piazza.commons.spa.Extension;
 import hk.hku.cecid.piazza.commons.spa.ExtensionPointIteratedHandler;
 import hk.hku.cecid.piazza.commons.spa.PluginException;
-import hk.hku.cecid.piazza.commons.util.Instance;
+import lombok.extern.slf4j.Slf4j;
 import org.jentrata.spa.integration.IntegrationPluguin;
 import org.springframework.context.ApplicationContext;
 
@@ -16,6 +14,7 @@ import java.util.Properties;
 /**
  * Created by aaronwalker on 11/07/2016.
  */
+@Slf4j
 public class CamelProcessorExtensionPointHandler  extends ExtensionPointIteratedHandler {
     @Override
     public void processExtension(Extension extension) throws PluginException {
@@ -35,11 +34,11 @@ public class CamelProcessorExtensionPointHandler  extends ExtensionPointIterated
     }
 
     public void deployCamelContext(String deployLocation, Properties config) throws Exception {
-        Sys.main.log.debug("Adding camel context handler:" + deployLocation);
+        log.debug("Adding camel context handler:" + deployLocation);
         Map<String, Object> beans = new HashMap<String, Object>();
         beans.put(config.getProperty("id","config"),config);
         ApplicationContext context = IntegrationPluguin.getInstance().getSpringBootstrapComponent().deployApplicationContext(deployLocation,beans);
-        Sys.main.log.info("Added camel context:" + deployLocation);
+        log.info("Added camel context:" + deployLocation);
     }
 
 }

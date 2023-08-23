@@ -17,20 +17,14 @@ import hk.hku.cecid.ebms.spa.dao.MessageServerDAO;
 import hk.hku.cecid.ebms.spa.handler.EbxmlMessageDAOConvertor;
 import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
-import hk.hku.cecid.piazza.commons.soap.SOAPFaultException;
-import hk.hku.cecid.piazza.commons.soap.SOAPRequestException;
-import hk.hku.cecid.piazza.commons.soap.SOAPResponse;
-import hk.hku.cecid.piazza.commons.soap.WebServicesAdaptor;
-import hk.hku.cecid.piazza.commons.soap.WebServicesRequest;
-import hk.hku.cecid.piazza.commons.soap.WebServicesResponse;
-
-import java.util.Iterator;
-
+import hk.hku.cecid.piazza.commons.soap.*;
 import jakarta.xml.soap.AttachmentPart;
 import jakarta.xml.soap.SOAPElement;
 import jakarta.xml.soap.SOAPMessage;
-
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Element;
+
+import java.util.Iterator;
 
 /**
  * AS2MessageReceiverListService
@@ -38,6 +32,7 @@ import org.w3c.dom.Element;
  * @author Donahue Sze
  *  
  */
+@Slf4j
 public class EbmsMessageReceiverService extends WebServicesAdaptor {
 
     public void serviceRequested(WebServicesRequest request,
@@ -52,7 +47,7 @@ public class EbmsMessageReceiverService extends WebServicesAdaptor {
                     "Missing request information");
         }
 
-        EbmsProcessor.core.log
+        log
                 .info("Message Receiver received download request - Message ID: "
                         + messageId);
 
@@ -91,7 +86,7 @@ public class EbmsMessageReceiverService extends WebServicesAdaptor {
                 }
             }
         } catch (Exception e) {
-            EbmsProcessor.core.log
+            log
                     .error(
                             "Error in processing request of message in receiver service",
                             e);

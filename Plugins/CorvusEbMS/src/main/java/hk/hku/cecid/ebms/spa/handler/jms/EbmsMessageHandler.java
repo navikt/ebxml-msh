@@ -5,7 +5,6 @@ package hk.hku.cecid.ebms.spa.handler.jms;
 
 import hk.hku.cecid.ebms.pkg.EbxmlMessage;
 import hk.hku.cecid.ebms.pkg.MessageHeader;
-import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.EbmsUtility;
 import hk.hku.cecid.ebms.spa.handler.MessageServiceHandler;
 import hk.hku.cecid.ebms.spa.listener.EbmsRequest;
@@ -14,29 +13,29 @@ import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.message.Message;
 import hk.hku.cecid.piazza.commons.message.MessageHandler;
 import hk.hku.cecid.piazza.commons.util.Generator;
-import hk.hku.cecid.piazza.commons.util.Logger;
+import jakarta.activation.DataHandler;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
-
-import jakarta.activation.DataHandler;
 
 
 /**
  * @author aaronwalker
  *
  */
+@Slf4j
 public class EbmsMessageHandler implements MessageHandler {
 
     public void onMessage(Message message) {
     
-        log().debug("got message:" + message.getSource().toString());
+        log.debug("got message:" + message.getSource().toString());
         try {
             EbmsRequest ebmsRequest = buildEbmsRequest(message);
             getMSH().processOutboundMessage(ebmsRequest, null);
         } catch (Exception e) {
-            log().error("Failed to process outbound message: " + e);
-            log().debug("",e);
+            log.error("Failed to process outbound message: " + e);
+            log.debug("",e);
             throw new RuntimeException(e);
         }
     }
@@ -100,7 +99,7 @@ public class EbmsMessageHandler implements MessageHandler {
             ebxmlMessageId = Generator.generateMessageID();
         }
         ebxmlHeader.setMessageId(ebxmlMessageId);
-        log().info("ebXML message id: " + ebxmlMessageId);
+        log.info("ebXML message id: " + ebxmlMessageId);
         
         if(refToMessageId != null) {
             ebxmlHeader.setRefToMessageId(refToMessageId);
@@ -112,7 +111,7 @@ public class EbmsMessageHandler implements MessageHandler {
             ebxmlHeader.setTimeToLive(EbmsUtility.applyTimeToLiveOffset(timeToLiveOffset));
         }
         
-        log().info("Outbound payload received - cpaId: " + cpaId
+        log.info("Outbound payload received - cpaId: " + cpaId
                 + ", messageId: "     + ebxmlMessageId 
                 + ", service: "     + service 
                 + ", serviceType:"  + serviceType               
@@ -139,10 +138,6 @@ public class EbmsMessageHandler implements MessageHandler {
 
     protected boolean checkValidChannel(String cpaId, String service, String action) throws DAOException {
         return PartnershipDAOHelper.isChannelRegistered(cpaId, service, action);
-    }
-    
-    protected Logger log() {
-        return EbmsProcessor.core.log;
     }
 
     private void attachPayloads(EbxmlMessage ebxml, List<byte[]> payloads) throws Exception {
@@ -194,7 +189,7 @@ public class EbmsMessageHandler implements MessageHandler {
             try {
                 return Integer.parseInt(o.toString());
             } catch (NumberFormatException ex) {
-                log().warn("unable to parse an integer " + key + " from map " + map);
+                log.warn("unable to parse an integer " + key + " from map " + map);
             }
         }
         return null;
